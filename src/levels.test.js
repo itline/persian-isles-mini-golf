@@ -6,6 +6,7 @@ import {createHormuzCourse} from './course.js';
 import {LEVELS} from './journey.js';
 for(const level of LEVELS.filter(l=>l.available))it(`level ${level.id} renders and physically catches its own cup`,async()=>{
  const physics=new PhysicsWorld();await physics.init();const scene=new THREE.Scene();const course=createHormuzCourse(scene,physics,level);
+ // Positioning the ball over the cup isolates cup-capture geometry; this does not prove whole-round playability.
  const ball=new BallController(scene,physics.world,physics.rapier);ball.radius=.145;ball.createPhysicsBody(new THREE.Vector3(level.hole.x,.16,level.hole.z));
  for(let i=0;i<150;i++){physics.step(1/120);ball.update(1,1/120);}
  expect(ball.getPosition().y).toBeLessThan(-.1);

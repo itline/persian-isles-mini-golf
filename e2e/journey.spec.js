@@ -41,6 +41,50 @@ test('music and effects are opt-in, independent and persistent',async({page})=>{
  await page.locator('#resume').click();await page.waitForFunction(()=>window.__golf.state().audio.playing);
 });
 
+test('silent browsing and playing never create an audio context; music unlocks on opt-in',async({page})=>{
+ await page.goto('http://127.0.0.1:4181/?qa');await page.waitForFunction(()=>window.__golf);
+ // The audio API reports an absent (not-yet-created) context as 'locked'.
+ const expectLocked=async()=>expect(await page.evaluate(()=>window.__golf.state().audio)).toMatchObject({music:false,effects:false,unlocked:false,contextState:'locked'});
+ await expectLocked();
+ for(const island of ['hormuz','qeshm','kish','khark','hengam']){
+  await page.locator(`[data-island="${island}"]`).click();
+  await page.waitForFunction(id=>window.__golf.state().preview===id,island);await expectLocked();
+ }
+ await page.locator('#nextIsland').click();await page.waitForFunction(()=>window.__golf.state().preview==='qeshm');await expectLocked();
+ await page.locator('#prevIsland').click();await page.waitForFunction(()=>window.__golf.state().preview==='hengam');await expectLocked();
+ await page.locator('#prevIsland').click();await page.waitForFunction(()=>window.__golf.state().preview==='hormuz');await expectLocked();
+ await page.locator('#play').click();await expect(page.locator('#pause')).toBeVisible();await expectLocked();
+ await page.locator('#scene').focus();await page.keyboard.press('Space');await expect(page.locator('#strokes')).toHaveText('1');await expectLocked();
+ await page.locator('#sound').click();await page.locator('#musicToggle').check();
+ await expect.poll(()=>page.evaluate(()=>window.__golf.state().audio)).toMatchObject({music:true,effects:false,unlocked:true,contextState:'running'});
+ await page.locator('#audioClose').click();await page.waitForFunction(()=>window.__golf.state().audio.playing);
+});
+
+for(const channel of ['music','effects'])test(`turning the last ${channel} preference off does not create an audio context`,async({page})=>{
+ await page.addInitScript(channel=>localStorage.setItem('persian-isles-golf.audio.v1',JSON.stringify({music:channel==='music',effects:channel==='effects'})),channel);
+ await page.goto('http://127.0.0.1:4181/?qa');await page.waitForFunction(()=>window.__golf);
+ expect(await page.evaluate(()=>window.__golf.state().audio)).toMatchObject({unlocked:false,contextState:'locked'});
+ await page.locator('#menuSound').click();await page.locator(`#${channel}Toggle`).uncheck();
+ expect(await page.evaluate(()=>window.__golf.state().audio)).toMatchObject({music:false,effects:false,unlocked:false,contextState:'locked'});
+ await page.locator(`#${channel}Toggle`).check();
+ await expect.poll(()=>page.evaluate(()=>window.__golf.state().audio)).toMatchObject({[channel]:true,unlocked:true,contextState:'running'});
+});
+
+test('startup effect waits for audio resume from the play gesture',async({page})=>{
+ await page.addInitScript(()=>{
+  localStorage.setItem('persian-isles-golf.audio.v1',JSON.stringify({music:false,effects:true}));
+  const NativeAudioContext=window.AudioContext;window.__startupAudio=[];
+  window.AudioContext=class extends NativeAudioContext{
+   constructor(){super();this.suspend();}
+   resume(){window.__resumeFromGesture=navigator.userActivation.isActive;return new Promise((resolve,reject)=>setTimeout(()=>super.resume().then(resolve,reject),150));}
+   createOscillator(){const oscillator=super.createOscillator();let frequency;const set=oscillator.frequency.setValueAtTime.bind(oscillator.frequency);oscillator.frequency.setValueAtTime=(value,...args)=>{frequency=value;return set(value,...args);};const start=oscillator.start.bind(oscillator);oscillator.start=(...args)=>{window.__startupAudio.push({frequency,state:this.state});return start(...args);};return oscillator;}
+  };
+ });
+ await page.goto('http://127.0.0.1:4181/?qa');await page.locator('#play').click();
+ await expect.poll(()=>page.evaluate(()=>window.__startupAudio)).toContainEqual({frequency:660,state:'running'});
+ expect(await page.evaluate(()=>window.__resumeFromGesture)).toBe(true);
+});
+
 test('mobile pinch zoom never fires a shot; single-touch dragging still does',async({browser})=>{
  const context=await browser.newContext({viewport:{width:844,height:390},hasTouch:true,isMobile:true});const page=await context.newPage();
  await page.goto('http://127.0.0.1:4181/?qa');await page.locator('[data-level="1"]').tap();

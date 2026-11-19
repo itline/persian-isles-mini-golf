@@ -77,8 +77,9 @@ function setStatus(text){$('#status').textContent=text;$('#putt').disabled=!read
 function updateHud(){$('#strokes').textContent=state.strokes;$('#best').textContent=best??'—';$('#powerValue').textContent=`${Math.round(currentPower*100)}%`;$('#power').value=Math.round(power*100);}
 function updateBest(){try{const stored=Number(localStorage.getItem(levelRecordKey(selectedLevel)));best=Number.isInteger(stored)&&stored>0?stored:null;}catch{best=null;}}
 function sound(frequency=440,duration=.06){coastalAudio.effect(frequency,duration);}
+function unlockPreferredAudio(){const {music,effects}=coastalAudio.getState();return music||effects?coastalAudio.unlock():Promise.resolve(true);}
 function reset(){if(!ready)return;const level=currentLevel();physicalCourse?.dispose();physicalCourse=createHormuzCourse(scene,physics,level);origin.visible=true;clearTimeout(completionTimer);journeyFinished=false;cameraFrozen=false;pointers.clear();pinch=null;$('#journeyResults').classList.add('hidden');$('#resultNext').classList.remove('hidden');$('#resultRetry').textContent='Find a better line ↗';$('#resultTitle').textContent='A line to remember.';$('#resultNext').textContent=mode==='journey'&&selectedLevel===3?'See journey results':'Next open hole';$('#resultNext').disabled=mode!=='journey'&&selectedLevel===3;drag=null;orbit=null;state={...initialHormuzState,island:'Hormuz',par:level.par};paused=false;coastalAudio.setPaused(false);aimAngle=0;power=.45;currentPower=power;zoom=1;targetZoom=1;ball.createPhysicsBody(new THREE.Vector3(level.start.x,.16,level.start.z));ball.setBallColor('#fff9ed');ball.mesh.scale.setScalar(1);ball.ghostSphereMesh.visible=false;finishFlag.position.set(level.hole.x,.04,level.hole.z);targetRing.position.set(level.start.x,.025,level.start.z);origin.position.set(level.start.x,.025,level.start.z);$('#pausePanel').classList.add('hidden');$('#resultPanel').classList.add('hidden');$('#hint').classList.remove('hidden');updateBest();setLevelUI();updateHud();setStatus('Ready to putt');resize();}
-function start(journey=false){if(!ready||selectedIsland!=='hormuz'||previewId!=='hormuz')return;mode=journey?'journey':'single';journeyScores=[];if(journey)selectedLevel=1;playing=true;$('#menu').classList.add('hidden');$('#game').classList.remove('hidden');reset();resize();coastalAudio.unlock();sound(660);canvas.focus();}
+async function start(journey=false){if(!ready||selectedIsland!=='hormuz'||previewId!=='hormuz')return;mode=journey?'journey':'single';journeyScores=[];if(journey)selectedLevel=1;playing=true;$('#menu').classList.add('hidden');$('#game').classList.remove('hidden');reset();resize();canvas.focus();await unlockPreferredAudio();sound(660);}
 function home(){clearTimeout(completionTimer);playing=false;paused=false;drag=null;coastalAudio.setPaused(false);$('#pausePanel').classList.add('hidden');$('#resultPanel').classList.add('hidden');$('#game').classList.add('hidden');$('#menu').classList.remove('hidden');arrowGroup.visible=false;targetZoom=1;cameraFrozen=false;pointers.clear();pinch=null;mode='single';selectIsland('hormuz');$('#play').focus();}
 function togglePause(){if(!playing||!ready||state.completed)return;paused=!paused;drag=null;orbit=null;coastalAudio.setPaused(paused);$('#pausePanel').classList.toggle('hidden',!paused);if(paused)$('#resume').focus();else canvas.focus();}
 function aimDir(){return {x:Math.sin(aimAngle),z:-Math.cos(aimAngle)};}
@@ -138,7 +139,7 @@ async function selectIsland(id){
  }
  if(version!==previewVersion)return;previewId=id;$('#play').disabled=!island.playable||!ready;
 }
-function cycleIsland(delta){const i=ISLANDS.findIndex(island=>island.id===selectedIsland);selectIsland(ISLANDS[(i+delta+ISLANDS.length)%ISLANDS.length].id);}
+function cycleIsland(delta){unlockPreferredAudio();const i=ISLANDS.findIndex(island=>island.id===selectedIsland);selectIsland(ISLANDS[(i+delta+ISLANDS.length)%ISLANDS.length].id);}
 function selectLevel(id){const level=playableLevel(Number(id));if(!level||selectedIsland!=='hormuz'||!ready)return;selectedLevel=level.id;start(false);}
 function journeyResults(){
  const summary=journeySummary(journeyScores);if(!summary)return;
@@ -153,7 +154,7 @@ function journeyResults(){
 function readBest(id){try{const n=Number(localStorage.getItem(levelRecordKey(id)));return Number.isInteger(n)&&n>0?n:null;}catch{return null;}}
 $('#sceneryToggle').onclick=()=>{sceneryOnly=!sceneryOnly;$('#menu').classList.toggle('scenery-only',sceneryOnly);$('#sceneryToggle').textContent=sceneryOnly?'Back to holes':'View island';$('#sceneryToggle').setAttribute('aria-pressed',String(sceneryOnly));};
 $('#play').onclick=()=>start(true);
-document.querySelectorAll('.island-tab').forEach(button=>button.onclick=()=>{coastalAudio.unlock();selectIsland(button.dataset.island);});
+document.querySelectorAll('.island-tab').forEach(button=>button.onclick=()=>{unlockPreferredAudio();selectIsland(button.dataset.island);});
 document.querySelectorAll('.level-button').forEach(button=>button.onclick=()=>selectLevel(button.dataset.level));
 $('#prevIsland').onclick=()=>cycleIsland(-1);$('#nextIsland').onclick=()=>cycleIsland(1);
 $('#pause').onclick=togglePause;$('#resume').onclick=togglePause;$('#restart').onclick=reset;
@@ -169,7 +170,7 @@ $('#view').onclick=()=>{if(!drag)targetZoom=targetZoom===1?1.55:1;};
 function syncAudioControls(){const a=coastalAudio.getState();$('#musicToggle').checked=a.music;$('#effectsToggle').checked=a.effects;$('#menuSound').textContent=a.music?'Music on':'Sound settings';$('#sound').innerHTML=a.music?'♪':'♪<span class="slash">/</span>';$('#sound').setAttribute('aria-label','Sound settings');$('#sound').title='Sound settings';}
 function openAudio(){audioWasPaused=paused;if(playing&&!paused&&!state.completed){paused=true;cancelDrag();}coastalAudio.setPaused(true);syncAudioControls();$('#audioPanel').classList.remove('hidden');$('#musicToggle').focus();}
 $('#sound').onclick=openAudio;$('#menuSound').onclick=openAudio;
-for(const [id,set] of [['musicToggle','setMusic'],['effectsToggle','setEffects']])$("#"+id).onchange=async e=>{coastalAudio[set](e.target.checked);const ok=await coastalAudio.unlock();$('#audioNotice').textContent=ok?'':'Audio is unavailable in this browser. The game still works without it.';syncAudioControls();};
+for(const [id,set] of [['musicToggle','setMusic'],['effectsToggle','setEffects']])$("#"+id).onchange=async e=>{coastalAudio[set](e.target.checked);const ok=await unlockPreferredAudio();$('#audioNotice').textContent=ok?'':'Audio is unavailable in this browser. The game still works without it.';syncAudioControls();};
 $('#audioClose').onclick=()=>{$('#audioPanel').classList.add('hidden');paused=audioWasPaused;coastalAudio.setPaused(paused);if(playing)canvas.focus();else $('#menuSound').focus();};
 $('#creditsOpen').onclick=()=>{$('#credits').classList.remove('hidden');$('#creditsClose').focus();};$('#creditsClose').onclick=()=>$('#credits').classList.add('hidden');
 canvas.tabIndex=0;
