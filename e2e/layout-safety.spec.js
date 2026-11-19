@@ -15,7 +15,7 @@ test('landscape menu scroll exposes every hole; clean preview mode returns to se
 test('zoom keeps the real ball clear of HUD and freezes camera during a shot drag',async({browser})=>{
  const context=await browser.newContext({viewport:{width:844,height:390},isMobile:true,hasTouch:true});const page=await context.newPage();
  await page.goto('http://127.0.0.1:4181/?qa');await page.locator('[data-level="3"]').tap();
- for(let i=0;i<8;i++)await page.locator('#zoomIn').tap();await page.waitForTimeout(1400);
+ await page.mouse.move(430,150);for(let i=0;i<12;i++)await page.mouse.wheel(0,-160);await page.waitForTimeout(1400);
  let position=await page.evaluate(()=>{const s=window.__golf.state();return window.__golf.project(s.ball.x,s.ball.z);});
  expect(position.x).toBeGreaterThan(20);expect(position.x).toBeLessThan(824);expect(position.y).toBeGreaterThan(20);expect(position.y).toBeLessThan(370);
  for(const selector of ['.hud','.shot-controls','.zoom-controls','.topbar .game-title']){

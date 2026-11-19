@@ -1,8 +1,8 @@
 export const ISLANDS=Object.freeze([
+ {id:'hormuz',name:'Hormuz',subtitle:'THE RAINBOW ISLAND',description:'Find your line through red earth, salt-white cliffs and turquoise water.',playable:true},
  {id:'qeshm',name:'Qeshm',subtitle:'THE SCULPTED COAST',description:'Wander between weathered canyon walls and sea-carved arches.',playable:false},
  {id:'kish',name:'Kish',subtitle:'THE PALE SHORE',description:'A sunlit promenade, white piers and palms above a clear lagoon.',playable:false},
  {id:'khark',name:'Khark',subtitle:'THE CORAL PLATEAU',description:'Limestone cliffs, a quiet harbour and a lighthouse facing the gulf.',playable:false},
- {id:'hormuz',name:'Hormuz',subtitle:'THE RAINBOW ISLAND',description:'Find your line through red earth, salt-white cliffs and turquoise water.',playable:true},
  {id:'hengam',name:'Hengam',subtitle:'THE QUIET TIDE',description:'A little fishing dhow, rocky coves and dolphins beyond the shore.',playable:false},
 ]);
 export const LEVELS=Object.freeze([

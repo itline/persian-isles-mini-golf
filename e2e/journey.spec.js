@@ -48,11 +48,12 @@ test('silent browsing and playing never create an audio context; music unlocks o
  await expectLocked();
  for(const island of ['hormuz','qeshm','kish','khark','hengam']){
   await page.locator(`[data-island="${island}"]`).click();
-  await page.waitForFunction(id=>window.__golf.state().preview===id,island);await expectLocked();
+  await expect.poll(()=>page.evaluate(()=>window.__golf.state().preview)).toBe(island);await expectLocked();
  }
- await page.locator('#nextIsland').click();await page.waitForFunction(()=>window.__golf.state().preview==='qeshm');await expectLocked();
- await page.locator('#prevIsland').click();await page.waitForFunction(()=>window.__golf.state().preview==='hengam');await expectLocked();
- await page.locator('#prevIsland').click();await page.waitForFunction(()=>window.__golf.state().preview==='hormuz');await expectLocked();
+ await page.locator('#nextIsland').click();await expect.poll(()=>page.evaluate(()=>window.__golf.state().preview)).toBe('hormuz');await expectLocked();
+ await page.locator('#prevIsland').click();await expect.poll(()=>page.evaluate(()=>window.__golf.state().preview)).toBe('hengam');await expectLocked();
+ await page.locator('#prevIsland').click();await expect.poll(()=>page.evaluate(()=>window.__golf.state().preview)).toBe('khark');await expectLocked();
+ await page.locator('[data-island="hormuz"]').click();await expect.poll(()=>page.evaluate(()=>window.__golf.state().preview)).toBe('hormuz');
  await page.locator('#play').click();await expect(page.locator('#pause')).toBeVisible();await expectLocked();
  await page.locator('#scene').focus();await page.keyboard.press('Space');await expect(page.locator('#strokes')).toHaveText('1');await expectLocked();
  await page.locator('#sound').click();await page.locator('#musicToggle').check();

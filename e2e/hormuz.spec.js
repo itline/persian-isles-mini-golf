@@ -4,8 +4,8 @@ test('Hormuz loads as a real 3D guest game and supports start, a real shot, paus
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
   await page.goto('http://127.0.0.1:4181');
-  await expect(page.getByRole('heading', { name: 'The colour of the coast' })).toBeVisible();
-  await page.getByRole('button', { name: 'Play Hormuz' }).click();
+  await expect(page.getByRole('heading', { name: 'Choose your island' })).toBeVisible();
+  await page.locator('#play').click();
   await expect(page.locator('#status')).toContainText('Ready');
   await expect(page.locator('#strokes')).toHaveText('0');
   await page.keyboard.press('Space');

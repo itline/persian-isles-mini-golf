@@ -19,10 +19,10 @@ test('five island previews and ten Hormuz slots distinguish unpublished content'
 });
 test('zoom is real, bounded, aim-safe and has an overview reset',async({page})=>{
  await page.goto(url);await page.locator('[data-level="1"]').click();
- await page.getByRole('button',{name:'Zoom in',exact:true}).click();
+ await page.mouse.move(600,250);await page.mouse.wheel(0,-150);
  await page.waitForTimeout(600);
  expect((await page.evaluate(()=>window.__golf.state())).zoom).toBeGreaterThan(1);
- for(let i=0;i<15;i++)await page.getByRole('button',{name:'Zoom in',exact:true}).click();
+ for(let i=0;i<15;i++)await page.mouse.wheel(0,-150);
  await page.waitForTimeout(600);expect((await page.evaluate(()=>window.__golf.state())).zoom).toBeLessThanOrEqual(1.851);
  await page.getByRole('button',{name:'Full course view'}).click();await page.waitForTimeout(600);
  expect((await page.evaluate(()=>window.__golf.state())).zoom).toBeCloseTo(1,1);

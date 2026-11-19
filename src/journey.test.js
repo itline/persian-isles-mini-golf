@@ -1,7 +1,7 @@
 import {it,expect} from 'vitest';
 import {ISLANDS,LEVELS,playableLevel,levelRecordKey,journeySummary,clampZoom} from './journey.js';
 it('offers five browsable islands but only Hormuz is playable',()=>{
- expect(ISLANDS.map(i=>i.id)).toEqual(['qeshm','kish','khark','hormuz','hengam']);
+ expect(ISLANDS.map(i=>i.id)).toEqual(['hormuz','qeshm','kish','khark','hengam']);
  expect(ISLANDS.filter(i=>i.playable).map(i=>i.id)).toEqual(['hormuz']);
  expect(LEVELS).toHaveLength(10);expect(LEVELS.filter(i=>i.available)).toHaveLength(3);
  expect(playableLevel(1).id).toBe(1);expect(playableLevel(4)).toBeNull();expect(playableLevel(0)).toBeNull();
