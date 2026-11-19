@@ -1,0 +1,84 @@
+/* A travel folio, with a live miniature coast behind it. */
+.menu .hero-copy{top:17vh;left:5vw;width:430px;max-height:calc(83vh - 60px);overflow-y:auto;overflow-x:hidden;pointer-events:auto;padding:0 12px 12px 0;scrollbar-width:thin;scrollbar-color:#a5b8ab transparent}
+.menu .hero-copy h1{font-size:clamp(48px,5.8vw,82px);margin-bottom:15px}
+.menu .eyebrow{margin-bottom:14px}
+.menu .lede{font-size:13px;line-height:1.65;margin-bottom:16px;max-width:345px;min-height:42px}
+.menu .primary{min-height:46px;width:100%;font-size:12px}
+.menu button:disabled{cursor:not-allowed;opacity:.6}
+.island-nav{display:flex;align-items:center;gap:14px;margin-bottom:10px;max-width:100%;color:var(--ink)}
+.island-nav strong{font:26px Georgia,serif;flex:1}
+.island-nav button{background:#fff7e7a8;color:var(--ink);border:1px solid #577b6b4a;border-radius:50%;width:44px;height:44px;font-size:20px}
+.island-switcher{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.island-tab{position:relative;background:#e8efe1ad;border:1px solid #3966672e;border-radius:5px;color:var(--ink);padding:9px 3px;min-height:54px}
+.island-tab span{display:block;font-size:12px;font-weight:700}
+.island-tab small{display:block;font:6px 'Courier New',monospace;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.island-tab b{font-size:6px}
+.island-tab b{font:7px 'Courier New',monospace;letter-spacing:.07em;color:#59756f}
+.island-tab.selected{background:#143e48;color:#fff5df;border-color:#143e48;box-shadow:0 3px 0 #a9523d}
+.island-tab.selected b{color:#d2dfd6}
+.island-availability{font:10px 'Courier New',monospace;line-height:1.5;color:var(--coral);padding:12px 0 10px;font-weight:700}
+.journey-note{font-size:10px;line-height:1.5;color:#40656a;margin:12px 0}
+.level-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.level-button{background:#fff8e8ad;color:var(--ink);border-radius:4px;border:1px solid #466a622e;text-align:left;padding:8px 6px;min-height:60px}
+.level-button>span{font:19px Georgia,serif;display:block;margin-bottom:4px}
+.level-button small{font-size:9px;line-height:1.3;display:block}
+.level-button b{font:6px 'Courier New',monospace;display:block;margin-top:4px;letter-spacing:.1em}
+.level-button:disabled{background:#c5d3c133;opacity:.55!important;cursor:not-allowed}
+.level-button:not(:disabled):hover{background:#fff4d4;border-color:#ad4939;transform:translateY(-1px)}
+.menu .edition{font-size:8px;margin-top:14px}
+.menu .postcard{pointer-events:none;right:4vw;bottom:100px;max-width:255px}
+.menu .postcard small{line-height:1.7}
+.menu-footer>div{display:flex;align-items:center;gap:20px;pointer-events:auto}
+.menu-footer button{min-height:44px}
+.zoom-controls{position:fixed;right:29px;top:102px;display:flex;gap:4px;padding:4px;background:#fff7e7e8;border:1px solid #fff9ed;border-radius:7px;box-shadow:0 4px 18px #164b4a10}
+.zoom-controls button{width:40px;height:40px;border-radius:5px;background:transparent;color:var(--ink);font-size:24px}
+.zoom-controls button:hover{background:#dae4d8}
+.zoom-controls #overview{font-size:21px}
+.audio-option{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:14px 0;border-bottom:1px solid #31596333;font-size:14px;min-height:54px}
+.audio-option input{width:24px;height:24px;accent-color:#ad4939}
+#audioNotice{font-size:11px;min-height:15px}
+.journey-results{margin:18px 0;text-align:left}
+.journey-results>div{display:grid;grid-template-columns:1fr auto;gap:5px;padding:11px 0;border-bottom:1px solid #31596333;font-size:12px}
+.journey-results small{grid-column:2;color:var(--muted);text-align:right;font-size:10px}
+.result .secondary{margin-top:8px}
+@media(min-width:1100px){.menu{background:linear-gradient(90deg,#d9e9ddfa 0%,#d7e7dbe8 28%,#d1e6de45 48%,transparent 68%)}}
+@media(max-width:1100px) and (min-width:601px){.menu .hero-copy{left:3vw;top:15vh;width:360px}.menu .hero-copy h1{font-size:54px}.menu .postcard{display:none}.menu .lede{font-size:12px}.menu .brand{left:3vw;top:22px}}
+@media(max-width:600px){
+ .menu{background:linear-gradient(180deg,#dbe9dcf5,#d7e7dbed 62%,#d1e6de00 94%)}
+ .menu .brand{top:17px;left:20px;font-size:10px}
+ .menu .hero-copy{left:20px;right:20px;top:65px;width:auto;max-height:calc(100dvh - 143px);padding:0 0 15px}
+ .menu .hero-copy h1{font-size:44px;line-height:1.02;margin-bottom:12px}
+ .menu .hero-copy h1 br{display:none}
+ .menu .hero-copy>.eyebrow{font-size:8px;margin-bottom:9px}
+ .menu .lede{font-size:12px;max-width:none;margin-bottom:10px;min-height:40px}
+ .island-nav{margin-bottom:7px}.island-nav strong{font-size:24px}
+ .level-button{min-height:62px}.level-button small{font-size:8px}
+ .menu .postcard{display:none}.menu .edition{font-size:7px}
+ .menu-footer{bottom:12px;left:20px;right:20px}.menu-footer>span{display:none}.menu-footer>div{justify-content:space-between;width:100%;gap:10px}
+ .menu-footer button{font-size:10px}
+ .zoom-controls{right:14px;top:95px;padding:3px}.zoom-controls button{width:44px;height:44px}
+ .journey-note{font-size:10px}.island-switcher{gap:4px}
+}
+@media(max-height:560px) and (min-width:601px){
+ .menu .brand{top:10px;font-size:9px}.menu .brand-mark{font-size:20px}
+ .menu .hero-copy{top:48px;width:335px;left:24px;max-height:calc(100dvh - 103px)}
+ .menu .hero-copy h1{font-size:35px;margin-bottom:9px}.menu .hero-copy h1 br{display:none}
+ .menu .hero-copy>.eyebrow{display:none}.menu .lede{font-size:11px;line-height:1.4;min-height:30px;margin-bottom:7px}
+ .menu .postcard{display:block;right:25px;bottom:75px;max-width:180px;font-size:10px}
+ .island-nav{margin-bottom:4px}.island-nav button{width:38px;height:38px}.island-nav strong{font-size:22px}
+ .island-tab{min-height:45px;padding:5px 3px}.island-tab span{font-size:11px}
+ .island-availability{padding:8px 0;font-size:9px}.menu .primary{padding:9px 14px;min-height:44px}
+ .level-button{min-height:54px;padding:5px}.level-button small{font-size:8px}.level-button>span{font-size:17px}
+ .menu .edition{display:none}.journey-note{margin:8px 0;font-size:9px}
+ .menu-footer{left:24px;right:24px;bottom:6px}.menu-footer>span{font-size:7px}
+ .zoom-controls{right:20px;top:68px;padding:2px}.zoom-controls button{width:44px;height:44px}
+ .panel{max-height:90dvh;overflow-y:auto}
+}
+@media(pointer:coarse){.zoom-controls button{width:44px;height:44px}}
+.menu.scenery-only{background:transparent}
+.menu.scenery-only .hero-copy{visibility:hidden;pointer-events:none}
+.menu.scenery-only .postcard{display:none}
+.menu.scenery-only .menu-footer{background:#f8f2e2e8;padding:2px 14px;border-radius:6px;color:var(--ink);text-shadow:none}
+.menu.scenery-only .brand{background:#f8f2e2d9;border-radius:4px;padding:7px 12px}
+.menu .postcard .eyebrow{display:block;margin-bottom:9px;line-height:1.5}
+@media(max-height:560px) and (min-width:601px){.menu .postcard{display:none}.island-tab small{display:none}.menu .hero-copy{max-height:calc(100dvh - 108px)}}
+@media(max-width:600px){.menu.scenery-only .hero-copy{visibility:hidden}.menu-footer>div{gap:6px}.menu-footer button{font-size:9px}.island-tab small{display:none}}

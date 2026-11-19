@@ -1,6 +1,6 @@
 # Persian Isles Golf — Hormuz slice
 
-Working title. An original procedural, low-poly miniature-golf course inspired by Hormuz Island, Iran. This build contains one playable Par-4 course; Qeshm, Kish, Khark and Hengam are not implemented yet.
+Working title. An original procedural, low-poly miniature-golf course inspired by Hormuz Island, Iran. This build contains three playable Hormuz holes plus distinct locked 3D previews of Qeshm, Kish, Khark and Hengam. Hormuz shows ten slots: holes 1–3 are playable and 4–10 are explicitly in development. Completing Hormuz does not unlock unpublished islands.
 
 ## Run
 
@@ -23,9 +23,11 @@ Serve the contents of `dist/` from a static HTTP host. Opening `dist/index.html`
 - Mouse/touch: drag backwards on the scene, then release to putt. Longer drag means more power.
 - Alternative: aim buttons + power slider + Putt.
 - Keyboard: left/right arrows aim, up/down arrows adjust power, Space shoots, Escape pauses.
-- Right-drag orbits the camera. Wheel / diamond button switches overview and tracking.
+- Right-drag orbits within a bounded angle. Wheel, pinch, or +/− smoothly zoom between 1× and 1.85× around the ball. The full-course button resets zoom and orbit. Camera movement freezes during shot dragging; pinch never fires a shot.
 - Restart resets the hole. Best score persists locally on the same browser and origin.
-- Audio is muted initially; the music-note button enables simple synthesized shot/completion tones. No music track is included.
+- Music and shot/completion effects default off independently. Open Sound settings and choose either channel; choices persist locally. Original gentle WebAudio pads, melody and filtered sea texture change by island and fade on island switches, pause and document visibility. No downloaded music or additional audio license is needed.
+- Browse islands with tabs, arrows or a horizontal touch swipe on the scene. View island hides the menu for a clear scenery preview.
+- Play Hormuz journey runs Red Shore (Par 2), Salt Valley (Par 3) and Rainbow Run (Par 4) in order; each is also directly selectable for practice. Journey results show all three scores and their sum. Restart retries the current hole; restarting from the final postcard restarts the journey.
 
 Landscape is recommended on phones. Automated touch emulation is not a substitute for testing on a real phone.
 
@@ -38,7 +40,7 @@ npm test
 npm run test:e2e
 ```
 
-The browser suite includes a complete four-stroke round using real keyboard inputs, record persistence and retry, mouse drag, pointer cancellation, touch drag, viewport layout, pause/reset and touch hit targets. The `?qa` query exposes read-only game-state/projection helpers used by tests; tests do not teleport the ball or inject completion.
+The browser suite completes all three holes and the full journey using real keyboard input, verifies per-hole record isolation/persistence and retry, locked islands/slots, lazy-loaded preview switching, mouse and touch drag, pointer cancellation, pinch/zoom limits, camera freeze during aim, mobile menu scrolling and HUD hit targets. The audio render probe `node scripts/verify-audio-render.js` checks actual offline-rendered WebAudio samples for nonzero finite output without clipping. The `?qa` query exposes read-only game-state/projection helpers used by tests; tests do not teleport the ball or inject completion.
 
 ## Provenance
 
@@ -52,8 +54,8 @@ Nature reference: [NASA Earth Observatory — Iran’s Rainbow Island](https://s
 
 ## Known limits
 
-- This is a local vertical slice, not the five-island release or an Arvan Edge deployment.
+- This is a local first-version candidate with three playable holes on Hormuz. The other four islands and seven later Hormuz holes are locked, not gameplay-ready. It is not yet deployed to Arvan Edge.
 - No online leaderboard, multiplayer, account, daily challenge or authoritative server-side score validation.
 - Browser tests exercise selected routes and inputs, not comprehensive physics correctness, accessibility certification or mobile GPU performance.
 - The initial bundle includes the Rapier runtime/WASM and Three.js; Vite reports a large-chunk warning. Load-time and low-end-device optimization remain work for release.
-- Visual quality and game feel still require player review before expanding to the other islands.
+- The original Hormuz slice received player approval. The new stages, soundtrack and locked previews still require player review; actual mobile GPU performance and subjective audio quality have not been independently certified.

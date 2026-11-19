@@ -337,6 +337,7 @@ export function createEnvironment(scene) {
 
   scene.add(root);
   return {
+    root,
     update(t = 0) {
       if (disposed) return;
       const time = Number.isFinite(t) ? t : 0;
