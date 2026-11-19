@@ -21,7 +21,7 @@ export function createHormuzCourse(scene, physics) {
   const ground=world.createRigidBody(rapier.RigidBodyDesc.fixed());bodies.push(ground);
   world.createCollider(rapier.ColliderDesc.trimesh(new Float32Array(geo.attributes.position.array),new Uint32Array(geo.index.array)).setFriction(.45).setRestitution(.08),ground);
   // Dark-red foundation gives the course a toy-diorama edge without using external models.
-  const foundationGeo=new THREE.ExtrudeGeometry(shape,{depth:.36,bevelEnabled:false,curveSegments:32});foundationGeo.rotateX(-Math.PI/2);const foundation=new THREE.Mesh(foundationGeo,red);foundation.position.y=-.016;foundation.castShadow=true;foundation.receiveShadow=true;group.add(foundation);
+  const foundationGeo=new THREE.ExtrudeGeometry(shape,{depth:.34,bevelEnabled:false,curveSegments:32});foundationGeo.rotateX(-Math.PI/2);const foundation=new THREE.Mesh(foundationGeo,red);foundation.position.y=-.36;foundation.castShadow=true;foundation.receiveShadow=true;group.add(foundation);
   // Red mineral curb with pale salt caps. All solid walls match their colliders.
   const walls=[[-7.94,.5,.22,13.5],[7.94,.5,.22,13.5],[0,-6.14,16.1,.22],[-4.06,2.36,.22,9.5],[4.06,2.36,.22,9.5],[0,-2.26,8.3,.22],[-6,7.14,4,.22],[6,7.14,4,.22]];
   for(const [x,z,w,d] of walls){box(x,.16,z,w,.42,d,red);box(x,.39,z,w+.04,.05,d+.04,salt,false);}
