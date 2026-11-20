@@ -1,8 +1,10 @@
-# Persian Isles Golf — Hormuz slice
+# Persian Isles Mini Golf — release-polish candidate
 
-Working title. An original procedural, low-poly miniature-golf course inspired by Hormuz Island, Iran. This build contains three playable Hormuz holes plus distinct locked 3D previews of Qeshm, Kish, Khark and Hengam. Hormuz shows ten slots: holes 1–3 are playable and 4–10 are explicitly in development. Completing Hormuz does not unlock unpublished islands.
+Working title. An original procedural, low-poly miniature-golf course inspired by Hormuz Island, Iran. This build contains three playable Hormuz holes plus distinct preview-only 3D dioramas of Qeshm, Kish, Khark and Hengam. Hormuz shows ten slots: holes 1–3 are playable and 4–10 are explicitly in development. Completing Hormuz does not unlock unpublished islands.
 
 ## Run
+
+English-only interface. Use Node >=26.0.0 (tested on 26.7.0) for the pinned development tools; a static production host does not need Node.
 
 ```sh
 npm ci
@@ -40,17 +42,23 @@ npm test
 npm run test:e2e
 ```
 
-The browser suite completes all three holes and the full journey using real keyboard input, verifies per-hole record isolation/persistence and retry, locked islands/slots, lazy-loaded preview switching, mouse and touch drag, pointer cancellation, pinch/zoom limits, camera freeze during aim, mobile menu scrolling and HUD hit targets. The audio render probe `node scripts/verify-audio-render.js` checks actual offline-rendered WebAudio samples for nonzero finite output without clipping. The `?qa` query exposes read-only game-state/projection helpers used by tests; tests do not teleport the ball or inject completion.
+The browser suite completes all three holes and the full journey using real keyboard input, verifies per-hole record isolation/persistence and retry, locked islands/slots, lazy-loaded preview switching, mouse and touch drag, pointer cancellation, pinch/zoom limits, camera freeze during aim, mobile menu scrolling and HUD hit targets. The audio render probe `node scripts/verify-audio-render.js` checks actual offline-rendered WebAudio samples for nonzero finite output without clipping. In the development server only, the `?qa` query exposes read-only game-state/projection helpers used by tests; tests do not teleport the ball or inject completion.
 
 ## Provenance
 
 `src/vendor/` adapts four technical modules from [Mini Golf Mania](https://github.com/LCmaster/minigolf), commit `daae96188fe79eaba10b5e92045b45fc407d345c`, copyright 2023 Luiz Vicente, MIT. The upstream license is preserved in `LICENSE.upstream` and in the distributed third-party notices. The application customizes ball radius/mesh and physics configuration around those modules.
 
-Three.js 0.155.0: MIT. Rapier compatibility build 0.11.2: Apache-2.0. Full runtime notices are included in `public/THIRD_PARTY_NOTICES.txt` and copied into `dist/` by Vite.
+Three.js 0.155.0: MIT. Rapier compatibility build 0.11.2: Apache-2.0. Full runtime notices are included in `public/THIRD_PARTY_NOTICES.txt` and `public/DEPENDENCY_LICENSES.txt`, copied into `dist/` by Vite. The complete lockfile license inventory and npm advisory results are in `docs/`. Run `python scripts/audit-dependencies.py` to refresh them.
 
 The environment, course geometry, interface and synthesized tones were created for this project. No external image, GLB model, music, or downloaded web font is used. The benchmark game's code and assets are not included. No blanket license for the original project files is granted by this README; upstream permissions remain as stated in their notices.
 
 Nature reference: [NASA Earth Observatory — Iran’s Rainbow Island](https://science.nasa.gov/earth/earth-observatory/irans-rainbow-island-147428). The island is a playful interpretation, not geographic reconstruction or a real golf site.
+
+## Release polish
+
+English/Persian switching and RTL were removed. Stage-selection cards omit Par and Best; actual performance is shown at each hole result and the complete journey table. Explicit + / − / Reset camera controls coexist with wheel/pinch zoom. The whole island and playfield stay stationary; individual boats, palm crowns, pennant, dolphin and water animate. Scenery time freezes on pause/hidden tabs and remains zero for reduced motion.
+
+Reversible baseline: tag `before-release-polish` at `ae004cd`; current work is on `experiment/release-polish`. No automatic GitHub push.
 
 ## Known limits
 
