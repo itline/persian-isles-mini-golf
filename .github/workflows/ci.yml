@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run unit tests
+        run: npm test
+      - name: Build production bundle
+        run: npm run build
+      - name: Install Playwright Chrome
+        run: npx playwright install --with-deps chrome
+      - name: Start development server
+        run: npm run dev -- --host 127.0.0.1 --port 4181 > "$RUNNER_TEMP/persian-isles-vite.log" 2>&1 &
+      - name: Wait for development server
+        run: for i in {1..30}; do curl --fail --silent http://127.0.0.1:4181/ && exit 0; sleep 1; done; cat "$RUNNER_TEMP/persian-isles-vite.log"; exit 1
+      - name: Run browser tests
+        run: npm run test:e2e -- --workers=1

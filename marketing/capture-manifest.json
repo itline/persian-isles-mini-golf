@@ -1,0 +1,103 @@
+{
+  "generatedAt": "2026-11-20T10:58:46.413Z",
+  "sourceUrl": "http://127.0.0.1:4181/?qa",
+  "captures": [
+    {
+      "island": "hormuz",
+      "source": "http://127.0.0.1:4181/?qa",
+      "capture": "assets/hormuz-scene-1920x1080.png",
+      "screenshotSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sceneStatus": "Actual Hormuz scene · playable course",
+      "ready": "hormuz",
+      "uiHiddenOnlyInCapturePage": true,
+      "layout": {
+        "title": "Persian Isles Mini Golf",
+        "titleLines": 1,
+        "titleRight": 1834,
+        "scrollWidth": 1920,
+        "imageCount": 2
+      }
+    },
+    {
+      "island": "qeshm",
+      "source": "http://127.0.0.1:4181/?qa",
+      "capture": "assets/qeshm-scene-1920x1080.png",
+      "screenshotSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sceneStatus": "Actual Qeshm scene · visual preview",
+      "ready": "qeshm",
+      "uiHiddenOnlyInCapturePage": true,
+      "layout": {
+        "title": "Persian Isles Mini Golf",
+        "titleLines": 1,
+        "titleRight": 1842,
+        "scrollWidth": 1920,
+        "imageCount": 1
+      }
+    },
+    {
+      "island": "kish",
+      "source": "http://127.0.0.1:4181/?qa",
+      "capture": "assets/kish-scene-1920x1080.png",
+      "screenshotSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sceneStatus": "Actual Kish scene · visual preview",
+      "ready": "kish",
+      "uiHiddenOnlyInCapturePage": true,
+      "layout": {
+        "title": "Persian Isles Mini Golf",
+        "titleLines": 1,
+        "titleRight": 894.984375,
+        "scrollWidth": 1920,
+        "imageCount": 1
+      }
+    }
+  ],
+  "pngCount": 3,
+  "dimensions": [
+    {
+      "filename": "hormuz-cover-16x9.png",
+      "width": 1920,
+      "height": 1080,
+      "validSignature": true,
+      "bytes": 335619
+    },
+    {
+      "filename": "qeshm-cover-16x9.png",
+      "width": 1920,
+      "height": 1080,
+      "validSignature": true,
+      "bytes": 185332
+    },
+    {
+      "filename": "kish-hengam-cover-16x9.png",
+      "width": 1920,
+      "height": 1080,
+      "validSignature": true,
+      "bytes": 158794
+    }
+  ],
+  "browserErrors": [],
+  "sourceWarnings": [],
+  "galleryLinks": [
+    "persian-isles-promotional-covers-v0.1.0.zip",
+    "hormuz-cover-16x9.png",
+    "hormuz-cover-16x9.png",
+    "sources/hormuz-cover-16x9.html",
+    "qeshm-cover-16x9.png",
+    "qeshm-cover-16x9.png",
+    "sources/qeshm-cover-16x9.html",
+    "kish-hengam-cover-16x9.png",
+    "kish-hengam-cover-16x9.png",
+    "sources/kish-hengam-cover-16x9.html",
+    "README.md",
+    "capture-manifest.json"
+  ]
+}

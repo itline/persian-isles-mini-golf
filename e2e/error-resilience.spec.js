@@ -21,7 +21,7 @@ test('English load error survives a renderer failure',async({page})=>{
 });
 
 test('audio-unavailable notice remains English',async({page})=>{
- await page.addInitScript(()=>{window.AudioContext=undefined;window.webkitAudioContext=undefined;});
+ await page.addInitScript(()=>{window.AudioContext=undefined;window.webkitAudioContext=undefined;localStorage.setItem('persian-isles-golf.audio.v1',JSON.stringify({music:false,effects:false}));});
  await page.goto(url);await expect(page.locator('#play')).toBeEnabled();await page.locator('#menuSound').click();await page.locator('#musicToggle').check();
  await expect(page.locator('#audioNotice')).toContainText('Audio is unavailable in this browser');await expect(page.locator('#audioNotice')).not.toContainText(/[\u0600-\u06ff]/);
 });

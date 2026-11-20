@@ -1,0 +1,80 @@
+{
+  "coastal-pulse": {
+    "wav": {
+      "channels": 2,
+      "sample_rate": 44100,
+      "frames": 1323000,
+      "duration_seconds": 30.0,
+      "rms": 0.09330324127378613,
+      "peak": 0.365142822265625,
+      "finite": true,
+      "nonzero_samples": 2644865
+    },
+    "mp3_decode": {
+      "duration_seconds": 30.0,
+      "rms": 0.09049539262969088,
+      "peak": 0.334014892578125,
+      "finite": true,
+      "nonzero_samples": 2644701
+    },
+    "loudness": {
+      "integrated_lufs": -18.99,
+      "true_peak_dbtp": -8.72,
+      "loudness_range_lu": 0.9
+    },
+    "wav_bytes": 5292078,
+    "mp3_bytes": 721649
+  },
+  "sunlit-marimba": {
+    "wav": {
+      "channels": 2,
+      "sample_rate": 44100,
+      "frames": 1323000,
+      "duration_seconds": 30.0,
+      "rms": 0.08737692831156868,
+      "peak": 0.639190673828125,
+      "finite": true,
+      "nonzero_samples": 2334922
+    },
+    "mp3_decode": {
+      "duration_seconds": 30.0,
+      "rms": 0.08471924300027416,
+      "peak": 0.619873046875,
+      "finite": true,
+      "nonzero_samples": 2407328
+    },
+    "loudness": {
+      "integrated_lufs": -19.0,
+      "true_peak_dbtp": -3.89,
+      "loudness_range_lu": 1.3
+    },
+    "wav_bytes": 5292078,
+    "mp3_bytes": 721649
+  },
+  "tide-and-bells": {
+    "wav": {
+      "channels": 2,
+      "sample_rate": 44100,
+      "frames": 1323000,
+      "duration_seconds": 30.0,
+      "rms": 0.08697546099337287,
+      "peak": 0.335693359375,
+      "finite": true,
+      "nonzero_samples": 2622310
+    },
+    "mp3_decode": {
+      "duration_seconds": 30.0,
+      "rms": 0.08435959900447838,
+      "peak": 0.325714111328125,
+      "finite": true,
+      "nonzero_samples": 2630155
+    },
+    "loudness": {
+      "integrated_lufs": -19.0,
+      "true_peak_dbtp": -9.27,
+      "loudness_range_lu": 1.1
+    },
+    "wav_bytes": 5292078,
+    "mp3_bytes": 721649
+  }
+}

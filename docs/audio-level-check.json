@@ -1,0 +1,2248 @@
+{
+  "method": "Actual deterministic Chrome OfflineAudioContext render; original module scheduler driven by audio-clock suspension ticks. No listening review claimed.",
+  "baseline": "Preserved pre-edit source snapshot",
+  "sourceSha256": {
+    "before": "61f95eac82bf583b7b8a9d65172729839e72e50cabff7448a21fb1c4c3fa4722",
+    "after": "a8fa0c305465bb652d6757df19235e80308278970427da6a9cfb10f07117f878"
+  },
+  "gain": {
+    "multiplier": 2.5,
+    "decibels": 7.958800173440752,
+    "masterUnchanged": 0.65,
+    "music": {
+      "before": 0.22,
+      "after": 0.55
+    },
+    "effects": {
+      "before": 0.24,
+      "after": 0.6
+    }
+  },
+  "sampleRate": 44100,
+  "channels": 2,
+  "seed": "0x5eed1234",
+  "schedulerTickSeconds": 0.08,
+  "scenarios": [
+    {
+      "name": "hormuz-music",
+      "island": "hormuz",
+      "seconds": 32,
+      "music": true,
+      "effects": false,
+      "before": {
+        "peak": 0.020524555817246437,
+        "rms": 0.00632663969981606,
+        "peakDbfs": -33.75452465806199,
+        "rmsDbfs": -43.976537955474114,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.01823214627802372,
+            "rms": 0.006325229205081385,
+            "peakDbfs": -34.78324406866015,
+            "rmsDbfs": -43.978474649846035,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.018480559810996056,
+            "rms": 0.006171180348419773,
+            "peakDbfs": -34.665697546361386,
+            "rmsDbfs": -44.19263522896708,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.01821889914572239,
+            "rms": 0.006803128639051912,
+            "peakDbfs": -34.789557365462386,
+            "rmsDbfs": -43.34582633941806,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.01581566594541073,
+            "rms": 0.005909428083379793,
+            "peakDbfs": -36.01825033316552,
+            "rmsDbfs": -44.569090965288744,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.019229451194405556,
+            "rms": 0.006331028117041036,
+            "peakDbfs": -34.32066220565413,
+            "rmsDbfs": -43.97051515415231,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.020524555817246437,
+            "rms": 0.006451148280832175,
+            "peakDbfs": -33.75452465806199,
+            "rmsDbfs": -43.80725951305038,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.01710766926407814,
+            "rms": 0.006370241683154491,
+            "peakDbfs": -35.33618308761042,
+            "rmsDbfs": -43.91688180959049,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.018953390419483185,
+            "rms": 0.006215774925682088,
+            "peakDbfs": -34.44626182603584,
+            "rmsDbfs": -44.130094396060514,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.051311396062374115,
+        "rms": 0.015816599683736558,
+        "peakDbfs": -25.795723381054316,
+        "rmsDbfs": -36.0177375435888,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.045580364763736725,
+            "rms": 0.01581307344863497,
+            "peakDbfs": -26.82444407269418,
+            "rmsDbfs": -36.01967423695449,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.046201400458812714,
+            "rms": 0.015427951293136538,
+            "peakDbfs": -26.70689719783146,
+            "rmsDbfs": -36.233834817892564,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.0455472506582737,
+            "rms": 0.017007822071530863,
+            "peakDbfs": -26.8307566592102,
+            "rmsDbfs": -35.38702592395616,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.039539165794849396,
+            "rms": 0.014773570615596551,
+            "peakDbfs": -28.059449955133573,
+            "rmsDbfs": -36.610290552472236,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.04807363450527191,
+            "rms": 0.01582757072490985,
+            "peakDbfs": -26.36186085432117,
+            "rmsDbfs": -36.01171474346901,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.051311396062374115,
+            "rms": 0.0161278711487305,
+            "peakDbfs": -25.795723381054316,
+            "rmsDbfs": -35.848459099060015,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.0427691712975502,
+            "rms": 0.015925604636400657,
+            "peakDbfs": -27.37738329244985,
+            "rmsDbfs": -35.958081402436214,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.04738347604870796,
+            "rms": 0.015539437738253671,
+            "peakDbfs": -26.487461652595083,
+            "rmsDbfs": -36.17129398559457,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.95880041188531,
+      "peakGainDb": 7.958801277007672,
+      "maxScaledSampleError": 1.1175870895385742e-8
+    },
+    {
+      "name": "hormuz-music-effects",
+      "island": "hormuz",
+      "seconds": 32,
+      "music": true,
+      "effects": true,
+      "before": {
+        "peak": 0.034665558487176895,
+        "rms": 0.0068464808068685315,
+        "peakDbfs": -29.202035972223378,
+        "rmsDbfs": -43.29065209976302,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.03055693581700325,
+            "rms": 0.006942287517168089,
+            "peakDbfs": -30.297803960361207,
+            "rmsDbfs": -43.169948076807515,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.028250977396965027,
+            "rms": 0.006598385893997522,
+            "peakDbfs": -30.979330446614295,
+            "rmsDbfs": -43.61124578329155,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.03348197415471077,
+            "rms": 0.007397895635934222,
+            "peakDbfs": -29.503778863503285,
+            "rmsDbfs": -42.61783599368521,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.030154669657349586,
+            "rms": 0.00635450055755215,
+            "peakDbfs": -30.412908496754643,
+            "rmsDbfs": -43.93837155718896,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.03213031217455864,
+            "rms": 0.006947376357701044,
+            "peakDbfs": -29.861701097416827,
+            "rmsDbfs": -43.16358347221652,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.033492591232061386,
+            "rms": 0.006861760526873323,
+            "peakDbfs": -29.501025019192802,
+            "rmsDbfs": -43.27128885492443,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.034665558487176895,
+            "rms": 0.006978343227179827,
+            "peakDbfs": -29.202035972223378,
+            "rmsDbfs": -43.124953475045615,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.029956959187984467,
+            "rms": 0.006641139659516303,
+            "peakDbfs": -30.470045444886278,
+            "rmsDbfs": -43.55514773381816,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.08666389435529709,
+        "rms": 0.017116202573378817,
+        "peakDbfs": -21.24323598546625,
+        "rmsDbfs": -35.33185164406592,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.07639233767986298,
+            "rms": 0.01735571936634536,
+            "peakDbfs": -22.33900399870518,
+            "rmsDbfs": -35.211147616388885,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.07062744349241257,
+            "rms": 0.01649596526035126,
+            "peakDbfs": -23.020530273173545,
+            "rmsDbfs": -35.652445333225764,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.08370494097471237,
+            "rms": 0.01849473969663099,
+            "peakDbfs": -21.54497811021394,
+            "rmsDbfs": -34.65903553526839,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.07538668066263199,
+            "rms": 0.015886251908611922,
+            "peakDbfs": -22.454107572179105,
+            "rmsDbfs": -35.97957110231609,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.08032578229904175,
+            "rms": 0.017368441472767573,
+            "peakDbfs": -21.902900722562162,
+            "rmsDbfs": -35.204783009462695,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.08373148739337921,
+            "rms": 0.01715440186349201,
+            "peakDbfs": -21.5422238796441,
+            "rmsDbfs": -35.31248840486796,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.08666389435529709,
+            "rms": 0.017445858636495996,
+            "peakDbfs": -21.24323598546625,
+            "rmsDbfs": -35.166153018538736,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.07489240169525146,
+            "rms": 0.01660284967911386,
+            "peakDbfs": -22.511244839392866,
+            "rmsDbfs": -35.59634728293539,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.958800455697106,
+      "peakGainDb": 7.958799986757127,
+      "maxScaledSampleError": 1.6763806343078613e-8
+    },
+    {
+      "name": "qeshm-music",
+      "island": "qeshm",
+      "seconds": 32,
+      "music": true,
+      "effects": false,
+      "before": {
+        "peak": 0.019967254251241684,
+        "rms": 0.005679449059308962,
+        "peakDbfs": -33.99363303961153,
+        "rmsDbfs": -44.91387582840968,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.0157261174172163,
+            "rms": 0.005915459957240828,
+            "peakDbfs": -36.067569720973964,
+            "rmsDbfs": -44.56022962215688,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.015687869861721992,
+            "rms": 0.005379896980309737,
+            "peakDbfs": -36.08872044005691,
+            "rmsDbfs": -45.38452081124983,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.01950792968273163,
+            "rms": 0.0059306806166350215,
+            "peakDbfs": -34.195776370258876,
+            "rmsDbfs": -44.5379092656419,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.014876965433359146,
+            "rms": 0.005469458461327185,
+            "peakDbfs": -36.549712921432494,
+            "rmsDbfs": -45.241113432746616,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.013804753310978413,
+            "rms": 0.005285256203254456,
+            "peakDbfs": -37.19942699474726,
+            "rmsDbfs": -45.53867910766939,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.01577794924378395,
+            "rms": 0.005883693833664244,
+            "peakDbfs": -36.03898890717873,
+            "rmsDbfs": -44.60699868969114,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.019967254251241684,
+            "rms": 0.005537371051151884,
+            "peakDbfs": -33.99363303961153,
+            "rmsDbfs": -45.133927481473144,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.018291892483830452,
+            "rms": 0.0059842261033963735,
+            "peakDbfs": -34.75482719963903,
+            "rmsDbfs": -44.459840115698476,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.04991813749074936,
+        "rms": 0.014198623036766524,
+        "peakDbfs": -26.034832542065523,
+        "rmsDbfs": -36.95507541731088,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.03931529447436333,
+            "rms": 0.014788650298954991,
+            "peakDbfs": -28.108769341777027,
+            "rmsDbfs": -36.60142921034457,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.03921967372298241,
+            "rms": 0.013449742819410146,
+            "peakDbfs": -28.12992047287399,
+            "rmsDbfs": -37.425720399742815,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.04876982048153877,
+            "rms": 0.014826701945718208,
+            "peakDbfs": -26.236976860291126,
+            "rmsDbfs": -36.5791088554503,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.037192415446043015,
+            "rms": 0.01367364652757741,
+            "peakDbfs": -28.590912312990937,
+            "rmsDbfs": -37.2823130215656,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.03451188653707504,
+            "rms": 0.01321314086346495,
+            "peakDbfs": -29.24062600092889,
+            "rmsDbfs": -37.579878700647015,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.039444874972105026,
+            "rms": 0.014709234993288625,
+            "peakDbfs": -28.080188323577453,
+            "rmsDbfs": -36.64819827465789,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.04991813749074936,
+            "rms": 0.013843428003385403,
+            "peakDbfs": -26.034832542065523,
+            "rmsDbfs": -37.17512707242593,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.045729734003543854,
+            "rms": 0.014960565669430614,
+            "peakDbfs": -26.79602649551301,
+            "rmsDbfs": -36.501039703672035,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.958800411098804,
+      "peakGainDb": 7.958800497546004,
+      "maxScaledSampleError": 1.0244548320770264e-8
+    },
+    {
+      "name": "qeshm-music-effects",
+      "island": "qeshm",
+      "seconds": 32,
+      "music": true,
+      "effects": true,
+      "before": {
+        "peak": 0.034042708575725555,
+        "rms": 0.0062490788424857165,
+        "peakDbfs": -29.359517859707974,
+        "rmsDbfs": -44.08367991906828,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.030473986640572548,
+            "rms": 0.006571464885214658,
+            "peakDbfs": -30.321414543543384,
+            "rmsDbfs": -43.64675616846523,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.028759824112057686,
+            "rms": 0.0058645808132032325,
+            "peakDbfs": -30.824275486364712,
+            "rmsDbfs": -44.63526049626775,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.034042708575725555,
+            "rms": 0.0065850191279949125,
+            "peakDbfs": -29.359517859707974,
+            "rmsDbfs": -43.628859183457536,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.029543539509177208,
+            "rms": 0.005947836896318777,
+            "peakDbfs": -30.590749491775924,
+            "rmsDbfs": -44.512818987265135,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.0319676473736763,
+            "rms": 0.0060099397802099155,
+            "peakDbfs": -29.90578648021286,
+            "rmsDbfs": -44.422597592402994,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.032054390758275986,
+            "rms": 0.006314035148563603,
+            "peakDbfs": -29.882249462382923,
+            "rmsDbfs": -43.99386009669126,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.03270022198557854,
+            "rms": 0.006232624197244853,
+            "peakDbfs": -29.708985982400034,
+            "rmsDbfs": -44.10658117139532,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.029298756271600723,
+            "rms": 0.006423330220389259,
+            "peakDbfs": -30.663016299979354,
+            "rmsDbfs": -43.84479501073337,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.08510677516460419,
+        "rms": 0.015622697626677728,
+        "peakDbfs": -21.400717306068806,
+        "rmsDbfs": -36.12487945626085,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.07618497312068939,
+            "rms": 0.01642866276711564,
+            "peakDbfs": -22.3626136268385,
+            "rmsDbfs": -35.687955702081034,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.07189956307411194,
+            "rms": 0.014661452517507348,
+            "peakDbfs": -22.86547497539624,
+            "rmsDbfs": -36.67646003579491,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.08510677516460419,
+            "rms": 0.0164625483740561,
+            "peakDbfs": -21.400717306068806,
+            "rmsDbfs": -35.670058717681684,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.0738588497042656,
+            "rms": 0.014869592726330469,
+            "peakDbfs": -22.631949208810518,
+            "rmsDbfs": -36.554018530205944,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.07991912215948105,
+            "rms": 0.015024849975673264,
+            "peakDbfs": -21.94698590189453,
+            "rmsDbfs": -36.46379711537306,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.08013597875833511,
+            "rms": 0.015785088381872172,
+            "peakDbfs": -21.923449087051203,
+            "rmsDbfs": -36.035059642363464,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.08175055682659149,
+            "rms": 0.015581561028772272,
+            "peakDbfs": -21.75018561105567,
+            "rmsDbfs": -36.14778069935259,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.07324688881635666,
+            "rms": 0.016058326062019096,
+            "peakDbfs": -22.704216347418015,
+            "rmsDbfs": -35.88599456086973,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.958800462807427,
+      "peakGainDb": 7.958800553639168,
+      "maxScaledSampleError": 1.7695128917694092e-8
+    },
+    {
+      "name": "kish-music",
+      "island": "kish",
+      "seconds": 32,
+      "music": true,
+      "effects": false,
+      "before": {
+        "peak": 0.01927655003964901,
+        "rms": 0.006265252962241756,
+        "peakDbfs": -34.299413799547466,
+        "rmsDbfs": -44.06122778984397,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.018819749355316162,
+            "rms": 0.006394728824305665,
+            "peakDbfs": -34.5077232975886,
+            "rmsDbfs": -43.8835573508519,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.017072578892111778,
+            "rms": 0.005819050156678817,
+            "peakDbfs": -35.354017434742445,
+            "rmsDbfs": -44.70295798871483,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.016643088310956955,
+            "rms": 0.006575543154336932,
+            "peakDbfs": -35.57532164749411,
+            "rmsDbfs": -43.64136735352878,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.019221782684326172,
+            "rms": 0.005950999360378424,
+            "peakDbfs": -34.32412674119185,
+            "rmsDbfs": -44.5082019282754,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.01927655003964901,
+            "rms": 0.006752370087851531,
+            "peakDbfs": -34.299413799547466,
+            "rmsDbfs": -43.41087525327882,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.01679614745080471,
+            "rms": 0.005995861031244785,
+            "peakDbfs": -35.495806428253104,
+            "rmsDbfs": -44.44296883089464,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.01693505421280861,
+            "rms": 0.006487575047972226,
+            "peakDbfs": -35.42426817491204,
+            "rmsDbfs": -43.75835210431342,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.018501171842217445,
+            "rms": 0.006081744281903367,
+            "peakDbfs": -34.65601526059808,
+            "rmsDbfs": -44.31943689032592,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.0481913797557354,
+        "rms": 0.015663132832868337,
+        "peakDbfs": -26.340612786810812,
+        "rmsDbfs": -36.10242737946673,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.047049380838871,
+            "rms": 0.015986822493699877,
+            "peakDbfs": -26.54892174867967,
+            "rmsDbfs": -35.92475694219043,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.04268144443631172,
+            "rms": 0.014547625788983835,
+            "peakDbfs": -27.395217829888225,
+            "rmsDbfs": -36.74415757806772,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.04160771891474724,
+            "rms": 0.016438858332272672,
+            "peakDbfs": -27.61652186289298,
+            "rmsDbfs": -35.68256694420518,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.04805446043610573,
+            "rms": 0.014877498799755199,
+            "peakDbfs": -26.36532589440129,
+            "rmsDbfs": -36.54940152199899,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.0481913797557354,
+            "rms": 0.01688092568339856,
+            "peakDbfs": -26.340612786810812,
+            "rmsDbfs": -35.45207484121058,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.04199036955833435,
+            "rms": 0.014989652989465347,
+            "peakDbfs": -27.53700606216425,
+            "rmsDbfs": -36.48416841909145,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.04233763739466667,
+            "rms": 0.0162189380706552,
+            "peakDbfs": -27.4654676193354,
+            "rmsDbfs": -35.79955168949161,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.04625292867422104,
+            "rms": 0.015204361116496977,
+            "peakDbfs": -26.697215262051444,
+            "rmsDbfs": -36.36063648166871,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.958800410377231,
+      "peakGainDb": 7.958801012736653,
+      "maxScaledSampleError": 1.210719347000122e-8
+    },
+    {
+      "name": "kish-music-effects",
+      "island": "kish",
+      "seconds": 32,
+      "music": true,
+      "effects": true,
+      "before": {
+        "peak": 0.03497376665472984,
+        "rms": 0.006787964114120373,
+        "peakDbfs": -29.125151838074835,
+        "rmsDbfs": -43.365209246594304,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.03268274664878845,
+            "rms": 0.00700499410108168,
+            "peakDbfs": -29.713629052408372,
+            "rmsDbfs": -43.091844521964575,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.02930820733308792,
+            "rms": 0.006270564803398339,
+            "peakDbfs": -30.66021489643606,
+            "rmsDbfs": -44.053866791194345,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.03497376665472984,
+            "rms": 0.00717017066287221,
+            "peakDbfs": -29.125151838074835,
+            "rmsDbfs": -42.88941014449173,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.02715328149497509,
+            "rms": 0.006393385371431859,
+            "peakDbfs": -31.32355356161888,
+            "rmsDbfs": -43.88538233978462,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.03409003093838692,
+            "rms": 0.007333566646160265,
+            "peakDbfs": -29.347452092544724,
+            "rmsDbfs": -42.693695137417876,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.02818019688129425,
+            "rms": 0.0064355634369346925,
+            "peakDbfs": -31.001119540245817,
+            "rmsDbfs": -43.828268487733844,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.032834455370903015,
+            "rms": 0.007090825482171225,
+            "peakDbfs": -29.67340366023867,
+            "rmsDbfs": -42.98606406507367,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.03191962465643883,
+            "rms": 0.006515943741421518,
+            "peakDbfs": -29.91884448339098,
+            "rmsDbfs": -43.7204534808116,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.08743441104888916,
+        "rms": 0.01696991084066118,
+        "peakDbfs": -21.16635221974949,
+        "rmsDbfs": -35.40640878889761,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.08170687407255173,
+            "rms": 0.017512485837462198,
+            "peakDbfs": -21.754828086929926,
+            "rmsDbfs": -35.13304405849398,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.0732705220580101,
+            "rms": 0.01567641251971797,
+            "peakDbfs": -22.701414281378945,
+            "rmsDbfs": -36.095066334498796,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.08743441104888916,
+            "rms": 0.017925427251950465,
+            "peakDbfs": -21.16635221974949,
+            "rmsDbfs": -34.930609682851085,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.0678832083940506,
+            "rms": 0.015983463940258586,
+            "peakDbfs": -23.3647527923485,
+            "rmsDbfs": -35.92658188828231,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.08522507548332214,
+            "rms": 0.0183339172189089,
+            "peakDbfs": -21.388652108939297,
+            "rmsDbfs": -34.73489467805863,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.07045049965381622,
+            "rms": 0.016088909111007153,
+            "peakDbfs": -23.042318448217905,
+            "rmsDbfs": -35.86946803427945,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.08208613842725754,
+            "rms": 0.017727064298080374,
+            "peakDbfs": -21.714603486797913,
+            "rmsDbfs": -35.02726360124571,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.07979907095432281,
+            "rms": 0.016289859868300942,
+            "peakDbfs": -21.960043296233465,
+            "rmsDbfs": -35.76165303290336,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.958800457696689,
+      "peakGainDb": 7.958799618325342,
+      "maxScaledSampleError": 2.0489096641540527e-8
+    },
+    {
+      "name": "khark-music",
+      "island": "khark",
+      "seconds": 32,
+      "music": true,
+      "effects": false,
+      "before": {
+        "peak": 0.017990168184041977,
+        "rms": 0.0057525120148816415,
+        "peakDbfs": -34.89929553124355,
+        "rmsDbfs": -44.80284931153893,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.017041705548763275,
+            "rms": 0.005937416583635471,
+            "peakDbfs": -35.36973885646877,
+            "rmsDbfs": -44.52804957688697,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.016975661739706993,
+            "rms": 0.005505265828132655,
+            "peakDbfs": -35.403465743833856,
+            "rmsDbfs": -45.18443411548368,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.017624853178858757,
+            "rms": 0.0057749212957905775,
+            "peakDbfs": -35.077489842903816,
+            "rmsDbfs": -44.76907860460129,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.017967190593481064,
+            "rms": 0.006126100510340712,
+            "peakDbfs": -34.91039650471394,
+            "rmsDbfs": -44.2563176408656,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.016467271372675896,
+            "rms": 0.005050095250561214,
+            "peakDbfs": -35.66756714953045,
+            "rmsDbfs": -45.93400861028808,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.017584526911377907,
+            "rms": 0.006187485364436482,
+            "peakDbfs": -35.09738622626044,
+            "rmsDbfs": -44.16971630630525,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.01699531078338623,
+            "rms": 0.005644122380116536,
+            "peakDbfs": -35.39341778634261,
+            "rmsDbfs": -44.968071562304566,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.017990168184041977,
+            "rms": 0.005713747480666044,
+            "peakDbfs": -34.89929553124355,
+            "rmsDbfs": -44.86157914387707,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.04497542232275009,
+        "rms": 0.01438128042860635,
+        "peakDbfs": -26.94049499807899,
+        "rmsDbfs": -36.8440489017022,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.04260426387190819,
+            "rms": 0.014843541866136878,
+            "peakDbfs": -27.410938683028018,
+            "rmsDbfs": -36.569249165256714,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.042439159005880356,
+            "rms": 0.013763164953287913,
+            "peakDbfs": -27.444664617338688,
+            "rmsDbfs": -37.22563370036044,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.04406213387846947,
+            "rms": 0.014437303626863364,
+            "peakDbfs": -27.11868948587311,
+            "rmsDbfs": -36.81027819809762,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.04491798207163811,
+            "rms": 0.015315251690264679,
+            "peakDbfs": -26.951595250721667,
+            "rmsDbfs": -36.297517232394775,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.041168175637722015,
+            "rms": 0.012625238469018927,
+            "peakDbfs": -27.70876756557645,
+            "rmsDbfs": -37.97520820113504,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.04396132007241249,
+            "rms": 0.015468713829048956,
+            "peakDbfs": -27.13858550078676,
+            "rmsDbfs": -36.21091589817563,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.042488280683755875,
+            "rms": 0.014110306333873257,
+            "peakDbfs": -27.43461685133982,
+            "rmsDbfs": -37.00927115274206,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.04497542232275009,
+            "rms": 0.014284369091966748,
+            "peakDbfs": -26.94049499807899,
+            "rmsDbfs": -36.902778733105784,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.958800409836723,
+      "peakGainDb": 7.958800533164569,
+      "maxScaledSampleError": 8.381903171539307e-9
+    },
+    {
+      "name": "khark-music-effects",
+      "island": "khark",
+      "seconds": 32,
+      "music": true,
+      "effects": true,
+      "before": {
+        "peak": 0.03245704621076584,
+        "rms": 0.006311645259078223,
+        "peakDbfs": -29.773820123181135,
+        "rmsDbfs": -43.997148365662895,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.03245704621076584,
+            "rms": 0.00657855673719217,
+            "peakDbfs": -29.773820123181135,
+            "rmsDbfs": -43.637387507128096,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.028658535331487656,
+            "rms": 0.005979704517782015,
+            "peakDbfs": -30.854920182267662,
+            "rmsDbfs": -44.466405515774554,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.03082212433218956,
+            "rms": 0.006434219703259907,
+            "peakDbfs": -30.22274864009141,
+            "rmsDbfs": -43.83008227469784,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.03145100176334381,
+            "rms": 0.006556881179670073,
+            "peakDbfs": -30.047310340867952,
+            "rmsDbfs": -43.666053726337786,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.029812734574079514,
+            "rms": 0.005803666092137358,
+            "peakDbfs": -30.511963729287256,
+            "rmsDbfs": -44.72595164389263,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.032096292823553085,
+            "rms": 0.006601234999368219,
+            "peakDbfs": -29.870902529005356,
+            "rmsDbfs": -43.60749612784291,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.02906031161546707,
+            "rms": 0.006318451303602994,
+            "peakDbfs": -30.733994660944234,
+            "rmsDbfs": -43.98778714549443,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.031076621264219284,
+            "rms": 0.00617147532207882,
+            "peakDbfs": -30.15132409991316,
+            "rmsDbfs": -44.192220065696304,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.0811426118016243,
+        "rms": 0.015779113672257122,
+        "peakDbfs": -21.815020348513098,
+        "rmsDbfs": -36.03834790346803,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.0811426118016243,
+            "rms": 0.016446392398813344,
+            "peakDbfs": -21.815020348513098,
+            "rmsDbfs": -35.678587040133394,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.07164634019136429,
+            "rms": 0.014949261782992669,
+            "peakDbfs": -22.896119783013134,
+            "rmsDbfs": -36.50760505848139,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.07705532014369965,
+            "rms": 0.016085549809818484,
+            "peakDbfs": -22.26394741683793,
+            "rmsDbfs": -35.871281803366514,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.07862751930952072,
+            "rms": 0.016392203475681946,
+            "peakDbfs": -22.088508521313287,
+            "rmsDbfs": -35.70725327391198,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.07453183829784393,
+            "rms": 0.014509165750074342,
+            "peakDbfs": -22.553163338775107,
+            "rmsDbfs": -36.767151159315745,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.08024074137210846,
+            "rms": 0.016503088015535513,
+            "peakDbfs": -21.91210134742766,
+            "rmsDbfs": -35.648695682234695,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.07265078276395798,
+            "rms": 0.015796128800126128,
+            "peakDbfs": -22.775194042119963,
+            "rmsDbfs": -36.028986674506285,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.07769155502319336,
+            "rms": 0.01542868880071949,
+            "peakDbfs": -22.192523718229307,
+            "rmsDbfs": -36.233419613291254,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.958800462194863,
+      "peakGainDb": 7.958799774668036,
+      "maxScaledSampleError": 1.7695128917694092e-8
+    },
+    {
+      "name": "hengam-music",
+      "island": "hengam",
+      "seconds": 32,
+      "music": true,
+      "effects": false,
+      "before": {
+        "peak": 0.021038057282567024,
+        "rms": 0.006364985608953636,
+        "peakDbfs": -33.53988733448694,
+        "rmsDbfs": -43.92405147872683,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.018660487607121468,
+            "rms": 0.006593227914481093,
+            "peakDbfs": -34.58154024253485,
+            "rmsDbfs": -43.61803822639499,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.017474649474024773,
+            "rms": 0.006103516432110948,
+            "peakDbfs": -35.15183054114331,
+            "rmsDbfs": -44.288397637318326,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.020600756630301476,
+            "rms": 0.006627645275600362,
+            "peakDbfs": -33.722336568995345,
+            "rmsDbfs": -43.57281487823429,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.01715497486293316,
+            "rms": 0.006069157788567945,
+            "peakDbfs": -35.31219827952126,
+            "rmsDbfs": -44.33743142776994,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.021038057282567024,
+            "rms": 0.006671826938943528,
+            "peakDbfs": -33.53988733448694,
+            "rmsDbfs": -43.515104548475406,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.01618213765323162,
+            "rms": 0.006142738563327217,
+            "peakDbfs": -35.8192821765005,
+            "rmsDbfs": -44.23275935963667,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.020317712798714638,
+            "rms": 0.006552873216624101,
+            "peakDbfs": -33.84250365886963,
+            "rmsDbfs": -43.67136469170342,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.017768440768122673,
+            "rms": 0.006118312670388014,
+            "peakDbfs": -35.007013622296995,
+            "rmsDbfs": -44.2673666517853,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.052595142275094986,
+        "rms": 0.01591246445790291,
+        "peakDbfs": -25.581087314850606,
+        "rmsDbfs": -35.96525106755619,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.046651218086481094,
+            "rms": 0.016483070240754516,
+            "peakDbfs": -26.622740242495038,
+            "rmsDbfs": -35.65923781342442,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.04368662089109421,
+            "rms": 0.015258791503427082,
+            "peakDbfs": -27.193030923206607,
+            "rmsDbfs": -36.32959722300451,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.05150189250707626,
+            "rms": 0.016569113642223375,
+            "peakDbfs": -25.76353623848531,
+            "rmsDbfs": -35.61401446720446,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.04288743436336517,
+            "rms": 0.015172894879444647,
+            "peakDbfs": -27.353398671936098,
+            "rmsDbfs": -36.37863102075094,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.052595142275094986,
+            "rms": 0.016679567800895207,
+            "peakDbfs": -25.581087314850606,
+            "rmsDbfs": -35.556304138855445,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.04045534133911133,
+            "rms": 0.015356846834802509,
+            "peakDbfs": -27.860482602933423,
+            "rmsDbfs": -36.273958944974716,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.05079428479075432,
+            "rms": 0.01638218348693569,
+            "peakDbfs": -25.883703007656706,
+            "rmsDbfs": -35.71256428212309,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.04442110285162926,
+            "rms": 0.015295782093165443,
+            "peakDbfs": -27.048213266749883,
+            "rmsDbfs": -36.30856624143523,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.958800411170646,
+      "peakGainDb": 7.958800019636339,
+      "maxScaledSampleError": 1.0244548320770264e-8
+    },
+    {
+      "name": "hengam-music-effects",
+      "island": "hengam",
+      "seconds": 32,
+      "music": true,
+      "effects": true,
+      "before": {
+        "peak": 0.03547627851366997,
+        "rms": 0.006880245774524707,
+        "peakDbfs": -29.001238884893034,
+        "rmsDbfs": -43.24792095443685,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.03267813101410866,
+            "rms": 0.007187082590005542,
+            "peakDbfs": -29.714855807462417,
+            "rmsDbfs": -42.86894728881863,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.031762123107910156,
+            "rms": 0.006535266252650777,
+            "peakDbfs": -29.961809505734923,
+            "rmsDbfs": -43.69473428346976,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.031584445387125015,
+            "rms": 0.0072188942982540465,
+            "peakDbfs": -30.010534895529002,
+            "rmsDbfs": -42.83058634484159,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.03168542683124542,
+            "rms": 0.006502748289081412,
+            "peakDbfs": -29.98280876322802,
+            "rmsDbfs": -43.73806113014092,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.03547627851366997,
+            "rms": 0.007260639539976564,
+            "peakDbfs": -29.001238884893034,
+            "rmsDbfs": -42.78050247181099,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.03405776619911194,
+            "rms": 0.00657261522762847,
+            "peakDbfs": -29.355676804046922,
+            "rmsDbfs": -43.64523582665476,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.03395979851484299,
+            "rms": 0.007150460647200693,
+            "peakDbfs": -29.380697902219804,
+            "rmsDbfs": -42.9133195832981,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.03145340830087662,
+            "rms": 0.0065494258577879,
+            "peakDbfs": -30.046645747736605,
+            "rmsDbfs": -43.67593539779324,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.08869069814682007,
+        "rms": 0.01720061499225321,
+        "peakDbfs": -21.042438529034836,
+        "rmsDbfs": -35.28912050025927,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1411200,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.08169534057378769,
+            "rms": 0.017967707059237663,
+            "peakDbfs": -21.75605424775998,
+            "rmsDbfs": -34.91014683295433,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.07940530776977539,
+            "rms": 0.016338166146334054,
+            "peakDbfs": -22.00300933229417,
+            "rmsDbfs": -35.73593383639431,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.07896111160516739,
+            "rms": 0.0180472363458156,
+            "peakDbfs": -22.051734926983162,
+            "rmsDbfs": -34.87178588254212,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.07921356707811356,
+            "rms": 0.016256871233492922,
+            "peakDbfs": -22.02400858978727,
+            "rmsDbfs": -35.77926068379032,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.08869069814682007,
+            "rms": 0.01815159943952633,
+            "peakDbfs": -21.042438529034836,
+            "rmsDbfs": -34.821702016242504,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.08514441549777985,
+            "rms": 0.016431538595978665,
+            "peakDbfs": -21.396876630606172,
+            "rmsDbfs": -35.68643537468498,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 28,
+            "peak": 0.08489950001239777,
+            "rms": 0.017876152208099984,
+            "peakDbfs": -21.421897347652408,
+            "rmsDbfs": -34.95451912313298,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 28,
+            "toSeconds": 32,
+            "peak": 0.07863352447748184,
+            "rms": 0.01637356516663607,
+            "peakDbfs": -22.087845162798835,
+            "rmsDbfs": -35.71713494735239,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.95880045417758,
+      "peakGainDb": 7.9588003558581955,
+      "maxScaledSampleError": 1.6763806343078613e-8
+    },
+    {
+      "name": "effects-only",
+      "seconds": 4,
+      "music": false,
+      "effects": true,
+      "before": {
+        "peak": 0.020273495465517044,
+        "rms": 0.002861559063102662,
+        "peakDbfs": -33.861427314734264,
+        "rmsDbfs": -50.8679457149102,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 176400,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.020273495465517044,
+            "rms": 0.002861559063102662,
+            "peakDbfs": -33.861427314734264,
+            "rmsDbfs": -50.8679457149102,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.05068374052643776,
+        "rms": 0.007153898106313649,
+        "peakDbfs": -25.902626822084038,
+        "rmsDbfs": -42.90914499685495,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 176400,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.05068374052643776,
+            "rms": 0.007153898106313649,
+            "peakDbfs": -25.902626822084038,
+            "rmsDbfs": -42.90914499685495,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.958800718055256,
+      "peakGainDb": 7.958800492650234,
+      "maxScaledSampleError": 9.313225746154785e-9
+    },
+    {
+      "name": "effects-12-voice-headroom",
+      "seconds": 4,
+      "music": true,
+      "effects": true,
+      "stress": true,
+      "before": {
+        "peak": 0.25388649106025696,
+        "rms": 0.05158072667788099,
+        "peakDbfs": -11.907208134086611,
+        "rmsDbfs": -25.75025087483764,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 176400,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.25388649106025696,
+            "rms": 0.05158072667788099,
+            "peakDbfs": -11.907208134086611,
+            "rmsDbfs": -25.75025087483764,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.634716272354126,
+        "rms": 0.12895182463417476,
+        "peakDbfs": -3.948407348892929,
+        "rmsDbfs": -17.79145016661281,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 176400,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.634716272354126,
+            "rms": 0.12895182463417476,
+            "peakDbfs": -3.948407348892929,
+            "rmsDbfs": -17.79145016661281,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.958800708224826,
+      "peakGainDb": 7.958800785193681,
+      "maxScaledSampleError": 1.341104507446289e-7
+    },
+    {
+      "name": "all-island-crossfades-effects",
+      "seconds": 27,
+      "music": true,
+      "effects": true,
+      "crossfade": true,
+      "before": {
+        "peak": 0.03587726503610611,
+        "rms": 0.006714356454313446,
+        "peakDbfs": -28.903613422368863,
+        "rmsDbfs": -43.459912129701436,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1190700,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.03055693581700325,
+            "rms": 0.006942287518082418,
+            "peakDbfs": -30.297803960361207,
+            "rmsDbfs": -43.16994807566354,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.029863394796848297,
+            "rms": 0.0064077297418200915,
+            "peakDbfs": -30.497216485645538,
+            "rmsDbfs": -43.865916274654204,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.033550139516592026,
+            "rms": 0.006697070970924682,
+            "peakDbfs": -29.486113389983203,
+            "rmsDbfs": -43.48230197373976,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.03485548123717308,
+            "rms": 0.006655244011336139,
+            "peakDbfs": -29.154578334747466,
+            "rmsDbfs": -43.53672033396174,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.033335812389850616,
+            "rms": 0.006703804735526738,
+            "peakDbfs": -29.541779134074062,
+            "rmsDbfs": -43.47357288134519,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.03587726503610611,
+            "rms": 0.006995460253913117,
+            "peakDbfs": -28.903613422368863,
+            "rmsDbfs": -43.10367413192332,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 27,
+            "peak": 0.028772013261914253,
+            "rms": 0.00653529714254445,
+            "peakDbfs": -30.820594963827883,
+            "rmsDbfs": -43.69469322843652,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "after": {
+        "peak": 0.08969316631555557,
+        "rms": 0.01678589168495023,
+        "peakDbfs": -20.94481288817085,
+        "rmsDbfs": -35.50111167209343,
+        "nonFinite": 0,
+        "clippedSamples": 0,
+        "samples": 1190700,
+        "stereoMaxDifference": 0,
+        "windows": [
+          {
+            "fromSeconds": 0,
+            "toSeconds": 4,
+            "peak": 0.07639233767986298,
+            "rms": 0.017355719370918263,
+            "peakDbfs": -22.33900399870518,
+            "rmsDbfs": -35.21114761410032,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 4,
+            "toSeconds": 8,
+            "peak": 0.07465848326683044,
+            "rms": 0.01601932486558172,
+            "peakDbfs": -22.538416745611123,
+            "rmsDbfs": -35.90711582412541,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 8,
+            "toSeconds": 12,
+            "peak": 0.08387535065412521,
+            "rms": 0.016742678005277203,
+            "peakDbfs": -21.527313023652283,
+            "rmsDbfs": -35.52350150045781,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 12,
+            "toSeconds": 16,
+            "peak": 0.08713871240615845,
+            "rms": 0.016638110556223988,
+            "peakDbfs": -21.195777232974713,
+            "rmsDbfs": -35.57791988494047,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 16,
+            "toSeconds": 20,
+            "peak": 0.08333953469991684,
+            "rms": 0.016759512402951676,
+            "peakDbfs": -21.58297857237267,
+            "rmsDbfs": -35.51477241553239,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 20,
+            "toSeconds": 24,
+            "peak": 0.08969316631555557,
+            "rms": 0.01748865117792507,
+            "peakDbfs": -20.94481288817085,
+            "rmsDbfs": -35.144873688726264,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          },
+          {
+            "fromSeconds": 24,
+            "toSeconds": 27,
+            "peak": 0.07193003594875336,
+            "rms": 0.016338243397565438,
+            "peakDbfs": -22.8617944530024,
+            "rmsDbfs": -35.735892767275665,
+            "nonFinite": 0,
+            "clippedSamples": 0
+          }
+        ]
+      },
+      "rmsGainDb": 7.958800457608003,
+      "peakGainDb": 7.958800534198014,
+      "maxScaledSampleError": 1.862645149230957e-8
+    }
+  ]
+}

@@ -1,69 +1,197 @@
-# Persian Isles Mini Golf — release-polish candidate
+# Persian Isles Mini Golf
 
-Working title. An original procedural, low-poly miniature-golf course inspired by Hormuz Island, Iran. This build contains three playable Hormuz holes plus distinct preview-only 3D dioramas of Qeshm, Kish, Khark and Hengam. Hormuz shows ten slots: holes 1–3 are playable and 4–10 are explicitly in development. Completing Hormuz does not unlock unpublished islands.
+**Find your line through the islands.**
 
-## Run
+A low-poly mini golf browser game inspired by Iran’s Persian Gulf islands. Line up a bank shot between salt-white cliffs, red earth and turquoise water, with WebGL rendering powered by Three.js and ball physics powered by Rapier. Play three holes on Hormuz, or explore four other islands as visual previews.
 
-English-only interface. Use Node >=26.0.0 (tested on 26.7.0) for the pinned development tools; a static production host does not need Node.
+![Persian Isles Mini Golf — a stylized Hormuz island surrounded by turquoise water](docs/images/hormuz-cover.png)
+
+[Download / Releases](https://github.com/itline/persian-isles-mini-golf/releases/latest) · [Quick start](#quick-start) · [Controls](#controls) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+
+## Play locally
+
+No backend, account or API key is required. The game runs in a WebGL-capable browser and can be hosted as a static website.
+
+### Download a build
+
+1. Open [GitHub Releases](https://github.com/itline/persian-isles-mini-golf/releases/latest) and download the **static build ZIP**. Source archives are available there too; those require the build steps below.
+2. Extract the static build ZIP and open a terminal in the extracted folder containing `index.html`.
+3. Serve that folder over HTTP:
+
+   ```sh
+   python3 -m http.server 8080
+   ```
+
+4. Open <http://127.0.0.1:8080/>.
+
+Node.js is not needed to play a prebuilt release. Do not open `index.html` through `file://`; the game requires an HTTP server.
+
+### Quick start
+
+Install Node.js and npm first. **Node.js 24 (LTS line) is recommended.** Supported Node.js versions match the package’s engine range: `^22.12.0 || ^24.0.0 || >=26.0.0` — Node 22.12+ within the 22.x line, 24.x, or 26+.
 
 ```sh
+git clone https://github.com/itline/persian-isles-mini-golf.git
+cd persian-isles-mini-golf
 npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:4181/ in a WebGL-capable browser.
+Open <http://127.0.0.1:4181/>. Keep the development server local; use a production build for public hosting.
+
+### Production build
 
 ```sh
 npm run build
 npm run preview
 ```
 
-Serve the contents of `dist/` from a static HTTP host. Opening `dist/index.html` directly through `file://` is not supported. No Firebase configuration or account is required.
+The build is written to `dist/`. Preview uses <http://127.0.0.1:4181/> too, so stop the development server before starting it.
+
+Alternatively, serve the production build directly:
+
+```sh
+python3 -m http.server 8080 --directory dist
+```
+
+Open <http://127.0.0.1:8080/>. For deployment, upload the **contents** of `dist/` to the root of a static HTTP(S) host, preserving its asset paths and license notices. A production host does not need Node.js.
+
+## Islands and playable holes
+
+Hormuz is the only playable island. Choose a hole for practice or select **Play Hormuz journey** to play all three in sequence and see a combined scorecard.
+
+| Island | Available now | Setting |
+| --- | --- | --- |
+| **Hormuz** | **3 playable holes**; slots 4–10 are in development | Red shores, salt cliffs and mineral outcrops |
+| Qeshm | Visual preview only — not playable | Canyon walls and sea-carved arches |
+| Kish | Visual preview only — not playable | Pale shores, piers and palms |
+| Khark | Visual preview only — not playable | Limestone cliffs, a harbour and lighthouse |
+| Hengam | Visual preview only — not playable | Rocky coves, a fishing dhow and dolphins |
+
+| Hormuz hole | Par | The line to find |
+| --- | --- | --- |
+| 1. Red Shore | 2 | A clear lane and a gentle finish |
+| 2. Salt Valley | 3 | An open corner or a bank off the salt walls |
+| 3. Rainbow Run | 4 | A long turn through mineral outcrops |
+
+Completing the journey does **not** unlock the unfinished holes or preview islands. These scenes are playful interpretations, not geographic reconstructions or real golf courses.
+
+## Screenshots
+
+### Desktop gameplay
+
+![Hormuz mini golf gameplay in the desktop browser layout](docs/images/gameplay-desktop.png)
+
+### Mobile gameplay
+
+![Hormuz mini golf gameplay in the touch-friendly mobile layout](docs/images/gameplay-mobile.png)
 
 ## Controls
 
-- Mouse/touch: drag backwards on the scene, then release to putt. Longer drag means more power.
-- Alternative: aim buttons + power slider + Putt.
-- Keyboard: left/right arrows aim, up/down arrows adjust power, Space shoots, Escape pauses.
-- Right-drag orbits within a bounded angle. Wheel, pinch, or +/− smoothly zoom between 1× and 1.85× around the ball. The full-course button resets zoom and orbit. Camera movement freezes during shot dragging; pinch never fires a shot.
-- Restart resets the hole. Best score persists locally on the same browser and origin.
-- Music and shot/completion effects default off independently. Open Sound settings and choose either channel; choices persist locally. Original gentle WebAudio pads, melody and filtered sea texture change by island and fade on island switches, pause and document visibility. No downloaded music or additional audio license is needed.
-- Browse islands with tabs, arrows or a horizontal touch swipe on the scene. View island hides the menu for a clear scenery preview.
-- Play Hormuz journey runs Red Shore (Par 2), Salt Valley (Par 3) and Rainbow Run (Par 4) in order; each is also directly selectable for practice. Journey results show all three scores and their sum. Restart retries the current hole; restarting from the final postcard restarts the journey.
+| Action | Mouse / desktop | Touch / on-screen controls |
+| --- | --- | --- |
+| Putt | Drag backwards on the scene, then release; a longer drag adds power | Drag and release on the scene, or open **Manual controls** and use aim buttons, the power slider and **Putt** |
+| Aim without dragging | Left / right arrow keys | Aim buttons in **Manual controls** |
+| Adjust shot power | Up / down arrow keys | Power slider |
+| Shoot | Space | **Putt** |
+| Pause / resume | Escape or the pause button | Pause / resume controls; on small screens, open the game tools menu |
+| Zoom | Mouse wheel or **+ / −** buttons | Pinch or **+ / −** buttons |
+| Orbit | Right-drag within the bounded camera angle | Use the overview/reset control to return to the full course |
+| Reset camera | Full-course / reset camera button | Full-course / reset camera button |
+| Retry the hole | **Restart** | **Restart** |
 
-Landscape is recommended on phones. Automated touch emulation is not a substitute for testing on a real phone.
+Click or tap the scene to focus it before using keyboard shot controls. Camera movement freezes while dragging a shot, and pinching never fires a putt. Zoom ranges from 1× to 1.85×.
 
-## Verification
+In the island menu, use tabs, navigation arrows or a horizontal swipe on the scene and non-interactive selector areas. Vertical selector scrolling stays native. **View island** hides the menu for a clear scenery view. Landscape is recommended on phones; portrait also has a scrollable selector and compact tools menu.
 
-With Chrome installed and the dev server running:
+## Features
+
+- **Physics-based putting:** Three.js scenes with Rapier rigid-body ball simulation, shot previews, bank shots and per-hole scoring.
+- **Practice or journey:** Replay any available Hormuz hole, or follow the three-hole route with a final scorecard.
+- **Local records:** Per-hole and journey best scores persist in the same browser and origin when local storage is available. They are not synced between devices.
+- **Original procedural scenery:** Low-poly coastlines, island-specific details and animated sea life, boats and palms; preview islands load on demand.
+- **Synthesized coastal audio:** Original WebAudio music and shot/completion effects, with independent music and effects settings saved locally. Audio starts only after a user gesture; saved off choices remain off.
+- **Reduced-motion support:** Decorative scenery motion stops when the browser requests reduced motion. Scenery animation also pauses when the game is paused or the tab is hidden.
+- **Static, self-contained gameplay:** No account service, database or external game API is needed. The interface is English-only.
+
+## Development and tests
+
+Install dependencies with `npm ci` before running the checks:
 
 ```sh
 npm test
+```
+
+Browser tests use Playwright’s **Chrome channel** (`channel: 'chrome'` in `playwright.config.js`), not the default bundled Chromium. Install Chrome for Playwright if needed:
+
+```sh
+npx playwright install chrome
+```
+
+Start the development server in **one terminal** and leave it running:
+
+```sh
+npm run dev
+```
+
+Then run browser checks in a **separate terminal** from the repository root:
+
+```sh
 npm run test:e2e
 ```
 
-The browser suite completes all three holes and the full journey using real keyboard input, verifies per-hole record isolation/persistence and retry, locked islands/slots, lazy-loaded preview switching, mouse and touch drag, pointer cancellation, pinch/zoom limits, camera freeze during aim, mobile menu scrolling and HUD hit targets. The audio render probe `node scripts/verify-audio-render.js` checks actual offline-rendered WebAudio samples for nonzero finite output without clipping. In the development server only, the `?qa` query exposes read-only game-state/projection helpers used by tests; tests do not teleport the ball or inject completion.
+The E2E configuration does not start the server automatically. It expects the game at <http://127.0.0.1:4181/>. Additional audio verification is available while that server is running:
 
-## Provenance
+```sh
+node scripts/verify-audio-render.js
+```
 
-`src/vendor/` adapts four technical modules from [Mini Golf Mania](https://github.com/LCmaster/minigolf), commit `daae96188fe79eaba10b5e92045b45fc407d345c`, copyright 2023 Luiz Vicente, MIT. The upstream license is preserved in `LICENSE.upstream` and in the distributed third-party notices. The application customizes ball radius/mesh and physics configuration around those modules.
+The suites cover putting and journey flows, records, input handling, island availability, layout and selected rendering/audio behavior. They are not comprehensive physics, accessibility or device-performance certification. See the [documentation](docs/) and [dependency audit notes](docs/dependency-audit.md) for supporting reports and their scope.
 
-Three.js 0.155.0: MIT. Rapier compatibility build 0.11.2: Apache-2.0. Full runtime notices are included in `public/THIRD_PARTY_NOTICES.txt` and `public/DEPENDENCY_LICENSES.txt`, copied into `dist/` by Vite. The complete lockfile license inventory and npm advisory results are in `docs/`. Run `python scripts/audit-dependencies.py` to refresh them.
+## Credits and inspiration
 
-The environment, course geometry, interface and synthesized tones were created for this project. No external image, GLB model, music, or downloaded web font is used. The benchmark game's code and assets are not included. No blanket license for the original project files is granted by this README; upstream permissions remain as stated in their notices.
+### Adapted open-source work
 
-Nature reference: [NASA Earth Observatory — Iran’s Rainbow Island](https://science.nasa.gov/earth/earth-observatory/irans-rainbow-island-147428). The island is a playful interpretation, not geographic reconstruction or a real golf site.
+[Mini Golf Mania](https://github.com/LCmaster/minigolf) by Luiz Vicente (LCmaster), pinned at commit [`daae96188fe79eaba10b5e92045b45fc407d345c`](https://github.com/LCmaster/minigolf/tree/daae96188fe79eaba10b5e92045b45fc407d345c), supplied the basis for **four adapted technical modules** under `src/vendor/`: `BallController`, `BallWindTrail`, `PhysicsWorld` and `EngineEvents`. These are MIT-licensed, copyright 2023 Luiz Vicente; the complete notice is preserved in [LICENSE.upstream](LICENSE.upstream). This project adapts those modules with its own ball configuration and application code; it is not a wholesale copy of Mini Golf Mania.
 
-## Release polish
+Runtime libraries:
 
-English/Persian switching and RTL were removed. Stage-selection cards omit Par and Best; actual performance is shown at each hole result and the complete journey table. Explicit + / − / Reset camera controls coexist with wheel/pinch zoom. The whole island and playfield stay stationary; individual boats, palm crowns, pennant, dolphin and water animate. Scenery time freezes on pause/hidden tabs and remains zero for reduced motion.
+- [Three.js](https://github.com/mrdoob/three.js), version 0.155.0 — **MIT**; WebGL rendering.
+- [Rapier 3D compatibility build](https://github.com/dimforge/rapier.js), version 0.11.2 — **Apache-2.0**; rigid-body physics.
 
-Reversible baseline: tag `before-release-polish` at `ae004cd`; current work is on `experiment/release-polish`. No automatic GitHub push.
+Full runtime notices ship with the static build. See [third-party notices](public/THIRD_PARTY_NOTICES.txt), [dependency licenses](public/DEPENDENCY_LICENSES.txt) and the [lockfile license inventory](docs/dependency-licenses.json).
 
-## Known limits
+### Original work and visual references
 
-- This is a local first-version candidate with three playable holes on Hormuz. The other four islands and seven later Hormuz holes are locked, not gameplay-ready. It is not yet deployed to Arvan Edge.
-- No online leaderboard, multiplayer, account, daily challenge or authoritative server-side score validation.
-- Browser tests exercise selected routes and inputs, not comprehensive physics correctness, accessibility certification or mobile GPU performance.
-- The initial bundle includes the Rapier runtime/WASM and Three.js; Vite reports a large-chunk warning. Load-time and low-end-device optimization remain work for release.
-- The original Hormuz slice received player approval. The new stages, soundtrack and locked previews still require player review; actual mobile GPU performance and subjective audio quality have not been independently certified.
+The procedural environment, course geometry, interface and synthesized audio were created for this project, except for the identified third-party components. The game runtime uses no downloaded textures, GLB models, music recordings or web fonts.
+
+Hormuz’s palette draws inspiration from [NASA Earth Observatory — Iran’s Rainbow Island](https://science.nasa.gov/earth/earth-observatory/irans-rainbow-island-147428). This is a nature reference, not an endorsement or a claim that NASA imagery is bundled with the game.
+
+The separate [marketing sources](marketing/) use bundled **DM Sans** and **Libre Caslon Display** fonts under the SIL Open Font License. Their notices are included in [DM Sans OFL](marketing/assets/DMSans-OFL.txt) and [Libre Caslon Display OFL](marketing/assets/LibreCaslonDisplay-OFL.txt). These fonts are not loaded by the game runtime.
+
+## License and brand identity
+
+Original project code and non-brand assets covered by [LICENSE](LICENSE) are released under the **MIT License**. Commercial use, modification and redistribution are allowed under its terms. Third-party components retain their own licenses and attribution requirements.
+
+**Brand identity is separate.** The project logo/brand mark and favicon are excluded from the MIT grant; no trademark license is granted for the project names or itline identity. Independently branded derivatives should use a distinct name and replace the logo/favicon while preserving required legal notices. See [BRANDING.md](BRANDING.md) for the exact policy. Keeping copyright notices does not imply official endorsement.
+
+Maintained by [itline](https://github.com/itline).
+
+## Contributing and project information
+
+Bug reports, reproducible device issues, accessibility improvements and focused code contributions are welcome. For browser or touch issues, include the browser version, device, orientation and steps to reproduce.
+
+- [Contributing guide](CONTRIBUTING.md) — setup, checks and contribution expectations.
+- [Issue tracker](https://github.com/itline/persian-isles-mini-golf/issues) — bugs and feature discussions.
+- [Security policy](SECURITY.md) — vulnerability reporting; avoid posting sensitive details in public issues.
+- [Changelog](CHANGELOG.md) — changes by release.
+- [Releases](https://github.com/itline/persian-isles-mini-golf/releases/latest) — downloadable static builds and source.
+- [Documentation](docs/) — supporting technical reports and dependency information.
+
+## Known limitations
+
+- Only the three Hormuz holes are playable. Hormuz slots 4–10 and all four other islands are unfinished gameplay, not unlockable content.
+- No multiplayer, online leaderboard, accounts, daily challenge or authoritative server-side score validation.
+- Touch controls and responsive layouts have automated coverage, but real-device mobile compatibility, GPU performance and audio quality are not certified. Browser emulation is not a substitute for testing on physical phones.
+- The initial JavaScript/WASM bundle includes Three.js and Rapier and triggers a large-chunk warning. Load time and low-end-device performance still need optimization.
+- Automated checks cover selected paths and inputs, not complete accessibility or physics correctness.

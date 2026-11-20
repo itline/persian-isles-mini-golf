@@ -42,10 +42,10 @@ test('all three holes complete by actual inputs; journey postcard totals and rec
  expect(errors).toEqual([]);
 });
 
-test('music and effects are opt-in, independent and persistent',async({page})=>{
+test('music and effects default on, remain independent and persistent',async({page})=>{
  await page.goto('http://127.0.0.1:4181/?qa');await page.waitForFunction(()=>window.__golf);
- let audio=await page.evaluate(()=>window.__golf.state().audio);expect(audio.music).toBe(false);expect(audio.effects).toBe(false);expect(audio.unlocked).toBe(false);
- await page.locator('#menuSound').click();await page.locator('#musicToggle').check();await page.locator('#audioClose').click();
+ let audio=await page.evaluate(()=>window.__golf.state().audio);expect(audio.music).toBe(true);expect(audio.effects).toBe(true);expect(audio.unlocked).toBe(false);
+ await page.locator('#menuSound').click();await page.locator('#effectsToggle').uncheck();await page.locator('#audioClose').click();
  await page.waitForFunction(()=>window.__golf.state().audio.playing);
  audio=await page.evaluate(()=>window.__golf.state().audio);expect(audio.effects).toBe(false);expect(audio.contextState).toBe('running');
  await page.locator('[data-island="kish"]').click();await page.waitForFunction(()=>window.__golf.state().preview==='kish');
@@ -57,6 +57,7 @@ test('music and effects are opt-in, independent and persistent',async({page})=>{
 });
 
 test('silent browsing and playing never create an audio context; music unlocks on opt-in',async({page})=>{
+ await page.addInitScript(()=>localStorage.setItem('persian-isles-golf.audio.v1',JSON.stringify({music:false,effects:false})));
  await page.goto('http://127.0.0.1:4181/?qa');await page.waitForFunction(()=>window.__golf);
  // The audio API reports an absent (not-yet-created) context as 'locked'.
  const expectLocked=async()=>expect(await page.evaluate(()=>window.__golf.state().audio)).toMatchObject({music:false,effects:false,unlocked:false,contextState:'locked'});
@@ -109,6 +110,6 @@ test('mobile pinch zoom never fires a shot; single-touch dragging still does',as
  await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:points(310,490)});
  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await page.waitForTimeout(900);
  expect((await page.evaluate(()=>window.__golf.state())).zoom).toBeGreaterThan(1.2);await expect(page.locator('#strokes')).toHaveText('0');
- await page.locator('#overview').tap();await page.waitForTimeout(800);expect((await page.evaluate(()=>window.__golf.state())).zoom).toBeCloseTo(1,1);
+ await page.locator('#gameMenuToggle').tap();await page.locator('#overview').tap();await page.waitForTimeout(800);expect((await page.evaluate(()=>window.__golf.state())).zoom).toBeCloseTo(1,1);
  await context.close();
 });

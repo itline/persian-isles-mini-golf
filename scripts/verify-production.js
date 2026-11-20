@@ -8,7 +8,7 @@ try{
  await page.goto(base+'/?qa');await page.locator('#play:enabled').waitFor();
  assert.equal(await page.evaluate(()=>typeof window.__golf),'undefined','Production must not expose QA state even with ?qa');
  assert.equal(await page.locator('html').getAttribute('lang'),'en');
- for(const id of ['qeshm','kish','khark','hengam','hormuz']){await page.locator(`[data-island="${id}"]`).click();await page.waitForFunction(id=>document.querySelector(`[data-island="${id}"]`).classList.contains('selected'),id);if(id!=='hormuz'){await page.locator('#play:disabled').waitFor();assert.equal(await page.locator('#islandAvailability').innerText(),'Coming soon · Preview only');}}
+ for(const id of ['qeshm','kish','khark','hengam','hormuz']){await page.locator(`[data-island="${id}"]`).click();await page.waitForFunction(id=>document.querySelector('#menu').dataset.previewReady===id,id);assert.equal(await page.locator('#islandAvailability').isVisible(),false,'No preview-load error should be displayed');if(id!=='hormuz'){await page.locator('#play:disabled').waitFor();assert.equal(await page.locator('#play').innerText(),'Preview only');}}
  await page.locator('[data-level="2"]').click();await page.locator('#scene').focus();await page.keyboard.press('Space');
  assert.equal(await page.locator('#strokes').innerText(),'1');
  for(const file of ['THIRD_PARTY_NOTICES.txt','DEPENDENCY_LICENSES.txt']){const response=await page.request.get(base+'/'+file);assert.equal(response.status(),200);assert.ok((await response.text()).length>100);}

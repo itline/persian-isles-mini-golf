@@ -15,7 +15,7 @@ test('real pointer drag fires a shot and pointercancel does not',async({page})=>
  await page.goto('http://127.0.0.1:4181/?qa');await page.getByRole('button',{name:'Play Hormuz'}).click();await page.waitForTimeout(1200);
  const points=await page.evaluate(()=>{const s=window.__golf.state();return{start:window.__golf.project(s.ball.x,s.ball.z),end:window.__golf.project(s.ball.x,s.ball.z+2.2)}});
  await page.mouse.move(points.start.x,points.start.y);await page.mouse.down();await page.mouse.move(points.end.x,points.end.y,{steps:12});await page.mouse.up();await expect(page.locator('#strokes')).toHaveText('1');
- await page.getByRole('button',{name:'Restart hole'}).click();
+ await page.locator('#manualToggle').click();await page.getByRole('button',{name:'Restart'}).click();
  await page.locator('#scene').dispatchEvent('pointerdown',{pointerId:7,button:0,clientX:400,clientY:400});await page.locator('#scene').dispatchEvent('pointermove',{pointerId:7,button:0,clientX:480,clientY:480});await page.locator('#scene').dispatchEvent('pointercancel',{pointerId:7});await expect(page.locator('#strokes')).toHaveText('0');
 });
 

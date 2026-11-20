@@ -3,6 +3,12 @@ dist/
 test-results/
 playwright-report/
 *.png
+!docs/images/*.png
+!marketing/*.png
+!marketing/assets/*.png
+!marketing/persian-isles-brand-assets/*.png
+!public/icon.png
+!public/favicon.png
 .env
 .env.*
 !.env.example

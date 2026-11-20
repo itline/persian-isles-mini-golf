@@ -6,14 +6,14 @@ test('Hormuz loads as a real 3D guest game and supports start, a real shot, paus
   await page.goto('http://127.0.0.1:4181');
   await expect(page.getByRole('heading', { name: 'Choose your island' })).toBeVisible();
   await page.locator('#play').click();
-  await expect(page.locator('#status')).toContainText('Ready');
+  await page.locator('#manualToggle').click();await expect(page.locator('#status')).toContainText('Ready');
   await expect(page.locator('#strokes')).toHaveText('0');
-  await page.keyboard.press('Space');
+  await page.locator('#scene').focus();await page.keyboard.press('Space');
   await expect(page.locator('#strokes')).toHaveText('1');
   await page.getByRole('button', {name:'Pause game'}).click();
   await expect(page.getByRole('heading',{name:'Take a breath'})).toBeVisible();
   await page.getByRole('button',{name:'Resume'}).click();
-  await page.getByRole('button', {name:'Restart hole'}).click();
+  await page.getByRole('button',{name:'Restart'}).click();
   await expect(page.locator('#strokes')).toHaveText('0');
   await page.setViewportSize({width:390,height:844});
   await expect(page.locator('#game')).not.toHaveClass(/hidden/);

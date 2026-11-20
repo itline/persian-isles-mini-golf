@@ -130,7 +130,8 @@ function createIslandPreview(scene, id) {
   }
 
   function sea() {
-    const water = addMesh(root, new THREE.PlaneGeometry(76, 76), material('#3b9eb0', { roughness: 0.55 }), 'Preview sea', [0, -3.8, 0], false);
+    // Keep every menu-frustum corner on water, not on a diagonal plane edge.
+    const water = addMesh(root, new THREE.PlaneGeometry(160, 160), material('#3b9eb0', { roughness: 0.55 }), 'Preview sea', [0, -3.8, 0], false);
     water.rotation.x = -Math.PI / 2;
     animated.push({ object: water, type: 'water', baseY: -3.8 });
     for (let i = 0; i < 3; i += 1) {

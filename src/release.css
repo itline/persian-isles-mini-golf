@@ -1,14 +1,16 @@
 /* Explore: an ivory folio and one generous, tactile miniature. */
-:root{--cream:#f9f3e6;--coral:#d85e49;--ink:#214b4a;--muted:#60766b}
+:root{--cream:#f9f3e6;--coral:#b34c3c;--ink:#214b4a;--muted:#60766b}
 .menu{background:none}
-.menu .brand{left:38px;top:24px;font-size:12px;letter-spacing:.09em;color:#faf4df;text-shadow:0 1px 8px #174b4b50}
+.menu .brand{left:38px;top:18px;letter-spacing:.02em;color:var(--ink);text-shadow:none;align-items:center;max-width:calc(100% - 40px);gap:10px}.brand-icon{width:38px;height:38px;flex:none}.brand-copy{display:flex;flex-direction:column;align-items:flex-start}.brand-name{font:400 30px/1 Georgia,serif;letter-spacing:-.025em;white-space:nowrap}.brand-slogan{display:block;font:700 9px/1.2 'Courier New',monospace;letter-spacing:.12em;margin-top:5px;color:var(--muted);white-space:nowrap}
 .menu .hero-copy{box-sizing:border-box;left:28px;top:83px;width:374px;max-height:calc(100dvh - 162px);padding:26px 24px 22px;background:#f9f3e6;border:1px solid #fff9eb;border-radius:16px;box-shadow:0 15px 40px #154e4e24,0 2px 0 #d6c9ad;scrollbar-color:#c3c5ae transparent}
-.menu .hero-copy h1{font-size:43px;line-height:1.02;max-width:280px;margin-bottom:14px;letter-spacing:-.04em}
+.menu .hero-copy h1{font-size:32px;line-height:1.08;max-width:280px;margin-bottom:14px;letter-spacing:-.035em}
+.menu .hero-copy{touch-action:pan-y}
 .menu .lede{font-size:14px;line-height:1.55;min-height:0;max-width:300px;margin-bottom:20px;color:var(--muted)}
 .island-nav{margin-bottom:12px;gap:12px}.island-nav strong{font-size:30px;font-weight:400}.island-nav button{width:44px;height:44px;min-height:44px;background:#eee8d8;border-color:#c2c5ae}
 .island-switcher{gap:3px}.island-tab{padding:10px 2px 8px;border:0;background:#ecebdc;min-height:44px}.island-tab span{font-size:12px}.island-tab.selected{background:#275c56;box-shadow:0 2px 0 #173f3b}.island-tab .preview-dot{display:none}
 .island-availability{font-size:12px;padding:13px 0 12px;color:#7b6f56;line-height:1.4}
 .menu .primary{border-radius:7px;min-height:49px;font-size:14px;font-weight:600;background:var(--coral);box-shadow:0 3px 0 #a94937}
+#play{margin-top:16px}.play-icon{width:19px;height:19px;flex:0 0 auto}
 .journey-note{margin:25px 0 11px}.journey-note b{font-size:15px}.journey-note span{display:none}
 .level-grid{gap:6px}.level-button:not(:disabled){height:112px;min-height:112px;background:#f1efdd;border-color:#c9cbb4;border-radius:7px;padding:8px 8px 5px;box-shadow:0 2px 0 #d6d5bd}
 .level-button>span{font-size:20px;margin-bottom:3px}.level-button:not(:disabled) small{font-size:12px;white-space:nowrap;letter-spacing:-.02em;min-height:17px}.course-sketch{height:58px;margin:3px 0 -1px;filter:drop-shadow(0 2px 1px #365d4a22)}
@@ -21,6 +23,30 @@
 #cupCelebration{position:fixed;left:50%;top:30%;transform:translate(-50%,-50%);pointer-events:none;color:#fff7e6;font:38px Georgia,serif;text-shadow:0 3px 16px #214b4a66;z-index:4;opacity:0}
 #game.celebrating #cupCelebration{animation:cup-note .75s ease-out both}@keyframes cup-note{0%{opacity:0;transform:translate(-50%,-25%)}25%,65%{opacity:1}100%{opacity:0;transform:translate(-50%,-75%)}}
 @media(min-width:601px) and (max-width:1100px){.menu .brand{left:28px}.menu .hero-copy{left:20px;width:340px;top:76px;padding:22px 20px}.menu .hero-copy h1{font-size:39px}.menu-footer{left:28px}}
-@media(max-width:600px){.menu .brand{left:20px;top:18px;font-size:10px}.menu .hero-copy{left:14px;right:14px;top:auto;bottom:70px;width:auto;max-height:50dvh;padding:19px 20px 16px;background:#f9f3e6;border-radius:14px}.menu .hero-copy h1{font-size:34px;margin-bottom:10px;max-width:none}.menu .lede{display:none}.island-nav{margin-bottom:10px}.island-nav strong{font-size:27px}.island-tab span{font-size:12px}.island-availability{font-size:12px;padding:12px 0}.journey-note{margin-top:20px}.menu-footer{left:20px;right:20px;bottom:13px}.menu-footer>div{gap:10px;justify-content:space-between}.menu-footer button{font-size:11px}.zoom-controls{top:98px}.hud .hole-stat span{font-size:11px}.hud strong{font-size:27px}.shot-status{font-size:12px}}
+@media(max-width:1100px) and (orientation:portrait){.menu .brand{left:20px;top:18px;font-size:10px}.menu .hero-copy{left:14px;right:14px;top:43dvh;bottom:70px;width:auto;max-height:50dvh;padding:19px 20px 16px;background:#f9f3e6;border-radius:14px}.menu .hero-copy h1{font-size:34px;margin-bottom:10px;max-width:none}.menu .lede{display:none}.island-nav{margin-bottom:10px}.island-nav strong{font-size:27px}.island-tab span{font-size:12px}.island-availability{font-size:12px;padding:12px 0}.journey-note{margin-top:20px}.menu-footer{left:20px;right:20px;bottom:13px}.menu-footer>div{gap:10px;justify-content:space-between}.menu-footer button{font-size:11px}.zoom-controls{top:98px}.hud .hole-stat span{font-size:11px}.hud strong{font-size:27px}.shot-status{font-size:12px}}
 @media(max-height:560px) and (min-width:601px){.menu .brand{top:14px;font-size:10px}.menu .hero-copy{top:52px;left:18px;width:326px;max-height:calc(100dvh - 107px);padding:18px}.menu .hero-copy h1{font-size:32px;margin-bottom:10px}.menu .lede{display:none}.island-nav{margin-bottom:8px}.island-tab{min-height:44px}.island-availability{padding:10px 0;font-size:12px}.journey-note{margin-top:18px}.menu-footer{bottom:6px;left:28px}.menu-footer button{font-size:11px}.zoom-controls{top:80px}.hud strong{font-size:26px}}
 @media(prefers-reduced-motion:reduce){#game.celebrating #cupCelebration{animation:none;opacity:1}}
+/* Optional precision controls leave the default drag-to-putt view clear. */
+[hidden]{display:none!important}
+.manual-toggle{position:fixed;right:29px;bottom:30px;min-height:44px;padding:10px 16px;border:1px solid #fffdf3;border-radius:9px;background:var(--cream);color:var(--ink);box-shadow:0 3px 0 #d5cfb9}
+.manual-toggle[aria-expanded="true"]{display:none}
+.manual-controls{position:fixed;right:29px;bottom:30px}.manual-controls>.shot-controls{position:relative;right:auto;bottom:auto}
+.manual-close{position:absolute;right:3px;top:3px;width:44px;height:44px;background:transparent;color:var(--ink);font:24px/1 sans-serif;border-radius:8px}.manual-controls .shot-status{padding-right:30px;flex-wrap:wrap}.manual-controls .shot-status b{font-size:12px}.manual-controls #restartQuick{margin-left:12px}
+#game:has(#manualControls:not([hidden])) #hint{visibility:hidden}
+#gameMenuToggle{display:none;pointer-events:auto}
+.game-tools{pointer-events:auto}
+#sound svg{display:block;width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#sound{display:grid;place-items:center}#sound .sound-off,#sound .sound-mixed{display:none}#sound[data-audio="off"] .sound-off,#sound[data-audio="mixed"] .sound-mixed{display:block}
+@media(max-width:900px),(pointer:coarse) and (orientation:landscape){
+ #gameMenuToggle{display:block;width:44px;height:44px}
+ .game-tools{position:absolute;right:0;top:54px;padding:10px;background:var(--cream);border:1px solid #fffdf3;border-radius:12px;box-shadow:0 8px 24px #164b4a25;z-index:9}
+ .game-tools .top-actions{display:flex;gap:8px}.game-tools .circle-btn{width:44px;height:44px;min-width:44px}
+ .game-tools .zoom-controls{position:static;display:flex;margin-top:8px;box-shadow:none;border-top:1px solid #d5cfb9;border-radius:0;padding-top:8px;transform:none}
+ .game-tools .zoom-controls button{width:44px;height:44px;min-height:44px}
+ .manual-toggle{right:14px;bottom:17px;font-size:12px}
+ .manual-controls{right:14px;bottom:17px}
+}
+/* Brand recognition should not compete with an oversized task heading. */
+@media(min-width:601px) and (max-width:1100px){.menu .hero-copy h1{font-size:30px}}
+@media(max-width:1100px) and (orientation:portrait){.brand-name{font-size:clamp(23px,3.4vw,28px)}.brand-slogan{font-size:9px;letter-spacing:.035em}.brand-icon{width:32px;height:32px}.menu .hero-copy h1{font-size:28px}.menu .brand{top:16px;max-width:calc(100% - 40px)}}
+@media(max-height:560px) and (min-width:601px){.brand-name{font-size:26px}.brand-name small{font-size:8px;margin-top:3px}.menu .brand{top:9px}.menu .hero-copy{top:68px;max-height:calc(100dvh - 123px)}.menu .hero-copy h1{font-size:28px}}

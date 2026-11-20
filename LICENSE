@@ -1,0 +1,39 @@
+MIT License
+
+Copyright (c) 2026 itline
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Scope and exclusions
+--------------------
+This license covers original project code, tests, tools, documentation,
+procedural scene/course definitions, non-brand interface artwork and
+synthesized audio, except where another notice states otherwise.
+
+Third-party code and dependencies retain their respective licenses and
+copyright notices. See LICENSE.upstream, public/THIRD_PARTY_NOTICES.txt and
+public/DEPENDENCY_LICENSES.txt. This license does not relicense third-party
+material.
+
+Brand identity assets are excluded: the project logo/brand mark and
+public/favicon.svg are not licensed for reuse under this MIT grant.
+No trademark license or permission to imply affiliation or endorsement is
+granted for "Persian Isles Mini Golf", "Persian Isles Golf" or "itline".
+See BRANDING.md for the separate brand policy. These exclusions do not add
+restrictions to the MIT-licensed code and non-brand assets.

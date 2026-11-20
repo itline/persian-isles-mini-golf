@@ -7,7 +7,7 @@ test('five island previews and ten Hormuz slots distinguish unpublished content'
  await expect(page.locator('.level-button:not(:disabled)')).toHaveCount(3);
  for(const id of ['qeshm','kish','khark','hengam']){
   await page.locator(`[data-island="${id}"]`).click();
-  await expect(page.locator('#islandAvailability')).toHaveText('Coming soon · Preview only');
+  await expect(page.locator('#islandAvailability')).toBeHidden();await expect(page.locator('#play')).toHaveText('Preview only');
   await expect(page.locator('#play')).toBeDisabled();
   await page.waitForFunction(id=>window.__golf.state().preview===id,id);
  }

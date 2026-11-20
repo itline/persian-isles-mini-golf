@@ -1,4 +1,4 @@
-// Original locally synthesized score: no recordings, vocals, downloads or licenses.
+// Original synthesizer score; no third-party recordings or downloads.
 const PREFERENCE_KEY = 'persian-isles-golf.audio.v1';
 const ISLAND_CONFIG = {
   hormuz: { root: 146.83, scale: [0, 2, 4, 7, 9], phrase: [0, 2, 1, 4, 3, 1, 2, 0], beat: 1.8, wave: 'sine', cutoff: 1050 },
@@ -18,8 +18,11 @@ function defaultStorage() {
 export function audioPreferences(storage = defaultStorage()) {
   try {
     const value = JSON.parse(storage?.getItem(PREFERENCE_KEY) ?? 'null');
-    return { music: value?.music === true, effects: value?.effects === true };
-  } catch { return { music: false, effects: false }; }
+    return {
+      music: typeof value?.music === 'boolean' ? value.music : true,
+      effects: typeof value?.effects === 'boolean' ? value.effects : true,
+    };
+  } catch { return { music: true, effects: true }; }
 }
 
 export function writeAudioPreferences(storage = defaultStorage(), prefs = {}) {
@@ -28,7 +31,7 @@ export function writeAudioPreferences(storage = defaultStorage(), prefs = {}) {
   } catch { /* Storage policy must not break gameplay. */ }
 }
 
-/** Call unlock() directly inside a trusted pointer/key gesture. Defaults are silent. */
+/** Call unlock() directly inside a trusted pointer/key gesture; no context is created before it. */
 export function createCoastalAudio({ storage = defaultStorage(), AudioContextClass } = {}) {
   const prefs = audioPreferences(storage);
   let island = 'hormuz';
@@ -123,7 +126,8 @@ export function createCoastalAudio({ storage = defaultStorage(), AudioContextCla
     const seaGain = context.createGain(); seaGain.gain.value = 0.035;
     sea.connect(seaGain).connect(filter); sea.start(context.currentTime);
     layer.sources.add(sea); layer.nodes.add(sea); layer.nodes.add(seaGain);
-    ramp(bus.gain, 0.22, 0.55);
+    // +7.96 dB at the mix buses only; preserve the score, timbres and master headroom.
+    ramp(bus.gain, 0.55, 0.55);
   };
   function schedule() {
     if (!shouldPlay() || !layer) return;
@@ -145,7 +149,7 @@ export function createCoastalAudio({ storage = defaultStorage(), AudioContextCla
   }
   const reconcile = () => {
     if (!context || disposed) return;
-    ramp(effectsBus.gain, prefs.effects && !paused && !hidden ? 0.24 : 0, 0.08);
+    ramp(effectsBus.gain, prefs.effects && !paused && !hidden ? 0.60 : 0, 0.08);
     if (shouldPlay()) {
       if (!layer) startLayer();
       schedule();

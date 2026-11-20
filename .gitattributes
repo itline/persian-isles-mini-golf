@@ -1,0 +1,5 @@
+# Preserve upstream license text exactly, including its original line endings.
+marketing/assets/*-OFL.txt -whitespace
+# These are export sources, not the implementation language of the game.
+marketing/sources/*.html linguist-generated=true
+package-lock.json linguist-generated=true

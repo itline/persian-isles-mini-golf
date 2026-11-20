@@ -1,0 +1,65 @@
+{
+  "browser": "Chrome via Playwright",
+  "decoded": [
+    {
+      "file": "coastal-pulse.wav",
+      "duration": 30,
+      "channels": 2,
+      "peak": 0.365142822265625,
+      "rms": 0.09330465643459461,
+      "nonzero": 2644865
+    },
+    {
+      "file": "coastal-pulse.mp3",
+      "duration": 30,
+      "channels": 2,
+      "peak": 0.33401474356651306,
+      "rms": 0.09049552073993519,
+      "nonzero": 2646000
+    },
+    {
+      "file": "sunlit-marimba.wav",
+      "duration": 30,
+      "channels": 2,
+      "peak": 0.6392101645469666,
+      "rms": 0.08737834211549526,
+      "nonzero": 2334922
+    },
+    {
+      "file": "sunlit-marimba.mp3",
+      "duration": 30,
+      "channels": 2,
+      "peak": 0.6198734641075134,
+      "rms": 0.08471954874664298,
+      "nonzero": 2510472
+    },
+    {
+      "file": "tide-and-bells.wav",
+      "duration": 30,
+      "channels": 2,
+      "peak": 0.335693359375,
+      "rms": 0.0869767752320111,
+      "nonzero": 2622310
+    },
+    {
+      "file": "tide-and-bells.mp3",
+      "duration": 30,
+      "channels": 2,
+      "peak": 0.32571303844451904,
+      "rms": 0.08435962689294468,
+      "nonzero": 2646000
+    }
+  ],
+  "tests": {
+    "noAutoplay": true,
+    "nativeControls": true,
+    "keyboardPlay": true,
+    "playbackAdvances": true,
+    "onlyOnePlaying": true,
+    "nativePlayEventPausesOthers": true,
+    "pauseAll": true,
+    "desktopOverflow": false,
+    "mobileOverflow": false,
+    "pageErrors": []
+  }
+}
