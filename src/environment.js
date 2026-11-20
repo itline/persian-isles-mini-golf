@@ -96,11 +96,15 @@ export function createEnvironment(scene) {
   function ringWall(name, lower, upper, lowerY, upperY, palette) {
     const positions = [];
     const colors = [];
+    // Shared boundary samples keep strata watertight. Only internal seams vary;
+    // the top/course alignment, bottom edge and all x/z footprints stay fixed.
+    const seamY = (y, index) => (y === -0.35 || y === -3.4) ? y
+      : y + Math.sin(index * 1.31) * 0.075 + Math.sin(index * 2.7) * 0.025;
     for (let i = 0; i < lower.length; i += 1) {
       const j = (i + 1) % lower.length;
       const vertices = [
-        [lower[i][0], lowerY, lower[i][1]], [upper[i][0], upperY, upper[i][1]],
-        [upper[j][0], upperY, upper[j][1]], [lower[j][0], lowerY, lower[j][1]],
+        [lower[i][0], seamY(lowerY, i), lower[i][1]], [upper[i][0], seamY(upperY, i), upper[i][1]],
+        [upper[j][0], seamY(upperY, j), upper[j][1]], [lower[j][0], seamY(lowerY, j), lower[j][1]],
       ];
       const shade = new THREE.Color(palette[i % palette.length]);
       for (const index of [0, 1, 2, 0, 2, 3]) {
@@ -148,7 +152,8 @@ export function createEnvironment(scene) {
       ];
     }));
     for (let level = 0; level < vertices.length - 1; level += 1) {
-      const hex = level === 1 || level === 4 ? palette[(seed + 1) % palette.length] : palette[level % palette.length];
+      const hex = level === 1 ? SALT[seed % SALT.length]
+        : level === 4 ? palette[(seed + 1) % palette.length] : palette[level % palette.length];
       for (let side = 0; side < sides; side += 1) {
         const next = (side + 1) % sides;
         const shade = new THREE.Color(hex).multiplyScalar(0.91 + rng() * 0.14);
@@ -297,12 +302,21 @@ export function createEnvironment(scene) {
   const deck = patch(boat, 'Ochre boat deck', [[0, 1.03], [0.35, 0.4], [0.32, -0.66], [0.19, -0.86], [-0.19, -0.86], [-0.32, -0.66], [-0.35, 0.4]], 0.35, '#d7ad70');
   deck.receiveShadow = true;
   for (const z of [-0.45, 0.23]) box(boat, 'Boat bench', [0.72, 0.065, 0.15], [0, 0.41, z], '#f0d5a6');
+  for (const x of [-0.36, 0.36]) box(boat, 'Dark boat gunwale', [0.075, 0.11, 1.45], [x, 0.40, 0.02], '#0f5f6b', false);
   const mast = mesh(boat, new THREE.CylinderGeometry(0.02, 0.035, 1.5, 5), surface('#a78256'), 'Short boat mast', [0, 1.05, -0.1]);
   mast.rotation.z = -0.04;
   const sailGeometry = new THREE.BufferGeometry();
   sailGeometry.setAttribute('position', new THREE.Float32BufferAttribute([0.03, 1.72, -0.1, 0.03, 0.7, -0.1, 0.61, 0.75, -0.1], 3));
   sailGeometry.computeVertexNormals();
   mesh(boat, sailGeometry, surface('#f4e5c7', { side: THREE.DoubleSide }), 'Cream triangular sail');
+
+  // A small windsock-like pennant pivots at its hoist, independently of the hull.
+  const pennantShape = new THREE.Shape();
+  pennantShape.moveTo(0, 0);
+  pennantShape.lineTo(0.52, -0.08);
+  pennantShape.lineTo(0, -0.21);
+  pennantShape.closePath();
+  const pennant = mesh(boat, new THREE.ShapeGeometry(pennantShape), surface('#ce633e', { side: THREE.DoubleSide }), 'Boat pennant', [0, 1.86, -0.1]);
 
   const sea = mesh(root, new THREE.PlaneGeometry(220, 220), surface('#71b6bf', { roughness: 0.61 }), 'Seawater', [0, -3.8, 0], false);
   sea.rotation.x = -Math.PI / 2;
@@ -342,12 +356,13 @@ export function createEnvironment(scene) {
       if (disposed) return;
       const time = Number.isFinite(t) ? t : 0;
       foamRings.forEach((foam, i) => {
-        const pulse = 1 + Math.sin(time * 0.45 + i * 1.4) * 0.007;
+        const pulse = 1 + (Math.sin(time * 0.45 + i * 1.4) - Math.sin(i * 1.4)) * 0.007;
         foam.scale.set(pulse, 1, pulse);
-        foam.material.opacity = (i ? 0.20 : 0.4) + Math.sin(time * 0.65 + i) * 0.025;
+        foam.material.opacity = (i ? 0.20 : 0.4) + (Math.sin(time * 0.65 + i) - Math.sin(i)) * 0.025;
       });
-      boat.position.y = -3.64 + Math.sin(time * 1.05) * 0.035;
-      boat.rotation.z = Math.sin(time * 0.8) * 0.018;
+      boat.position.y = -3.64 + Math.sin(time * 1.05) * 0.09;
+      boat.rotation.z = Math.sin(time * 0.8) * 0.05;
+      pennant.rotation.z = Math.sin(time * 1.7) * 0.16;
     },
     dispose() {
       if (disposed) return;

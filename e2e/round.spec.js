@@ -6,9 +6,9 @@ test('a whole Hormuz round can be completed with real keyboard input; best persi
  await page.goto('http://127.0.0.1:4181/?qa');await page.locator('[data-level="3"]').click();await page.waitForTimeout(900);
  async function shot(x,z,power){const s=await page.evaluate(()=>window.__golf.state());const desired=Math.atan2(x-s.ball.x,-(z-s.ball.z));await page.locator('#scene').focus();let delta=desired-s.angle;while(delta>Math.PI)delta-=Math.PI*2;while(delta< -Math.PI)delta+=Math.PI*2;for(let i=0;i<Math.round(Math.abs(delta)/.055);i++)await page.keyboard.press(delta>0?'ArrowRight':'ArrowLeft');await page.locator('#power').evaluate((el,p)=>{el.value=String(p);el.dispatchEvent(new Event('input',{bubbles:true}));},power);await page.locator('#scene').focus();await page.keyboard.press('Space');await page.waitForTimeout(700);await page.waitForFunction(()=>['aiming','in_hole'].includes(window.__golf.state().phase),null,{timeout:20000});}
  await shot(-6.1,-4.2,88);await shot(-3,-4.2,47);await shot(6,-4.2,78);await shot(6,5.4,82);
- await expect(page.locator('#resultPanel')).toBeVisible();await expect(page.locator('#resultStrokes')).toHaveText('4');await expect(page.locator('#best')).toHaveText('4');
- await page.getByRole('button',{name:'Find a better line'}).click();await expect(page.locator('#strokes')).toHaveText('0');await expect(page.locator('#best')).toHaveText('4');
- await page.reload();await page.locator('[data-level="3"]').click();await expect(page.locator('#best')).toHaveText('4');expect(errors).toEqual([]);expect(external).toEqual([]);
+ await expect(page.locator('#resultPanel')).toBeVisible();await expect(page.locator('#resultStrokes')).toHaveText('4');await expect(page.locator('#resultBest')).toHaveText('4');
+ await page.getByRole('button',{name:/Find a better line/}).click();await expect(page.locator('#strokes')).toHaveText('0');await expect(page.locator('#resultBest')).toHaveText('4');
+ await page.reload();await page.locator('[data-level="3"]').click();expect(await page.evaluate(()=>localStorage.getItem('persian-isles-golf:hormuz:level-3:v2'))).toBe('4');expect(errors).toEqual([]);expect(external).toEqual([]);
 });
 
 test('real pointer drag fires a shot and pointercancel does not',async({page})=>{

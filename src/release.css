@@ -1,0 +1,26 @@
+/* Explore: an ivory folio and one generous, tactile miniature. */
+:root{--cream:#f9f3e6;--coral:#d85e49;--ink:#214b4a;--muted:#60766b}
+.menu{background:none}
+.menu .brand{left:38px;top:24px;font-size:12px;letter-spacing:.09em;color:#faf4df;text-shadow:0 1px 8px #174b4b50}
+.menu .hero-copy{box-sizing:border-box;left:28px;top:83px;width:374px;max-height:calc(100dvh - 162px);padding:26px 24px 22px;background:#f9f3e6;border:1px solid #fff9eb;border-radius:16px;box-shadow:0 15px 40px #154e4e24,0 2px 0 #d6c9ad;scrollbar-color:#c3c5ae transparent}
+.menu .hero-copy h1{font-size:43px;line-height:1.02;max-width:280px;margin-bottom:14px;letter-spacing:-.04em}
+.menu .lede{font-size:14px;line-height:1.55;min-height:0;max-width:300px;margin-bottom:20px;color:var(--muted)}
+.island-nav{margin-bottom:12px;gap:12px}.island-nav strong{font-size:30px;font-weight:400}.island-nav button{width:44px;height:44px;min-height:44px;background:#eee8d8;border-color:#c2c5ae}
+.island-switcher{gap:3px}.island-tab{padding:10px 2px 8px;border:0;background:#ecebdc;min-height:44px}.island-tab span{font-size:12px}.island-tab.selected{background:#275c56;box-shadow:0 2px 0 #173f3b}.island-tab .preview-dot{display:none}
+.island-availability{font-size:12px;padding:13px 0 12px;color:#7b6f56;line-height:1.4}
+.menu .primary{border-radius:7px;min-height:49px;font-size:14px;font-weight:600;background:var(--coral);box-shadow:0 3px 0 #a94937}
+.journey-note{margin:25px 0 11px}.journey-note b{font-size:15px}.journey-note span{display:none}
+.level-grid{gap:6px}.level-button:not(:disabled){height:112px;min-height:112px;background:#f1efdd;border-color:#c9cbb4;border-radius:7px;padding:8px 8px 5px;box-shadow:0 2px 0 #d6d5bd}
+.level-button>span{font-size:20px;margin-bottom:3px}.level-button:not(:disabled) small{font-size:12px;white-space:nowrap;letter-spacing:-.02em;min-height:17px}.course-sketch{height:58px;margin:3px 0 -1px;filter:drop-shadow(0 2px 1px #365d4a22)}
+.level-button:disabled{height:42px;min-height:42px;padding:7px 6px;background:#e9e9da;border-color:#d4d8c3;border-radius:5px;box-shadow:none}.level-button:disabled>span{font-size:16px;color:#728374}.future-marker{font-size:11px;letter-spacing:0;margin-top:4px}
+.menu-footer{left:38px;right:28px;bottom:16px}.menu-footer>div{margin-inline-start:0;gap:22px}.menu-footer button{font-size:14px;color:#214b4a;text-shadow:none;min-height:44px}
+.menu.scenery-only .hero-copy{visibility:hidden}.menu.scenery-only .brand{background:transparent}.menu.scenery-only .menu-footer{background:#f9f3e6;padding:0 14px}.menu.scenery-only .menu-footer button{color:var(--ink);text-shadow:none}
+.zoom-controls{border-radius:9px;background:#f9f3e6;box-shadow:0 3px 0 #d5cfb9}.zoom-controls button{font-size:24px;font-weight:400}
+.hud{border-radius:10px;background:#f9f3e6;box-shadow:0 3px 0 #d5cfb9}.hud .hole-stat span{font-size:14px}.hud strong{font-size:34px}.hud small{font-size:11px;letter-spacing:.04em}
+.shot-controls{border-radius:12px;background:#f9f3e6;box-shadow:0 4px 0 #d5cfb9}.shot-status{font-size:13px}.shot-controls[data-phase="rolling"] .ready-dot{background:#dc9865;box-shadow:none}.shot-controls[data-phase="holed"] .ready-dot{background:#d85e49}.putt-btn{background:var(--coral);border-radius:6px}
+#cupCelebration{position:fixed;left:50%;top:30%;transform:translate(-50%,-50%);pointer-events:none;color:#fff7e6;font:38px Georgia,serif;text-shadow:0 3px 16px #214b4a66;z-index:4;opacity:0}
+#game.celebrating #cupCelebration{animation:cup-note .75s ease-out both}@keyframes cup-note{0%{opacity:0;transform:translate(-50%,-25%)}25%,65%{opacity:1}100%{opacity:0;transform:translate(-50%,-75%)}}
+@media(min-width:601px) and (max-width:1100px){.menu .brand{left:28px}.menu .hero-copy{left:20px;width:340px;top:76px;padding:22px 20px}.menu .hero-copy h1{font-size:39px}.menu-footer{left:28px}}
+@media(max-width:600px){.menu .brand{left:20px;top:18px;font-size:10px}.menu .hero-copy{left:14px;right:14px;top:auto;bottom:70px;width:auto;max-height:50dvh;padding:19px 20px 16px;background:#f9f3e6;border-radius:14px}.menu .hero-copy h1{font-size:34px;margin-bottom:10px;max-width:none}.menu .lede{display:none}.island-nav{margin-bottom:10px}.island-nav strong{font-size:27px}.island-tab span{font-size:12px}.island-availability{font-size:12px;padding:12px 0}.journey-note{margin-top:20px}.menu-footer{left:20px;right:20px;bottom:13px}.menu-footer>div{gap:10px;justify-content:space-between}.menu-footer button{font-size:11px}.zoom-controls{top:98px}.hud .hole-stat span{font-size:11px}.hud strong{font-size:27px}.shot-status{font-size:12px}}
+@media(max-height:560px) and (min-width:601px){.menu .brand{top:14px;font-size:10px}.menu .hero-copy{top:52px;left:18px;width:326px;max-height:calc(100dvh - 107px);padding:18px}.menu .hero-copy h1{font-size:32px;margin-bottom:10px}.menu .lede{display:none}.island-nav{margin-bottom:8px}.island-tab{min-height:44px}.island-availability{padding:10px 0;font-size:12px}.journey-note{margin-top:18px}.menu-footer{bottom:6px;left:28px}.menu-footer button{font-size:11px}.zoom-controls{top:80px}.hud strong{font-size:26px}}
+@media(prefers-reduced-motion:reduce){#game.celebrating #cupCelebration{animation:none;opacity:1}}

@@ -9,21 +9,36 @@ async function shot(page,x,z,power){
 }
 test('all three holes complete by actual inputs; journey postcard totals and records persist',async({page})=>{
  test.setTimeout(140000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>localStorage.setItem('persian-isles-golf:hormuz:level-1:v2','5'));
  await page.goto('http://127.0.0.1:4181/?qa');await page.locator('#play').click();await page.waitForTimeout(700);
  await shot(page,-6.1,-.8,74);await expect(page.locator('#resultStrokes')).toHaveText('1');
+ await expect(page.locator('#resultPar')).toHaveText('2');await expect(page.locator('#resultBest')).toHaveText('1');await expect(page.locator('#resultPreviousBest')).toHaveText('5');
+ await expect(page.locator('#recordNote')).toContainText('New personal best');
+ await expect(page.locator('#game')).toHaveClass(/celebrating/);
+ await expect(page.locator('.shot-controls')).toHaveAttribute('data-phase','holed');
  await page.locator('#resultNext').click();await expect(page.locator('#levelName')).toHaveText('Salt Valley');
- await expect(page.locator('#best')).toHaveText('—');
  await shot(page,-6.1,-4.2,83);await shot(page,2.9,-4.2,77);await expect(page.locator('#resultStrokes')).toHaveText('2');
+ await expect(page.locator('#resultPar')).toHaveText('3');await expect(page.locator('#resultBest')).toHaveText('2');await expect(page.locator('#resultPreviousBest')).toHaveText('—');
  await page.locator('#resultNext').click();await expect(page.locator('#levelName')).toHaveText('Rainbow Run');
- await expect(page.locator('#best')).toHaveText('—');
  await shot(page,-6.1,-4.2,88);await shot(page,-3,-4.2,47);await shot(page,6,-4.2,78);await shot(page,6,5.4,82);
  await expect(page.locator('#resultStrokes')).toHaveText('4');
+ await expect(page.locator('#resultPar')).toHaveText('4');await expect(page.locator('#resultBest')).toHaveText('4');
  await page.getByRole('button',{name:'See journey results'}).click();
  await expect(page.getByRole('heading',{name:'Your Hormuz postcard.'})).toBeVisible();
- await expect(page.locator('#resultStrokes')).toHaveText('7');await expect(page.locator('#journeyResults>div')).toHaveCount(3);
+ await expect(page.locator('#resultStrokes')).toHaveText('7');await expect(page.locator('#resultPar')).toHaveText('9');await expect(page.locator('#resultBest')).toHaveText('7');
+ await expect(page.locator('#journeyResults tbody tr')).toHaveCount(3);
+ await expect(page.locator('#journeyResults thead')).toHaveText(/Hole.*Strokes.*Par.*Best/);
+ await expect(page.locator('#journeyResults tbody tr').nth(0)).toHaveText(/Red Shore.*1.*2.*1/);
+ await expect(page.locator('#journeyResults tbody tr').nth(1)).toHaveText(/Salt Valley.*2.*3.*2/);
+ await expect(page.locator('#journeyResults tbody tr').nth(2)).toHaveText(/Rainbow Run.*4.*4.*4/);
+ await expect(page.locator('#journeyResults tfoot th').last()).toHaveText('—');
+ await expect(page.locator('#resultPanel .eyebrow')).toHaveText('HORMUZ / JOURNEY COMPLETE');
+ await expect(page.locator('#journeyResults tfoot')).toContainText('Total');await expect(page.locator('#recordNote')).toContainText('Journey best: 7');
  expect(await page.evaluate(()=>window.__golf.state().journey)).toEqual([1,2,4]);
- await page.getByRole('button',{name:'Play the journey again'}).click();await expect(page.locator('#strokes')).toHaveText('0');await expect(page.locator('#best')).toHaveText('1');
- await page.reload();await page.locator('[data-level="2"]').click();await expect(page.locator('#best')).toHaveText('2');
+ await page.getByRole('button',{name:'Play the journey again'}).click();await expect(page.locator('#strokes')).toHaveText('0');
+ expect(await page.evaluate(()=>localStorage.getItem('persian-isles-golf:hormuz:level-1:v2'))).toBe('1');
+ await page.reload();await page.locator('[data-level="2"]').click();
+ expect(await page.evaluate(()=>localStorage.getItem('persian-isles-golf:hormuz:level-2:v2'))).toBe('2');
  expect(errors).toEqual([]);
 });
 

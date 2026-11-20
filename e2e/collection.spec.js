@@ -24,7 +24,7 @@ test('zoom is real, bounded, aim-safe and has an overview reset',async({page})=>
  expect((await page.evaluate(()=>window.__golf.state())).zoom).toBeGreaterThan(1);
  for(let i=0;i<15;i++)await page.mouse.wheel(0,-150);
  await page.waitForTimeout(600);expect((await page.evaluate(()=>window.__golf.state())).zoom).toBeLessThanOrEqual(1.851);
- await page.getByRole('button',{name:'Full course view'}).click();await page.waitForTimeout(600);
+ await page.getByRole('button',{name:'Reset camera'}).click();await page.waitForTimeout(600);
  expect((await page.evaluate(()=>window.__golf.state())).zoom).toBeCloseTo(1,1);
  await expect(page.locator('#strokes')).toHaveText('0');
 });

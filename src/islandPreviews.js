@@ -24,6 +24,7 @@ function createIslandPreview(scene, id) {
   const materials = new Set();
   const materialCache = new Map();
   const animated = [];
+  let palmBladeGeometry;
   let disposed = false;
 
   function material(hex, options = {}) {
@@ -159,14 +160,23 @@ function createIslandPreview(scene, id) {
     parent.add(tree);
     const trunk = addMesh(tree, new THREE.CylinderGeometry(0.09, 0.15, 2.45, 7), material('#9b7049'), 'Wind-bent palm trunk', [0, 1.22, 0]);
     trunk.rotation.z = -0.09;
-    for (let i = 0; i < 8; i += 1) {
-      const leaf = addMesh(tree, new THREE.ConeGeometry(0.11, 1.15, 4), material(i % 2 ? '#4b886b' : '#6e9c69'), 'Angular palm frond', [0, 2.42, 0]);
-      leaf.scale.set(1, 1, 0.42);
-      leaf.rotation.z = Math.PI / 2;
-      leaf.rotation.y = i / 8 * TAU;
-      leaf.translateX(0.55);
-      leaf.translateY(0.09);
+    const crown = new THREE.Group();
+    crown.name = `${name} wind crown`;
+    crown.position.set(-0.11, 2.42, 0);
+    tree.add(crown);
+    if (!palmBladeGeometry) {
+      const bladeShape = new THREE.Shape();
+      [[0, 0], [0.42, 0.2], [0.95, 0.08], [1.6, -0.38], [0.9, -0.09], [0.37, -0.02]].forEach(([x, y], index) => index ? bladeShape.lineTo(x, y) : bladeShape.moveTo(x, y));
+      bladeShape.closePath();
+      palmBladeGeometry = new THREE.ExtrudeGeometry(bladeShape, { depth: 0.045, bevelEnabled: false, steps: 1 });
     }
+    for (let i = 0; i < 8; i += 1) {
+      const leaf = addMesh(crown, palmBladeGeometry, material(i % 2 ? '#34745a' : '#78a76c'), 'Swept palm frond');
+      leaf.rotation.y = i / 8 * TAU;
+      leaf.rotation.z = i % 2 ? 0.13 : -0.04;
+      leaf.scale.z = 2.4;
+    }
+    if (id === 'kish') animated.push({ object: crown, type: 'palm', phase: z * 0.22 });
     return tree;
   }
 
@@ -196,6 +206,15 @@ function createIslandPreview(scene, id) {
     const trail = box(root, 'Qeshm shaded footbridge', [4.4, 0.12, 0.3], [0, 0.24, 1.2], '#906044');
     trail.rotation.y = 0.08;
     for (const x of [-1.8, -0.9, 0, 0.9, 1.8]) box(root, 'Bridge upright', [0.08, 0.65, 0.08], [x, -0.05, 1.05], '#c69a63');
+    const skiff = group('Qeshm tidal skiff', [-1.2, -3.93, 9.55]);
+    const hull = extruded(skiff, 'Qeshm indigo pointed hull', [[-1.35, 0], [-0.8, -0.36], [0.8, -0.32], [1.35, 0], [0.8, 0.32], [-0.8, 0.36]], 0.42, [0, 0, 0], '#246576');
+    hull.rotation.x = -Math.PI / 2;
+    box(skiff, 'Qeshm honey timber deck', [1.8, 0.06, 0.5], [0, 0.43, 0], '#e0b273');
+    for (const x of [-0.55, 0.35]) box(skiff, 'Qeshm skiff cross bench', [0.12, 0.08, 0.66], [x, 0.5, 0], '#f6db9e');
+    const oar = box(skiff, 'Qeshm resting fishing oar', [2.15, 0.055, 0.09], [0.1, 0.58, 0], '#a16b43');
+    oar.rotation.y = -0.34;
+    cylinder(skiff, 'Qeshm woven fishing basket', 0.17, 0.24, [-0.1, 0.58, 0], '#c28c50', 8);
+    animated.push({ object: skiff, type: 'tidal-skiff', baseY: skiff.position.y });
     sea();
   }
 
@@ -273,8 +292,11 @@ function createIslandPreview(scene, id) {
       slab.rotation.y = (i % 2 ? -1 : 1) * 0.04;
     }
     for (const x of [-0.55, 0.55]) cylinder(jetty, 'Dark mooring post', 0.1, 1.25, [x, -0.45, 2.2], '#4c514c', 7);
-    const flag = box(root, 'Khark lighthouse signal flag', [0.04, 0.42, 0.7], [-4.45, 3.55, 5.7], '#c9644c');
-    flag.rotation.y = -0.22;
+    cylinder(root, 'Khark signal pennant staff', 0.035, 1.3, [-4.45, 3.1, 5.7], '#78624b', 6);
+    const flag = extruded(root, 'Khark lighthouse signal flag', [[0, 0.2], [1.15, 0.16], [0.83, -0.02], [1.15, -0.24], [0, -0.24]], 0.035, [-4.45, 3.55, 5.7], '#d97450');
+    flag.rotation.y = -Math.PI / 2 - 0.22;
+    flag.geometry.attributes.position.setUsage(THREE.DynamicDrawUsage);
+    animated.push({ object: flag, type: 'pennant', baseline: flag.geometry.attributes.position.array.slice() });
     const boat = group('Khark pilot skiff', [6.2, -3.65, 8.0]);
     const hull = extruded(boat, 'Khark skiff hull', [[-0.9, 0], [-0.55, 0.32], [0.7, 0.25], [0.95, 0], [0.64, -0.24], [-0.55, -0.28]], 0.36, [0, 0, 0], '#3e7480');
     hull.rotation.x = Math.PI / 2;
@@ -304,7 +326,7 @@ function createIslandPreview(scene, id) {
     fin.rotation.x = Math.PI;
     const tail = box(dolphin, 'Dolphin tail', [0.18, 0.05, 0.55], [-0.55, -0.02, 0], '#356c87');
     tail.rotation.y = 0.5;
-    animated.push({ object: dolphin, type: 'dolphin', baseY: -3.38, phase });
+    animated.push({ object: dolphin, type: 'dolphin', baseY: -3.38, baseX: x, phase, tail });
   }
 
   function hengam() {
@@ -336,18 +358,41 @@ function createIslandPreview(scene, id) {
     root,
     update(t = 0) {
       if (disposed) return;
-      const time = Number.isFinite(t) ? t : 0;
+      // Every angular frequency is a multiple of 0.05; wrap at their common
+      // period before multiplication so even extreme finite timestamps stay safe.
+      const time = Number.isFinite(t) ? t % (TAU * 20) : 0;
       animated.forEach((item) => {
         const phase = item.phase || 0;
         if (item.type === 'water') item.object.position.y = item.baseY + Math.sin(time * 0.7) * 0.012;
-        if (item.type === 'bob') item.object.position.y = item.baseY + Math.sin(time * 1.1 + phase) * 0.035;
+        if (item.type === 'palm') {
+          item.object.rotation.z = (Math.sin(time * 1.3 + phase) - Math.sin(phase)) * 0.075;
+          item.object.rotation.x = (Math.sin(time * 0.9 + phase) - Math.sin(phase)) * 0.045;
+        }
+        if (item.type === 'tidal-skiff') {
+          item.object.position.y = item.baseY + Math.sin(time * 1.15) * 0.09;
+          item.object.rotation.z = Math.sin(time * 0.85) * 0.065;
+        }
+        if (item.type === 'bob') item.object.position.y = item.baseY + (Math.sin(time * 1.1 + phase) - Math.sin(phase)) * 0.035;
+        if (item.type === 'pennant') {
+          const position = item.object.geometry.attributes.position;
+          for (let i = 0; i < position.count; i += 1) {
+            const x = item.baseline[i * 3];
+            position.array[i * 3 + 2] = item.baseline[i * 3 + 2] + x * 0.12 * (Math.sin(time * 3.4 - x * 2) - Math.sin(-x * 2));
+          }
+          position.needsUpdate = true;
+          item.object.geometry.computeVertexNormals();
+          item.object.geometry.computeBoundingSphere();
+        }
         if (item.type === 'boat') {
-          item.object.position.y = item.baseY + Math.sin(time * 0.9 + phase) * 0.06;
-          item.object.rotation.z = Math.sin(time * 0.65 + phase) * 0.028;
+          item.object.position.y = item.baseY + (Math.sin(time * 0.9 + phase) - Math.sin(phase)) * 0.09;
+          item.object.rotation.z = (Math.sin(time * 0.65 + phase) - Math.sin(phase)) * 0.055;
         }
         if (item.type === 'dolphin') {
-          item.object.position.y = item.baseY + Math.abs(Math.sin(time * 1.35 + phase)) * 0.42;
-          item.object.rotation.z = Math.sin(time * 1.35 + phase) * 0.13;
+          const stroke = Math.sin(time * 1.35 + phase) - Math.sin(phase);
+          item.object.position.x = item.baseX + (Math.sin(time * 0.75 + phase) - Math.sin(phase)) * 0.34;
+          item.object.position.y = item.baseY + stroke * 0.32;
+          item.object.rotation.z = stroke * 0.18;
+          item.tail.rotation.z = (Math.sin(time * 3.4 + phase) - Math.sin(phase)) * 0.3;
         }
       });
     },
