@@ -28,9 +28,29 @@ jobs:
         run: npm run build
       - name: Install Playwright Chrome
         run: npx playwright install --with-deps chrome
+      - name: Install and verify Mesa/Xvfb dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb xauth mesa-utils libgl1-mesa-dri libegl-mesa0 libglx-mesa0
+          command -v Xvfb
+          command -v xvfb-run
+          command -v glxinfo
+          dpkg-query -W xvfb xauth mesa-utils libgl1-mesa-dri libegl-mesa0 libglx-mesa0
+          LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe xvfb-run -a glxinfo -B
       - name: Start development server
         run: npm run dev -- --host 127.0.0.1 --port 4181 > "$RUNNER_TEMP/persian-isles-vite.log" 2>&1 &
       - name: Wait for development server
         run: for i in {1..30}; do curl --fail --silent http://127.0.0.1:4181/ && exit 0; sleep 1; done; cat "$RUNNER_TEMP/persian-isles-vite.log"; exit 1
-      - name: Run browser tests
-        run: npm run test:e2e -- --workers=1
+      - name: Record previous headless renderer baseline
+        continue-on-error: true
+        run: timeout --signal=TERM --kill-after=10s 120s node scripts/renderer-telemetry.mjs --baseline
+      - name: Run browser tests with Mesa under Xvfb
+        env:
+          GOLF_CI_MESA: '1'
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          GALLIUM_DRIVER: llvmpipe
+        run: |
+          xvfb-run -a -s '-screen 0 1920x1200x24' bash -e -c '
+            timeout --signal=TERM --kill-after=10s 120s node scripts/renderer-telemetry.mjs
+            npm run test:e2e -- --workers=1
+          '
