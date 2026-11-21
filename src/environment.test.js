@@ -160,6 +160,41 @@ describe('Hormuz procedural environment', () => {
     environment.dispose();
   });
 
+  it('shares only identical jetty board geometry within each environment without changing its rendering', () => {
+    const environment = createEnvironment(new THREE.Scene());
+    const second = createEnvironment(new THREE.Scene());
+    const boards = named(environment.root, 'Shaded waterfront jetty').children
+      .filter((object) => object.name === 'Jetty deck board');
+    const expected = new THREE.BoxGeometry(1.8, 0.09, 0.18);
+    try {
+      expect(boards).toHaveLength(16);
+      expect(new Set(boards.map((board) => board.geometry)).size).toBe(1);
+      expect(boards[0].geometry).not.toBe(named(second.root, 'Jetty deck board').geometry);
+      expect(boards[0].geometry).not.toBe(named(environment.root, 'Bridge plank').geometry);
+      for (const [i, board] of boards.entries()) {
+        expect(board.geometry.attributes).toEqual(expected.attributes);
+        expect(board.geometry.index).toEqual(expected.index);
+        expect(board.geometry.groups).toEqual(expected.groups);
+        expect(board.geometry.parameters).toEqual(expected.parameters);
+        expect(snapshot(board)).toEqual({
+          position: [0, 0, -0.1 + i * 0.2], rotation: [0, 0, 0, 'XYZ'], scale: [1, 1, 1],
+        });
+        expect(board.material.color.getHexString()).toBe(i % 3 ? 'ac8055' : 'c59868');
+        expect(board.material).toBe(boards[i % 3 ? 1 : 0].material);
+        expect(board.castShadow).toBe(true);
+        expect(board.receiveShadow).toBe(true);
+      }
+      const attributes = boards[0].geometry.attributes.position.array.slice();
+      environment.update(7.4);
+      environment.update(0);
+      expect(boards[0].geometry.attributes.position.array).toEqual(attributes);
+    } finally {
+      environment.dispose();
+      second.dispose();
+      expected.dispose();
+    }
+  });
+
   it('disposes owned resources once and leaves foreign scene resources alone', () => {
     const scene = new THREE.Scene();
     const foreign = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial());

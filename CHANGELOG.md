@@ -2,6 +2,24 @@
 
 All notable changes to Persian Isles Mini Golf are documented here.
 
+## Unreleased
+
+### Fixed
+
+- Bound collision-event retention to the latest physics step instead of accumulating unused events across shots.
+- Keep the Putt control's disabled state synchronized while paused without repeatedly rewriting unchanged status markup.
+
+### Maintenance
+
+- Reuse identical scene geometry and render-loop scratch vectors; avoid rebuilding unchanged camera projections and preview animation geometry.
+- Extract shot-status, camera-framing and projection helpers; format the application entry point and remove superseded responsive declarations without redesigning the interface.
+- Share the real-input browser-test shot helper and verify single-touch shooting after pinch zoom.
+- Add separate gameplay/full web packaging with optional precompressed text assets. Audition sources and existing published release assets remain unchanged.
+
+### Unchanged
+
+- Credits, soundtrack, physical parameters, saved-score keys, playable content and visual quality settings.
+
 ## [0.1.1] — 2026-11-21
 
 ### Added

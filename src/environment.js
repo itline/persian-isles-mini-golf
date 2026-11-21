@@ -273,7 +273,8 @@ export function createEnvironment(scene) {
 
   // The waterfront sits below the front cliff: readable from the specified camera.
   const jetty = group('Shaded waterfront jetty', [0.9, -2.8, 10.15]);
-  for (let i = 0; i < 16; i += 1) box(jetty, 'Jetty deck board', [1.8, 0.09, 0.18], [0, 0, -0.1 + i * 0.2], i % 3 ? '#ac8055' : '#c59868');
+  const jettyBoardGeometry = new THREE.BoxGeometry(1.8, 0.09, 0.18);
+  for (let i = 0; i < 16; i += 1) mesh(jetty, jettyBoardGeometry, surface(i % 3 ? '#ac8055' : '#c59868'), 'Jetty deck board', [0, 0, -0.1 + i * 0.2]);
   for (const x of [-0.72, 0.72]) {
     for (const z of [0.25, 2.6]) {
       mesh(jetty, new THREE.CylinderGeometry(0.065, 0.09, 1.0, 6), surface('#755741'), 'Jetty pile', [x, -0.37, z]);
