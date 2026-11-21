@@ -2,6 +2,14 @@
 
 Published release artifacts are listed on the [GitHub Releases page](https://github.com/itline/persian-isles-mini-golf/releases).
 
+## v0.1.2
+
+A corrective maintenance release with bounded physics-event retention, synchronized paused controls, fewer redundant status updates and reusable scene resources. Physical parameters, credits, soundtrack, saved-score keys and playable content remain unchanged.
+
+Two web ZIPs are available: a gameplay build without the optional music auditions, and a full archive retaining them. Both preserve local runtime assets and license notices. Precompressed text sidecars in the gameplay build require separate host configuration; their presence does not deploy HTTP compression. See [docs/web-packaging.md](docs/web-packaging.md).
+
+The CI checkout and setup-node actions now use their Node 24 runtime. See the GitHub release notes for exact verification results and checksums. Published v0.1.0 and v0.1.1 tags and assets remain unchanged.
+
 ## v0.1.1
 
 A coastal menu refresh with the slogan “A little golf. A world away.”, a three-item Feedback / GitHub / About footer, a separate sound control, and more widely distributed island-specific distant vessels and rock details.
