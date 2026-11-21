@@ -13,7 +13,7 @@ try{
  assert.equal(await page.locator('.game-version').innerText(),'Version 0.1.0');
  for(const href of ['https://github.com/itline','https://github.com/LCmaster/minigolf','https://science.nasa.gov/earth/earth-observatory/irans-rainbow-island-147428'])assert.equal(await page.locator(`#credits a[href="${href}"]`).count(),1);
  await page.locator('#creditsClose').click();await page.locator('#menuSound').click();assert.equal(await page.locator('#musicAuditions').count(),0);await page.locator('#audioClose').click();
- await page.locator('[data-island="qeshm"]').click();await page.waitForFunction(()=>document.querySelector('#menu').dataset.previewReady==='qeshm');await page.locator('#sceneryToggle').click();await page.waitForTimeout(1000);
+ await page.locator('[data-island="qeshm"]').click();await page.waitForFunction(()=>document.querySelector('#menu').dataset.previewReady==='qeshm');await page.waitForTimeout(1000);
  assert.equal((await page.evaluate(()=>window.__golf.fleet())).details.length,2);
  for(const file of ['public/icon.png','public/favicon.png',...['hormuz','qeshm','kish-hengam'].map(id=>`marketing/${id}-cover-16x9.png`)]){const data=fs.readFileSync(file);assert.equal(data.subarray(1,4).toString(),'PNG');if(file.startsWith('marketing')){assert.equal(data.readUInt32BE(16),1920);assert.equal(data.readUInt32BE(20),1080);}}
  assert.deepEqual(errors,[]);console.log(JSON.stringify({brandWidths:[320,390,768,1440],aboutVersion:'0.1.0',creditLinks:3,marketingPngs:3,coverDimensions:'1920x1080',sceneModeRocklets:2,pageErrors:errors}));

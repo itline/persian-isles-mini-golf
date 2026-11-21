@@ -21,7 +21,7 @@ function snapshot(root) {
 }
 
 describe('sparse distant fleet', () => {
-  it('attaches exactly three independently positionable vessel anchors with compact silhouettes', () => {
+  it('attaches exactly six independently positionable vessel anchors with compact silhouettes', () => {
     const parent = new THREE.Group();
     const fleet = createDistantFleet(parent);
     expect(fleet.root.isGroup).toBe(true);
@@ -29,8 +29,10 @@ describe('sparse distant fleet', () => {
     expect(fleet.update).toBeTypeOf('function');
     expect(fleet.dispose).toBeTypeOf('function');
     expect(fleet.boats).toEqual(fleet.root.children);
-    expect(fleet.boats.map((boat) => boat.position.toArray())).toEqual([[-3, 0, 0], [0, 0, 0], [4, 0, 0]]);
-    expect(fleet.boats.map((boat) => boat.name)).toEqual(['Distant fishing boat 1', 'Distant Iranian lenj', 'Distant fishing boat 2']);
+    expect(fleet.boats).toHaveLength(6);
+    expect(fleet.boats.map((boat) => boat.userData.kind)).toEqual(['fishing', 'lenj', 'fishing', 'cargo', 'tanker', 'passenger']);
+    expect(fleet.boats.slice(0, 3).map((boat) => boat.position.toArray())).toEqual([[-3, 0, 0], [0, 0, 0], [4, 0, 0]]);
+    expect(fleet.boats.slice(0, 3).map((boat) => boat.name)).toEqual(['Distant fishing boat 1', 'Distant Iranian lenj', 'Distant fishing boat 2']);
     expect(fleet.root.getObjectByName('Lenj raised bow')).toBeTruthy();
     expect(fleet.root.getObjectByName('Lenj cabin')).toBeTruthy();
     expect(fleet.root.getObjectByName('Lenj mast')).toBeTruthy();
@@ -47,6 +49,69 @@ describe('sparse distant fleet', () => {
     const bounds = new THREE.Box3().setFromObject(fleet.root);
     expect(bounds.min.x).toBeGreaterThanOrEqual(-4);
     expect(bounds.max.x).toBeLessThanOrEqual(5);
+    fleet.dispose();
+  });
+
+  it('appends a kind-tagged cargo ship with muted container stacks and an aft bridge', () => {
+    const fleet = createDistantFleet(new THREE.Scene());
+    expect(fleet.boats.slice(0, 4).map((boat) => boat.userData.kind)).toEqual(['fishing', 'lenj', 'fishing', 'cargo']);
+    const cargo = fleet.boats[3];
+    const containers = meshes(cargo).filter((object) => object.name.startsWith('Cargo container '));
+    expect(containers.length).toBeGreaterThanOrEqual(4);
+    const containerBounds = new THREE.Box3();
+    for (const container of containers) {
+      containerBounds.union(new THREE.Box3().setFromObject(container));
+      expect(container.geometry).toBe(fleet.root.getObjectByName('Fishing boat ivory deck').geometry);
+    }
+    expect(containerBounds.getSize(new THREE.Vector3()).x).toBeGreaterThan(0.8);
+    expect(new Set(containers.map((object) => object.material.color.getHex())).size).toBeGreaterThanOrEqual(2);
+    expect(cargo.getObjectByName('Cargo aft bridge').position.x).toBeLessThan(containerBounds.min.x);
+    expect(cargo.getObjectByName('Cargo hull').geometry).toBe(fleet.root.getObjectByName('Fishing boat hull').geometry);
+    fleet.dispose();
+  });
+
+  it('appends a low tanker with long deck pipes and a compact manifold, not container stacks', () => {
+    const fleet = createDistantFleet(new THREE.Scene());
+    const tanker = fleet.boats[4];
+    expect(tanker?.userData.kind).toBe('tanker');
+    const deck = tanker.getObjectByName('Tanker long deck');
+    const pipes = meshes(tanker).filter((object) => object.name.startsWith('Tanker deck pipe '));
+    expect(deck.scale.x).toBeGreaterThan(1.3);
+    expect(pipes).toHaveLength(2);
+    for (const pipe of pipes) {
+      expect(pipe.scale.x).toBeGreaterThan(1);
+      expect(pipe.scale.y).toBeLessThan(0.06);
+      expect(pipe.position.y).toBeLessThan(0.4);
+      expect(pipe.geometry).toBe(deck.geometry);
+    }
+    const manifold = tanker.getObjectByName('Tanker manifold');
+    expect(manifold.scale.x).toBeLessThan(0.3);
+    expect(manifold.scale.y).toBeLessThan(0.15);
+    expect(new THREE.Box3().setFromObject(tanker).max.y).toBeLessThan(0.75);
+    expect(meshes(tanker).some((object) => object.name.includes('container'))).toBe(false);
+    expect(tanker.getObjectByName('Tanker hull').geometry).toBe(fleet.root.getObjectByName('Cargo hull').geometry);
+    fleet.dispose();
+  });
+
+  it('appends a pale passenger cabin with dark window strips on both sides and a forward wheelhouse', () => {
+    const fleet = createDistantFleet(new THREE.Scene());
+    const passenger = fleet.boats[5];
+    expect(passenger?.userData.kind).toBe('passenger');
+    const cabin = passenger.getObjectByName('Passenger pale cabin');
+    const windows = meshes(passenger).filter((object) => object.name.startsWith('Passenger window strip '));
+    expect(cabin.material.color.getHSL({}).l).toBeGreaterThan(0.65);
+    expect(cabin.scale.x).toBeGreaterThan(0.9);
+    expect(windows).toHaveLength(2);
+    expect(windows.map((object) => Math.sign(object.position.z)).sort()).toEqual([-1, 1]);
+    for (const strip of windows) {
+      expect(strip.scale.x).toBeGreaterThan(0.8);
+      expect(strip.scale.y).toBeLessThan(0.12);
+      expect(Math.abs(strip.position.z)).toBeGreaterThan(cabin.scale.z / 2);
+      expect(strip.material.color.getHSL({}).l).toBeLessThan(0.3);
+      expect(strip.geometry).toBe(cabin.geometry);
+    }
+    expect(passenger.getObjectByName('Passenger forward wheelhouse').position.x).toBeGreaterThan(0);
+    expect(passenger.getObjectByName('Passenger hull').geometry).toBe(fleet.root.getObjectByName('Cargo hull').geometry);
     fleet.dispose();
   });
 
@@ -124,13 +189,27 @@ describe('sparse distant fleet', () => {
   it('stays under the mesh/triangle budget with shared, untextured, shadow-free resources', () => {
     const fleet = createDistantFleet(new THREE.Scene());
     const objects = meshes(fleet.root);
-    expect(objects.length).toBeLessThanOrEqual(25);
+    // Six available vessels; the caller displays only two at a time.
+    expect(objects.length).toBeLessThanOrEqual(50);
     expect(objects.length).toBeGreaterThan(0);
     const triangles = objects.reduce((sum, mesh) => sum + (mesh.geometry.index?.count ?? mesh.geometry.attributes.position.count) / 3, 0);
     expect(triangles).toBeLessThan(1000);
-    expect(new Set(objects.map((mesh) => mesh.geometry)).size).toBeLessThan(objects.length);
+    expect(new Set(objects.map((mesh) => mesh.geometry)).size).toBe(3);
     expect(new Set(objects.map((mesh) => mesh.material)).size).toBeLessThan(objects.length);
+    for (const first of fleet.boats) {
+      for (const second of fleet.boats) {
+        if (first === second) continue;
+        const visible = [...meshes(first), ...meshes(second)];
+        expect(visible.length).toBeLessThanOrEqual(25);
+        const visibleTriangles = visible.reduce((sum, object) => sum + object.geometry.index.count / 3, 0);
+        expect(visibleTriangles).toBeLessThan(500);
+      }
+    }
+    const materialByColor = new Map();
     for (const object of objects) {
+      const color = object.material.color.getHex();
+      if (materialByColor.has(color)) expect(object.material).toBe(materialByColor.get(color));
+      materialByColor.set(color, object.material);
       expect(object.castShadow).toBe(false);
       expect(object.receiveShadow).toBe(false);
       expect(object.material.isMeshStandardMaterial).toBe(true);

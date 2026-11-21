@@ -26,7 +26,7 @@ function courseSketch(level){
 $('#app').innerHTML = `
   <canvas id="scene" aria-label="Three dimensional miniature golf course inspired by Hormuz Island"></canvas>
   <section id="menu" class="menu">
-    <div class="brand" aria-label="Persian Isles Mini Golf"><img class="brand-icon" src="/icon.svg" alt="" width="44" height="44"><div class="brand-copy"><span class="brand-name">Persian Isles Mini Golf</span><small class="brand-slogan">Find your line through the islands.</small></div></div>
+    <div class="brand" aria-label="Persian Isles Mini Golf"><img class="brand-icon" src="/icon.svg" alt="" width="44" height="44"><div class="brand-copy"><span class="brand-name">Persian Isles Mini Golf</span><small class="brand-slogan">A little golf. A world away.</small></div></div>
     <div class="hero-copy"><h1>Choose your island</h1>
     <p class="lede" id="islandDescription">Find your line through a little world of red earth, salt-white cliffs and turquoise water.</p>
     <div class="island-nav"><button id="prevIsland" aria-label="Previous island">←</button><strong id="selectedIslandName">Hormuz</strong><button id="nextIsland" aria-label="Next island">→</button></div><div class="island-switcher" aria-label="Choose an island">${ISLANDS.map(island=>`<button class="island-tab ${island.id==='hormuz'?'selected':''}" data-island="${island.id}"><span>${island.name}</span>${island.playable?'':'<b class="preview-dot" aria-hidden="true">○</b>'}</button>`).join('')}</div>
@@ -36,7 +36,8 @@ $('#app').innerHTML = `
     <div id="levelGrid" class="level-grid" aria-label="Hormuz holes">${LEVELS.map(level=>`<button class="level-button" data-level="${level.id}" ${level.available?'':'disabled'}><span>${String(level.id).padStart(2,'0')}</span><small>${level.available?level.name:'—'}</small>${level.available?`${courseSketch(level)}<i class="level-complete"></i>`:'<i class="future-marker" aria-hidden="true">Soon</i>'}</button>`).join('')}</div>
     <div class="edition hidden" id="edition">HORMUZ <span>•</span> RAINBOW RUN <span>•</span> PAR 4</div></div>
     <aside class="postcard"><span class="eyebrow" id="postcardEyebrow">THE RAINBOW ISLAND</span><b id="postcardName">Hormuz Island</b><small id="postcardText">A miniature inspired by Iran’s rainbow island.<br>Playful geography, not a map.</small></aside>
-    <footer class="menu-footer"><span>FIVE ISLANDS. ONE COAST.</span><div><button id="sceneryToggle" class="text-btn" aria-pressed="false">View island</button><button id="menuSound" class="text-btn">Sound off</button><button id="creditsOpen" class="text-btn">About & credits ↗</button></div></footer>
+    <button id="menuSound" class="circle-btn menu-sound" aria-label="Sound settings" title="Sound settings"></button>
+    <footer class="menu-footer"><span>FIVE ISLANDS. ONE COAST.</span><div><a class="text-btn" href="https://github.com/itline/persian-isles-mini-golf/issues" target="_blank" rel="noopener noreferrer" title="Report a bug or suggest an improvement on GitHub. A GitHub account is required; reports are public.">Feedback ↗</a><a class="text-btn" href="https://github.com/itline/persian-isles-mini-golf" target="_blank" rel="noopener noreferrer">GitHub ↗</a><button id="creditsOpen" class="text-btn">About</button></div></footer>
   </section>
   <section id="game" class="hidden"><div id="cupCelebration" aria-hidden="true">Nice line.</div>
     <header class="topbar"><div class="game-title"><span class="eyebrow">PERSIAN ISLES MINI GOLF</span><strong>Hormuz <i id="levelTitle">01 / RED SHORE</i></strong></div>
@@ -83,10 +84,14 @@ function positionDistantFleet(){
  if(playing)return;
  camera.updateMatrixWorld();
  const portrait=innerWidth<innerHeight;
- const profile=islandSceneProfile(previewId||'hormuz',portrait);
+ // Match the folio's intermediate-width breakpoint in release.css.
+ const compact=innerWidth<=1100;
+ const profile=islandSceneProfile(previewId||'hormuz',portrait,compact);
  const unit=(camera.right-camera.left)/innerWidth;
- distantFleet.boats.forEach((boat,i)=>{
-  boat.visible=i<profile.anchors.length;
+ const vessels=profile.kinds.map(kind=>distantFleet.boats.find(boat=>boat.userData.kind===kind));
+ distantFleet.boats.forEach(boat=>{
+  const i=vessels.indexOf(boat);
+  boat.visible=i>=0;
   if(!boat.visible)return;
   const [x,y]=profile.anchors[i];fleetRay.setFromCamera(new THREE.Vector2(x*2-1,1-Math.max(y,100/innerHeight)*2),camera);
   const point=fleetRay.ray.intersectPlane(fleetSea,new THREE.Vector3());
@@ -97,7 +102,7 @@ function positionDistantFleet(){
  islandAtmosphere.setIsland(previewId||'hormuz');
  for(const detail of islandAtmosphere.details){
   if(!detail.visible) continue;
-  const mode=portrait?'portrait':'landscape';const [x,y]=detail.userData.anchors[mode];atmosphereRay.setFromCamera(new THREE.Vector2(x*2-1,1-Math.max(y,100/innerHeight)*2),camera);const point=atmosphereRay.ray.intersectPlane(atmosphereSea,new THREE.Vector3());
+  const mode=portrait?'portrait':'landscape';const compactAnchors=[[0.48,0.78],[0.92,0.76]];const [x,y]=!portrait&&compact?compactAnchors[islandAtmosphere.details.indexOf(detail)%2]:detail.userData.anchors[mode];atmosphereRay.setFromCamera(new THREE.Vector2(x*2-1,1-Math.max(y,100/innerHeight)*2),camera);const point=atmosphereRay.ray.intersectPlane(atmosphereSea,new THREE.Vector3());
   if(!point){detail.visible=false;continue;}
   detail.position.copy(point);detail.scale.setScalar(unit*detail.userData.widthPx[mode]/2);
  }
@@ -110,7 +115,7 @@ function fleetBounds(){
    const p=new THREE.Vector3(x,y,z).project(camera);points.push({x:(p.x+1)/2*innerWidth,y:(1-p.y)/2*innerHeight});
   }
   const x=Math.min(...points.map(p=>p.x)),y=Math.min(...points.map(p=>p.y));
-  return{x,y,width:Math.max(...points.map(p=>p.x))-x,height:Math.max(...points.map(p=>p.y))-y};
+  return{kind:boat.userData.kind,x,y,width:Math.max(...points.map(p=>p.x))-x,height:Math.max(...points.map(p=>p.y))-y};
  });
  const details=islandAtmosphere.details.filter(d=>d.visible).map(detail=>{const box=new THREE.Box3().setFromObject(detail),points=[];for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z]){const p=new THREE.Vector3(x,y,z).project(camera);points.push({x:(p.x+1)/2*innerWidth,y:(1-p.y)/2*innerHeight});}const x=Math.min(...points.map(p=>p.x)),y=Math.min(...points.map(p=>p.y));return{x,y,width:Math.max(...points.map(p=>p.x))-x,height:Math.max(...points.map(p=>p.y))-y};});
  return{visible:distantFleet.root.visible,boats,details};
@@ -123,7 +128,7 @@ let mode='single', journeyScores=[], journeyFinished=false, audioWasPaused=false
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
 let sceneColorTarget=new THREE.Color('#b3dce0'), transitionTimer=null;
 let tutorialSeen=false;try{tutorialSeen=localStorage.getItem('golf:tutorial-seen')==='yes';}catch{}
-let targetZoom=1, cameraFrozen=false, sceneryOnly=false;const pointers=new Map();let pinch=null, menuSwipe=null;
+let targetZoom=1, cameraFrozen=false;const pointers=new Map();let pinch=null, menuSwipe=null;
 const presets={hormuz:'#b3dce0',qeshm:'#bfd4d1',kish:'#bbe3e5',khark:'#b6d4d4',hengam:'#a8dbe1'};
 const coastalAudio=createCoastalAudio();
 let lastTime=performance.now(), elapsed=0, best=null, lastView={width:0,height:0};
@@ -273,7 +278,6 @@ function journeyResults(){
  $('#resultRetry').focus();
 }
 function readBest(id){try{const n=Number(localStorage.getItem(levelRecordKey(id)));return Number.isInteger(n)&&n>0?n:null;}catch{return null;}}
-$('#sceneryToggle').onclick=()=>{sceneryOnly=!sceneryOnly;$('#menu').classList.toggle('scenery-only',sceneryOnly);$('#sceneryToggle').textContent=sceneryOnly?'Back to holes':'View island';$('#sceneryToggle').setAttribute('aria-pressed',String(sceneryOnly));};
 $('#play').onclick=()=>start(true);
 document.querySelectorAll('.island-tab').forEach(button=>button.onclick=()=>{unlockPreferredAudio();selectIsland(button.dataset.island);});
 document.querySelectorAll('.level-button').forEach(button=>button.onclick=()=>selectLevel(button.dataset.level));
@@ -289,7 +293,7 @@ $('#zoomOut').onclick=()=>{if(!drag&&!paused)targetZoom=clampZoom(targetZoom-.15
 $('#zoomIn').onclick=()=>{if(!drag&&!paused)targetZoom=clampZoom(targetZoom+.15);};
 $('#overview').onclick=()=>{if(!drag&&!paused){targetZoom=1;orbitAngle=.62;}};
 
-function syncAudioControls(){const a=coastalAudio.getState(),state=a.music&&a.effects?'on':a.music||a.effects?'mixed':'off';$('#musicToggle').checked=a.music;$('#effectsToggle').checked=a.effects;$('#menuSound').textContent=state==='on'?'Sound on':state==='off'?'Sound off':'Sound settings';$('#sound').dataset.audio=state;$('#sound').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 8q5 4 0 8"/><path class="sound-off" d="M4 20 20 4"/><path class="sound-mixed" d="M17 19h4"/></svg>';$('#sound').setAttribute('aria-label',`Sound settings: music ${a.music?'on':'off'}, effects ${a.effects?'on':'off'}`);$('#sound').title=$('#sound').getAttribute('aria-label');}
+function syncAudioControls(){const a=coastalAudio.getState(),state=a.music&&a.effects?'on':a.music||a.effects?'mixed':'off';$('#musicToggle').checked=a.music;$('#effectsToggle').checked=a.effects;$('#sound').dataset.audio=state;$('#sound').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 8q5 4 0 8"/><path class="sound-off" d="M4 20 20 4"/><path class="sound-mixed" d="M17 19h4"/></svg>';$('#sound').setAttribute('aria-label',`Sound settings: music ${a.music?'on':'off'}, effects ${a.effects?'on':'off'}`);$('#sound').title=$('#sound').getAttribute('aria-label');$('#menuSound').dataset.audio=state;$('#menuSound').innerHTML=$('#sound').innerHTML;$('#menuSound').setAttribute('aria-label',$('#sound').getAttribute('aria-label'));$('#menuSound').title=$('#sound').title;}
 function openAudio(){closeTools();audioWasPaused=paused;if(playing&&!paused&&!state.completed){paused=true;cancelDrag();}coastalAudio.setPaused(true);syncAudioControls();$('#audioPanel').classList.remove('hidden');$('#musicToggle').focus();}
 $('#sound').onclick=openAudio;$('#menuSound').onclick=openAudio;
 for(const [id,set] of [['musicToggle','setMusic'],['effectsToggle','setEffects']])$("#"+id).onchange=async e=>{coastalAudio[set](e.target.checked);const ok=await unlockPreferredAudio();audioNoticeKey=ok?'':'Audio is unavailable in this browser. The game still works without it.';renderFailureNotices();syncAudioControls();};
@@ -304,7 +308,7 @@ function updateCamera(dt){
  if(cameraFrozen)return;
  const next=THREE.MathUtils.lerp(zoom,playing?targetZoom:1,1-Math.exp(-dt*10));
  zoom=Math.abs(next-(playing?targetZoom:1))<.001?(playing?targetZoom:1):next;resizeCamera();
- const menuShift=!playing&&!sceneryOnly?(innerWidth>1000?-5.8:innerWidth>innerHeight?-13:0):0;
+ const menuShift=!playing?(innerWidth>1000?-5.8:innerWidth>innerHeight?-13:0):0;
  const target=playing&&zoom>1?ball.getPosition().clone().multiplyScalar(Math.min(.8,(zoom-1)/.85*.8)):new THREE.Vector3(menuShift,0,-.2);
  target.y=0;
 
@@ -312,7 +316,7 @@ function updateCamera(dt){
  cameraTarget.lerp(target,1-Math.exp(-dt*4));cameraPosition.copy(cameraTarget).add(offset);
  camera.position.lerp(cameraPosition,1-Math.exp(-dt*4));camera.lookAt(cameraTarget);
 }
-function resizeCamera(){const w=innerWidth,h=innerHeight;const portrait=w<h;const scale=(playing?(portrait?27:12):(portrait?Math.max(35,16*h/w):14.4))/zoom;camera.left=-scale*w/h;camera.right=scale*w/h;const shift=playing?(h<560&&w>h?-2.5:0):sceneryOnly?0:portrait?-scale*.49:-2;camera.top=scale+shift;camera.bottom=-scale+shift;camera.updateProjectionMatrix();}
+function resizeCamera(){const w=innerWidth,h=innerHeight;const portrait=w<h;const scale=(playing?(portrait?27:12):(portrait?Math.max(35,16*h/w):14.4))/zoom;camera.left=-scale*w/h;camera.right=scale*w/h;const shift=playing?(h<560&&w>h?-2.5:0):portrait?-scale*.49:-2;camera.top=scale+shift;camera.bottom=-scale+shift;camera.updateProjectionMatrix();}
 function updatePreview(){origin.visible=playing&&!paused&&!state.completed&&ball.state==='aiming';const ringPos=ball.getPosition();origin.position.set(ringPos.x,.025,ringPos.z);arrowGroup.visible=playing&&!paused&&!state.completed&&ball.state==='aiming';if(!arrowGroup.visible)return;const dir=aimDir(),p=drag?drag.p:power,pos=ball.getPosition();const length=1+shotSpeed(p)*.36;for(let i=0;i<dots.length;i++){const distance=(i+1)/dots.length*length;dots[i].position.set(pos.x+dir.x*distance,.08,pos.z+dir.z*distance);dots[i].scale.setScalar(1-i*.025);}arrowTip.position.set(pos.x+dir.x*(length+.12),.085,pos.z+dir.z*(length+.12));arrowTip.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(dir.x,0,dir.z));targetRing.position.set(pos.x,.025,pos.z);targetRing.visible=arrowGroup.visible;}
 function animate(now){if(destroyed)return;requestAnimationFrame(animate);const dt=Math.min((now-lastTime)/1000,.06);lastTime=now;elapsed+=dt;if(!ready)return;if(playing&&!paused&&!state.completed){ball.capturePreviousTransform();physics.step(dt);ball.update(physics.getInterpolationAlpha(),dt);const p=ball.rigidBody.translation();if(captureCup(p,currentLevel().hole)&&state.strokes>0)complete();else if(ball.state==='out_of_bounds'){state.strokes++;ball.strokes=state.strokes;ball.respawn();ball.mesh.scale.setScalar(1);updateHud();setStatus('Returned to your last shot · +1');}else if(ball.state==='aiming')setStatus('Ready to putt');else setStatus('Rolling');}ball.ghostSphereMesh.visible=false;ball.windTrail.group.visible=playing&&!paused;targetRing.visible=playing&&!paused&&!state.completed;updatePreview();updateCamera(dt);if(!paused&&!document.hidden&&!reducedMotion.matches)sceneryClock.value+=dt;const motionTime=reducedMotion.matches?0:sceneryClock.value;if(environment.root.visible)environment.update(motionTime);if(!playing){updateIslandMotion(menuDiorama,motionTime,{reducedMotion:reducedMotion.matches,active:true});}else{restoreDiorama();}preview?.update(motionTime);positionDistantFleet();scene.background.lerp(sceneColorTarget,reducedMotion.matches?1:1-Math.exp(-dt*6));scene.fog.color.copy(scene.background);ballMarker.visible=playing&&!state.completed;ballMarker.position.copy(ball.mesh.position);ballMarker.position.y=.023;renderer.render(scene,camera);}
 renderLevelCards();

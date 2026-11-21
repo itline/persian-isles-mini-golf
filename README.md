@@ -1,6 +1,6 @@
 # Persian Isles Mini Golf
 
-**Find your line through the islands.**
+**A little golf. A world away.**
 
 A low-poly mini golf browser game inspired by Iran’s Persian Gulf islands. Line up a bank shot between salt-white cliffs, red earth and turquoise water, with WebGL rendering powered by Three.js and ball physics powered by Rapier. Play three holes on Hormuz, or explore four other islands as visual previews.
 
@@ -102,7 +102,7 @@ Completing the journey does **not** unlock the unfinished holes or preview islan
 
 Click or tap the scene to focus it before using keyboard shot controls. Camera movement freezes while dragging a shot, and pinching never fires a putt. Zoom ranges from 1× to 1.85×.
 
-In the island menu, use tabs, navigation arrows or a horizontal swipe on the scene and non-interactive selector areas. Vertical selector scrolling stays native. **View island** hides the menu for a clear scenery view. Landscape is recommended on phones; portrait also has a scrollable selector and compact tools menu.
+In the island menu, use tabs, navigation arrows or a horizontal swipe on the scene and non-interactive selector areas. Vertical selector scrolling stays native. The footer links to public GitHub feedback, source code and About; sound settings remain available from the speaker icon. Landscape is recommended on phones; portrait also has a scrollable selector and compact tools menu.
 
 ## Features
 

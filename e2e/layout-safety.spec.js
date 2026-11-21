@@ -1,14 +1,14 @@
 import {test,expect} from '@playwright/test';
 
-test('landscape menu scroll exposes every hole; clean preview mode returns to selection',async({browser})=>{
+test('landscape menu scroll exposes every hole and footer stays accessible',async({browser})=>{
  const context=await browser.newContext({viewport:{width:844,height:390},isMobile:true,hasTouch:true});const page=await context.newPage();
  await page.goto('http://127.0.0.1:4181/?qa');await page.waitForFunction(()=>window.__golf);
  await page.locator('.hero-copy').evaluate(el=>el.scrollTop=el.scrollHeight);
  await expect(page.locator('[data-level="10"]')).toBeInViewport();
  await page.locator('[data-level="3"]').tap();await expect(page.locator('#levelName')).toHaveText('Rainbow Run');
  await page.locator('#gameMenuToggle').tap();await page.locator('#pause').tap();await page.locator('#backHome').tap();
- await page.locator('#sceneryToggle').tap();await expect(page.locator('#menu')).toHaveClass(/scenery-only/);
- await page.locator('#sceneryToggle').tap();await expect(page.locator('#menu')).not.toHaveClass(/scenery-only/);
+ await expect(page.locator('.menu-footer a')).toHaveCount(2);
+ await page.locator('#creditsOpen').tap();await expect(page.locator('#credits')).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await context.close();
 });
 

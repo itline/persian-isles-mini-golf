@@ -35,18 +35,29 @@ describe('island-specific distant atmosphere', () => {
         anchors: expect.any(Array),
         yaws: expect.any(Array),
         widths: expect.any(Array),
+        kinds: expect.any(Array),
       });
       expect(profile.anchors).toHaveLength(2);
       expect(profile.yaws).toHaveLength(profile.anchors.length);
       expect(profile.widths).toHaveLength(profile.anchors.length);
       expect(profile.anchors.flat()).toSatisfy((values) => values.every((value) => Number.isFinite(value) && value >= 0 && value <= 1));
       expect(profile.widths).toSatisfy((widths) => widths.every((width) => width >= (portrait ? 14 : 25) && width <= (portrait ? 24 : 42)));
-      expect(profile.anchors.every(([x, y]) => (portrait ? y < 0.36 : x > 0.66))).toBe(true);
+      expect(profile.anchors.every(([, y]) => portrait ? y < 0.36 : y < 0.90)).toBe(true);
+      expect(Math.abs(profile.anchors[0][0]-profile.anchors[1][0])).toBeGreaterThan(0.4);
+      expect(profile.kinds).toEqual({hormuz:['lenj','cargo'],qeshm:['lenj','cargo'],kish:['passenger','fishing'],khark:['tanker','cargo'],hengam:['fishing','lenj']}[id]);
       expect(() => islandSceneProfile(id, portrait)).not.toThrow();
     }
     const signatures = profiles.map(({ profile }) => JSON.stringify(profile));
     expect(new Set(signatures).size).toBe(ISLANDS.length * 2);
     expect(() => islandSceneProfile('atlantis', false)).toThrow(RangeError);
+  });
+
+  it('keeps compact landscape placements beside the left-hand selection rail', () => {
+    for(const id of ISLANDS){
+      const profile=islandSceneProfile(id,false,true);
+      expect(profile.anchors[0][0]).toBeGreaterThan(0.43);
+      expect(profile.anchors[0][1]).toBeLessThan(0.30);
+    }
   });
 
   it('attaches eight independently placeable non-Hormuz details with an initially quiet Hormuz scene', () => {
@@ -98,11 +109,11 @@ describe('island-specific distant atmosphere', () => {
         expect(Number.isFinite(x) && Number.isFinite(y)).toBe(true);
         expect(width).toBeGreaterThanOrEqual(portrait ? 14 : 25);
         expect(width).toBeLessThanOrEqual(portrait ? 24 : 42);
-        expect(x).toBeGreaterThanOrEqual(portrait ? 0.08 : 0.75);
+        expect(x).toBeGreaterThanOrEqual(portrait ? 0.08 : 0.30);
         expect(x).toBeLessThanOrEqual(0.94);
         expect(y).toBeGreaterThanOrEqual(0.15);
-        expect(y).toBeLessThanOrEqual(portrait ? 0.34 : 0.44);
-        expect(portrait ? x < 0.25 || x > 0.78 : x >= 0.75).toBe(true);
+        expect(y).toBeLessThanOrEqual(portrait ? 0.40 : 0.84);
+        expect(portrait ? x < 0.25 || x > 0.78 : x >= 0.30).toBe(true);
         for (const boat of islandSceneProfile(detail.userData.islandId, portrait).anchors) {
           expect(Math.hypot(x - boat[0], y - boat[1])).toBeGreaterThan(0.085);
         }

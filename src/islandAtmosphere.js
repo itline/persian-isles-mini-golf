@@ -3,34 +3,39 @@ import * as THREE from 'three';
 const ISLANDS = ['qeshm', 'kish', 'khark', 'hengam'];
 
 const DETAIL_PLACEMENTS = {
-  qeshm: { landscape: [[0.89, 0.17, 38], [0.86, 0.43, 29]], portrait: [[0.86, 0.32, 23], [0.12, 0.33, 17]] },
-  kish: { landscape: [[0.88, 0.27, 34], [0.94, 0.16, 25]], portrait: [[0.12, 0.30, 21], [0.86, 0.16, 15]] },
-  khark: { landscape: [[0.89, 0.39, 36], [0.82, 0.19, 28]], portrait: [[0.11, 0.17, 22], [0.89, 0.29, 16]] },
-  hengam: { landscape: [[0.90, 0.18, 32], [0.86, 0.44, 26]], portrait: [[0.12, 0.15, 20], [0.87, 0.20, 14]] },
+  qeshm: { landscape: [[0.34, 0.78, 38], [0.93, 0.59, 29]], portrait: [[0.88, 0.37, 23], [0.10, 0.33, 17]] },
+  kish: { landscape: [[0.31, 0.77, 34], [0.92, 0.65, 25]], portrait: [[0.10, 0.36, 21], [0.88, 0.39, 15]] },
+  khark: { landscape: [[0.35, 0.82, 36], [0.94, 0.61, 28]], portrait: [[0.10, 0.36, 22], [0.88, 0.39, 16]] },
+  hengam: { landscape: [[0.33, 0.80, 32], [0.91, 0.68, 26]], portrait: [[0.10, 0.34, 20], [0.87, 0.38, 14]] },
 };
 
-// Screen-space formations: fisherman first, lenj second. Parent may hide any
-// additional fleet boats; two deliberately suffice even in landscape.
+// Sparse screen-space formations: one nearer coastal craft and one farther
+// silhouette. Kinds select the matching procedural vessel, not an array index.
 const VESSEL_PROFILES = {
   hormuz: {
-    landscape: { anchors: [[0.79, 0.20], [0.90, 0.27]], yaws: [-0.10, 0.04], widths: [28, 36] },
-    portrait: { anchors: [[0.16, 0.17], [0.84, 0.13]], yaws: [-0.12, 0.08], widths: [18, 22] },
+    kinds: ['lenj', 'cargo'],
+    landscape: { anchors: [[0.22,0.84],[0.86,0.16]], yaws: [-0.25,0.22], widths: [32,37] },
+    portrait: { anchors: [[0.14,0.15],[0.87,0.27]], yaws: [-0.25,0.22], widths: [20, 24] },
   },
   qeshm: {
-    landscape: { anchors: [[0.76, 0.24], [0.94, 0.34]], yaws: [0.16, -0.08], widths: [30, 38] },
-    portrait: { anchors: [[0.13, 0.22], [0.88, 0.19]], yaws: [0.12, -0.14], widths: [17, 23] },
+    kinds: ['lenj', 'cargo'],
+    landscape: { anchors: [[0.19,0.82],[0.83,0.18]], yaws: [0.18,-0.28], widths: [34,39] },
+    portrait: { anchors: [[0.12,0.18],[0.88,0.25]], yaws: [0.18,-0.28], widths: [20, 24] },
   },
   kish: {
-    landscape: { anchors: [[0.75, 0.18], [0.91, 0.43]], yaws: [-0.18, 0.10], widths: [26, 34] },
-    portrait: { anchors: [[0.20, 0.16], [0.89, 0.27]], yaws: [0.16, -0.06], widths: [16, 22] },
+    kinds: ['passenger', 'fishing'],
+    landscape: { anchors: [[0.23,0.86],[0.9,0.26]], yaws: [-0.18,0.3], widths: [36,26] },
+    portrait: { anchors: [[0.16,0.14],[0.88,0.28]], yaws: [-0.18,0.3], widths: [20, 24] },
   },
   khark: {
-    landscape: { anchors: [[0.77, 0.32], [0.95, 0.22]], yaws: [0.08, -0.18], widths: [32, 40] },
-    portrait: { anchors: [[0.12, 0.29], [0.86, 0.15]], yaws: [-0.08, 0.14], widths: [18, 24] },
+    kinds: ['tanker', 'cargo'],
+    landscape: { anchors: [[0.24,0.84],[0.86,0.2]], yaws: [0.12,-0.2], widths: [40,32] },
+    portrait: { anchors: [[0.12,0.22],[0.87,0.28]], yaws: [0.12,-0.2], widths: [20, 24] },
   },
   hengam: {
-    landscape: { anchors: [[0.77, 0.27], [0.93, 0.37]], yaws: [0.20, -0.12], widths: [29, 35] },
-    portrait: { anchors: [[0.18, 0.25], [0.90, 0.31]], yaws: [-0.16, 0.12], widths: [15, 21] },
+    kinds: ['fishing', 'lenj'],
+    landscape: { anchors: [[0.2,0.86],[0.88,0.22]], yaws: [-0.3,0.18], widths: [29,35] },
+    portrait: { anchors: [[0.14,0.16],[0.89,0.26]], yaws: [-0.3,0.18], widths: [20, 24] },
   },
 };
 
@@ -38,13 +43,14 @@ const VESSEL_PROFILES = {
  * Each call owns its arrays; portrait is also the conservative narrow-phone
  * profile. Parent owns projection onto its water plane and vessel visibility.
  */
-export function islandSceneProfile(id, portrait = false) {
+export function islandSceneProfile(id, portrait = false, compact = false) {
   if (!Object.hasOwn(VESSEL_PROFILES, id)) throw new RangeError(`Unknown island scene profile: ${id}`);
   const profile = VESSEL_PROFILES[id][portrait ? 'portrait' : 'landscape'];
   return {
-    anchors: profile.anchors.map((anchor) => [...anchor]),
+    anchors: profile.anchors.map((anchor, index) => compact && !portrait ? (index ? [0.94, 0.30] : [0.48, 0.16]) : [...anchor]),
     yaws: [...profile.yaws],
     widths: [...profile.widths],
+    kinds: [...VESSEL_PROFILES[id].kinds],
   };
 }
 

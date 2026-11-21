@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 const url='http://127.0.0.1:4181/?qa';
 test('identity is one-line with a small slogan and settings has no audition link',async({page})=>{
  await page.goto(url);await expect(page.locator('.brand-name')).toHaveText('Persian Isles Mini Golf');
- await expect(page.locator('.brand-slogan')).toHaveText('Find your line through the islands.');
+ await expect(page.locator('.brand-slogan')).toHaveText('A little golf. A world away.');
  const brand=await page.locator('.brand-name').boundingBox();const slogan=await page.locator('.brand-slogan').boundingBox();
  expect(brand.y+brand.height).toBeLessThanOrEqual(slogan.y);
  await page.locator('#menuSound').click();await expect(page.locator('#musicAuditions')).toHaveCount(0);
