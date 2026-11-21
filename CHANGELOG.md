@@ -4,6 +4,8 @@ All notable changes to Persian Isles Mini Golf are documented here.
 
 ## Unreleased
 
+## [0.1.2] — 2026-11-21
+
 ### Fixed
 
 - Bound collision-event retention to the latest physics step instead of accumulating unused events across shots.
@@ -15,6 +17,7 @@ All notable changes to Persian Isles Mini Golf are documented here.
 - Extract shot-status, camera-framing and projection helpers; format the application entry point and remove superseded responsive declarations without redesigning the interface.
 - Share the real-input browser-test shot helper and verify single-touch shooting after pinch zoom.
 - Add separate gameplay/full web packaging with optional precompressed text assets. Audition sources and existing published release assets remain unchanged.
+- Upgrade the official checkout and setup-node GitHub Actions to v7, using their Node 24 action runtime while retaining Node 24 for the project and the existing CI checks.
 
 ### Unchanged
 
@@ -74,5 +77,6 @@ All notable changes to Persian Isles Mini Golf are documented here.
 - Unit tests, browser tests, production build and production smoke checks pass in the release workspace.
 - Audio output is verified with seeded Chrome `OfflineAudioContext` renders for finite samples, headroom and crossfade behavior.
 
+[0.1.2]: https://github.com/itline/persian-isles-mini-golf/releases/tag/v0.1.2
 [0.1.1]: https://github.com/itline/persian-isles-mini-golf/releases/tag/v0.1.1
 [0.1.0]: https://github.com/itline/persian-isles-mini-golf/releases/tag/v0.1.0

@@ -13,12 +13,14 @@ standard-library `zipfile` are used; no extra dependencies are installed.
 Run from the repository root, using a **new output directory outside `dist/`**:
 
 ```sh
+artifact_parent="$(mktemp -d "${TMPDIR:-/tmp}/golf-web.XXXXXX")"
 node scripts/package-web.mjs \
-  --dist /absolute/path/to/hormuz/dist \
-  --out /Users/hasan/.hermes/cache/scratch/hormuz-web-corrective-NEW
+  --dist "$PWD/dist" \
+  --out "$artifact_parent/release"
 ```
 
-The output parent must already exist. Choose another unused name for each run.
+The temporary parent is writable and outside the distribution directory; the
+`release` child must not already exist. The output parent must already exist. Choose another unused name for each run.
 The tool refuses *any* existing output directory, including an empty one; there
 is no overwrite/force switch. Relative paths are resolved from the current
 working directory. `--help` prints usage. Both options are required; unknown,
@@ -137,7 +139,8 @@ Text compression is synchronous and reads individual files into memory.
 ## Tests
 
 ```sh
-TMPDIR=/Users/hasan/.hermes/cache/scratch npx vitest run src/packaging.test.js
+test_tmp="$(mktemp -d "${TMPDIR:-/tmp}/golf-tests.XXXXXX")"
+TMPDIR="$test_tmp" npx vitest run src/packaging.test.js
 ```
 
 Tests create and clean only uniquely named temporary fixture roots under the
