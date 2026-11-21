@@ -22,7 +22,9 @@ export class PhysicsWorld {
     const gravity = new RAPIER.Vector3(0.0, -9.81, 0.0);
     this.world = new RAPIER.World(gravity);
     this.world.timestep = this.fixedDelta;
-    this.eventQueue = new RAPIER.EventQueue(false);
+    // Retain only the latest step's events; unused collisions must not
+    // accumulate across shots or ball resets during a long session.
+    this.eventQueue = new RAPIER.EventQueue(true);
     this.isReady = true;
   }
 

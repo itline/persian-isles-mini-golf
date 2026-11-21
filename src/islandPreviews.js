@@ -25,6 +25,7 @@ function createIslandPreview(scene, id) {
   const materialCache = new Map();
   const animated = [];
   let palmBladeGeometry;
+  let facetedRockGeometry;
   let disposed = false;
 
   function material(hex, options = {}) {
@@ -94,8 +95,9 @@ function createIslandPreview(scene, id) {
 
   function facetedRock(parent, name, x, y, z, rx, ry, rz, hexes, seed) {
     const random = seeded(seed);
-    const geometry = new THREE.IcosahedronGeometry(1, 1);
-    const rock = addMesh(parent, geometry, material(hexes[seed % hexes.length]), name, [x, y, z]);
+    // Variation lives entirely in mesh transforms; these vertices stay immutable.
+    facetedRockGeometry ??= new THREE.IcosahedronGeometry(1, 1);
+    const rock = addMesh(parent, facetedRockGeometry, material(hexes[seed % hexes.length]), name, [x, y, z]);
     rock.scale.set(rx * (0.92 + random() * 0.16), ry * (0.92 + random() * 0.16), rz * (0.92 + random() * 0.16));
     rock.rotation.set(random() * 0.4, random() * TAU, random() * 0.35);
     return rock;
@@ -374,7 +376,7 @@ function createIslandPreview(scene, id) {
           item.object.rotation.z = Math.sin(time * 0.85) * 0.065;
         }
         if (item.type === 'bob') item.object.position.y = item.baseY + (Math.sin(time * 1.1 + phase) - Math.sin(phase)) * 0.035;
-        if (item.type === 'pennant') {
+        if (item.type === 'pennant' && item.lastTime !== time) {
           const position = item.object.geometry.attributes.position;
           for (let i = 0; i < position.count; i += 1) {
             const x = item.baseline[i * 3];
@@ -383,6 +385,7 @@ function createIslandPreview(scene, id) {
           position.needsUpdate = true;
           item.object.geometry.computeVertexNormals();
           item.object.geometry.computeBoundingSphere();
+          item.lastTime = time;
         }
         if (item.type === 'boat') {
           item.object.position.y = item.baseY + (Math.sin(time * 0.9 + phase) - Math.sin(phase)) * 0.09;

@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { createHash } from 'node:crypto';
+import { describe, it, expect, vi } from 'vitest';
 import * as THREE from 'three';
 import { createIslandPreview } from './islandPreviews.js';
 
@@ -78,6 +79,45 @@ describe('island preview lifecycle', () => {
     expect(blades(first)[0].geometry).not.toBe(blades(second)[0].geometry);
     first.dispose();
     second.dispose();
+  });
+
+  it.each([
+    ['qeshm', 5, '597737c424a6cc75e77bac68267d0f5175724a87ae59d5220f7bfc24b8389602'],
+    ['khark', 17, 'b59777b83d47f64063f55afee353f41dd62ec4b17cda82347d5666f2da3c8486'],
+    ['hengam', 28, 'c4b852909a45a1f763cb22f2f5115017d02639c167434feeaf0d830541f99f7d'],
+  ])('shares identical immutable %s rock geometry without altering attributes or seeded rendering', (id, count, baselineHash) => {
+    const first = createIslandPreview(new THREE.Scene(), id);
+    const second = createIslandPreview(new THREE.Scene(), id);
+    const rocks = (preview) => meshes(preview.root).filter((mesh) => mesh.geometry.type === 'IcosahedronGeometry');
+    const expected = new THREE.IcosahedronGeometry(1, 1);
+    const instances = rocks(first);
+    try {
+      expect(instances).toHaveLength(count);
+      expect(new Set(instances.map((rock) => rock.geometry)).size).toBe(1);
+      expect(instances[0].geometry).not.toBe(rocks(second)[0].geometry);
+      for (const rock of instances) {
+        expect(rock.geometry.attributes).toEqual(expected.attributes);
+        expect(rock.geometry.index).toEqual(expected.index);
+        expect(rock.geometry.groups).toEqual(expected.groups);
+        expect(rock.geometry.parameters).toEqual(expected.parameters);
+        expect(rock.material).toBe(instances.find((other) => other.material.color.equals(rock.material.color)).material);
+      }
+      // Captured from the original seeded scene before geometry sharing.
+      const signature = instances.map((rock) => [rock.name, rock.position.toArray(), rock.rotation.toArray(),
+        rock.scale.toArray(), rock.material.color.getHexString(), rock.castShadow, rock.receiveShadow]);
+      expect(createHash('sha256').update(JSON.stringify(signature)).digest('hex')).toBe(baselineHash);
+      const baseline = instances[0].geometry.attributes.position.array.slice();
+      first.update(7.4);
+      first.update(0);
+      expect(instances[0].geometry.attributes.position.array).toEqual(baseline);
+      expect(meshes(first.root).filter((mesh) => mesh.geometry === instances[0].geometry)).toEqual(instances);
+      const unrelated = meshes(first.root).filter((mesh) => !instances.includes(mesh));
+      expect(unrelated.every((mesh) => mesh.geometry !== instances[0].geometry)).toBe(true);
+    } finally {
+      first.dispose();
+      second.dispose();
+      expected.dispose();
+    }
   });
 
   it('keeps the procedural previews inside mobile mesh and triangle budgets while animating', () => {
@@ -250,6 +290,70 @@ describe('island preview lifecycle', () => {
     preview.update(0);
     expect([dolphin.position.toArray(), dolphin.rotation.toArray(), tail.rotation.toArray(), dhow.position.toArray(), dhow.rotation.toArray()]).toEqual(baseline);
     preview.dispose();
+  });
+
+  it('skips repeated Khark flag geometry work while preserving deformation, bounds and zero restoration', () => {
+    const preview = createIslandPreview(new THREE.Scene(), 'khark');
+    const second = createIslandPreview(new THREE.Scene(), 'khark');
+    const flag = preview.root.getObjectByName('Khark lighthouse signal flag');
+    const secondFlag = second.root.getObjectByName('Khark lighthouse signal flag');
+    const geometry = flag.geometry;
+    const position = geometry.attributes.position;
+    const baseline = position.array.slice();
+    const reference = geometry.clone();
+    const normals = vi.spyOn(geometry, 'computeVertexNormals');
+    const bounds = vi.spyOn(geometry, 'computeBoundingSphere');
+    try {
+      expect(geometry).not.toBe(secondFlag.geometry);
+      let calls = 0;
+      for (const input of [0, 1.75, 9, 0, -2.5, Infinity]) {
+        const time = Number.isFinite(input) ? input % (Math.PI * 2 * 20) : 0;
+        const expectedPosition = reference.attributes.position;
+        for (let i = 0; i < expectedPosition.count; i += 1) {
+          const x = baseline[i * 3];
+          expectedPosition.array[i * 3 + 2] = baseline[i * 3 + 2]
+            + x * 0.12 * (Math.sin(time * 3.4 - x * 2) - Math.sin(-x * 2));
+        }
+        reference.computeVertexNormals();
+        reference.computeBoundingSphere();
+        const version = position.version;
+        preview.update(input);
+        calls += 1;
+        expect(normals).toHaveBeenCalledTimes(calls);
+        expect(bounds).toHaveBeenCalledTimes(calls);
+        expect(position.version).toBe(version + 1);
+        expect(position.array).toEqual(expectedPosition.array);
+        expect(geometry.attributes.normal.array).toEqual(reference.attributes.normal.array);
+        expect(geometry.boundingSphere).toEqual(reference.boundingSphere);
+        expect(secondFlag.geometry.attributes.position.array).toEqual(baseline);
+        for (let i = 0; i < 5; i += 1) preview.update(input);
+        expect(normals).toHaveBeenCalledTimes(calls);
+        expect(bounds).toHaveBeenCalledTimes(calls);
+        expect(position.version).toBe(version + 1);
+      }
+      // All invalid times normalize to zero, including the last input above.
+      for (const input of [NaN, -Infinity, null, '2', undefined, -0]) preview.update(input);
+      expect(normals).toHaveBeenCalledTimes(calls);
+      expect(bounds).toHaveBeenCalledTimes(calls);
+      expect(position.array).toEqual(baseline);
+      // Do not turn the pennant optimization into a whole-preview update skip.
+      const water = preview.root.getObjectByName('Preview sea');
+      water.position.y = 123;
+      preview.update(0);
+      expect(water.position.y).toBe(-3.8);
+      second.update(1.75);
+      expect(secondFlag.geometry.attributes.position.array).not.toEqual(baseline);
+      expect(position.array).toEqual(baseline);
+      preview.dispose();
+      preview.update(7.4);
+      expect(normals).toHaveBeenCalledTimes(calls);
+    } finally {
+      normals.mockRestore();
+      bounds.mockRestore();
+      preview.dispose();
+      second.dispose();
+      reference.dispose();
+    }
   });
 
   it('flutters the Khark signal pennant locally and restores the pilot skiff at zero', () => {
