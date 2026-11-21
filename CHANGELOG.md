@@ -2,6 +2,32 @@
 
 All notable changes to Persian Isles Mini Golf are documented here.
 
+## [0.1.1] — 2026-11-21
+
+### Added
+
+- Cargo, tanker and passenger silhouettes for the procedural distant fleet.
+- Two island-specific distant vessels per menu scene, with shared geometry and deterministic motion.
+- Regression coverage for intermediate tablet layouts at 1024×600 and 1024×768 across all five islands.
+
+### Changed
+
+- New slogan: “A little golf. A world away.”
+- Three-item menu footer: Feedback, GitHub and About. External destinations open safely in a separate tab.
+- Sound settings remain available through a separate accessible icon, with music/effects state announced in its label.
+- Distant ships and rocks are distributed more widely around each island instead of clustering in one corner.
+- Removed the menu-only View island toggle.
+
+### Fixed
+
+- Compact scenery placement now matches the menu panel's 1100px responsive breakpoint.
+- Adjusted compact vessel anchors to keep the Hormuz boats visible on water at intermediate screen sizes.
+
+### Unchanged
+
+- Credits, soundtrack, gameplay physics, saved-score keys, stage count and the three playable Hormuz holes.
+- Qeshm, Kish, Khark and Hengam remain visual previews, not playable courses.
+
 ## [0.1.0] — 2026-11-20
 
 ### Added
@@ -30,4 +56,5 @@ All notable changes to Persian Isles Mini Golf are documented here.
 - Unit tests, browser tests, production build and production smoke checks pass in the release workspace.
 - Audio output is verified with seeded Chrome `OfflineAudioContext` renders for finite samples, headroom and crossfade behavior.
 
+[0.1.1]: https://github.com/itline/persian-isles-mini-golf/releases/tag/v0.1.1
 [0.1.0]: https://github.com/itline/persian-isles-mini-golf/releases/tag/v0.1.0
