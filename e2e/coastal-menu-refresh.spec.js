@@ -1,13 +1,18 @@
 import {test,expect} from '@playwright/test';
 
-test('menu has the selected slogan, two external destinations and unchanged credits',async({page})=>{
+test('menu has the selected slogan, two external destinations, help and unchanged credits',async({page})=>{
  await page.goto('http://127.0.0.1:4181/?qa');
  await expect(page.locator('.brand-slogan')).toHaveText('A little golf. A world away.');
  const footer=page.locator('.menu-footer');
- await expect(footer.locator('a,button')).toHaveText(['Feedback ↗','GitHub ↗','About']);
+ await expect(footer.locator('a,button')).toHaveText(['Feedback ↗','GitHub ↗','How to play','About']);
+ await expect(footer.locator('a')).toHaveCount(2);
  for(const [name,href] of [['Feedback ↗','https://github.com/itline/persian-isles-mini-golf/issues'],['GitHub ↗','https://github.com/itline/persian-isles-mini-golf']]){
   const link=footer.getByRole('link',{name,exact:true});await expect(link).toHaveAttribute('href',href);await expect(link).toHaveAttribute('target','_blank');await expect(link).toHaveAttribute('rel',/noopener/);
  }
+ await footer.getByRole('button',{name:'How to play',exact:true}).click();
+ await expect(page.locator('#helpPanel')).toBeVisible();
+ await expect(page.locator('.help-steps li')).toHaveCount(4);
+ await page.locator('#helpClose').click();await expect(page.locator('#helpFooter')).toBeFocused();
  await footer.getByRole('button',{name:'About',exact:true}).click();
  await expect(page.locator('#credits')).toContainText('Created by');
  await expect(page.locator('#credits')).toContainText('Mini Golf Mania');

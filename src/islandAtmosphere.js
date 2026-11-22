@@ -14,7 +14,9 @@ const DETAIL_PLACEMENTS = {
 const VESSEL_PROFILES = {
   hormuz: {
     kinds: ['lenj', 'cargo'],
-    landscape: { anchors: [[0.22,0.84],[0.86,0.16]], yaws: [-0.25,0.22], widths: [32,37] },
+    // The nine-hole folio extends below the old three-hole menu. Keep the
+    // nearer lenj beside its right edge, not underneath its former bottom.
+    landscape: { anchors: [[0.40,0.84],[0.86,0.16]], yaws: [-0.25,0.22], widths: [32,37] },
     portrait: { anchors: [[0.14,0.15],[0.87,0.27]], yaws: [-0.25,0.22], widths: [20, 24] },
   },
   qeshm: {

@@ -7,31 +7,40 @@ test('default sound waits for a trusted island gesture; settings alone stays loc
  await page.locator('#audioClose').click();await page.locator('[data-island="kish"]').click();
  await expect.poll(()=>page.evaluate(()=>window.__golf.state().audio)).toMatchObject({unlocked:true,contextState:'running'});
 });
-test('manual controls start collapsed while keyboard gameplay remains available',async({page})=>{
+test('manual shot UI is absent while keyboard aim, power and putting remain available',async({page})=>{
  await page.goto(url+'?qa');await page.locator('#play').click();
- await expect(page.locator('#manualToggle')).toHaveAttribute('aria-expanded','false');
- await expect(page.locator('#manualToggle')).toHaveAttribute('aria-controls','manualControls');
- await expect(page.locator('#manualControls')).toBeHidden();
- await page.locator('#scene').focus();await page.keyboard.press('ArrowRight');await page.keyboard.press('Space');
+ await expect(page.locator('#manualToggle, #manualControls, #manualClose, #power, #powerValue, #aimLeft, #aimRight, #putt, #restartQuick, .shot-controls')).toHaveCount(0);
+ await expect(page.locator('#status')).toHaveClass(/sr-only/);
+ await expect(page.locator('#status')).toHaveAttribute('aria-live','polite');
+ await expect(page.locator('#status')).toHaveAttribute('data-phase','ready');
+ const before=await page.evaluate(()=>window.__golf.state());
+ await page.locator('#scene').focus();await page.keyboard.press('ArrowRight');await page.keyboard.press('ArrowUp');
+ let after=await page.evaluate(()=>window.__golf.state());expect(after.angle).toBeCloseTo(before.angle+.055,8);expect(after.power).toBeCloseTo(before.power+.025,8);
+ await page.keyboard.press('ArrowLeft');await page.keyboard.press('ArrowDown');
+ after=await page.evaluate(()=>window.__golf.state());expect(after.angle).toBeCloseTo(before.angle,8);expect(after.power).toBeCloseTo(before.power,8);
+ await page.keyboard.press('Space');
  await expect(page.locator('#strokes')).toHaveText('1');
- await page.locator('#manualToggle').click();await expect(page.locator('#manualControls')).toBeVisible();
- await page.locator('#manualClose').click();await expect(page.locator('#manualControls')).toBeHidden();
 });
-test('mobile single tools drawer closes before Escape pause and never fires shots',async({browser})=>{
+test('direct sound and pause controls survive rotation and Escape without firing shots',async({browser})=>{
  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const page=await context.newPage();
  await page.goto(url+'?qa');await page.locator('#play').tap();
- await expect(page.locator('#gameMenuToggle')).toHaveAttribute('aria-expanded','false');await expect(page.locator('#gameTools')).toBeHidden();
- for(const id of ['pause','helpOpen','sound','zoomIn','zoomOut','overview'])await expect(page.locator(`#gameTools #${id}`)).toHaveCount(1);
- await page.locator('#gameMenuToggle').tap();await expect(page.locator('#gameTools')).toBeVisible();
- await page.locator('#zoomIn').tap();await expect(page.locator('#gameTools')).toBeVisible();
- await page.keyboard.press('Escape');await expect(page.locator('#gameTools')).toBeHidden();await expect(page.locator('#pausePanel')).toBeHidden();
- await page.keyboard.press('Escape');await expect(page.locator('#pausePanel')).toBeVisible();await page.locator('#resume').tap();
- for(const [control,panel,close] of [['helpOpen','helpPanel','helpClose'],['sound','audioPanel','audioClose'],['pause','pausePanel','resume']]){
-  await page.locator('#gameMenuToggle').tap();await page.locator('#'+control).tap();await expect(page.locator('#gameTools')).toBeHidden();await expect(page.locator('#'+panel)).toBeVisible();await page.locator('#'+close).tap();
+ await expect(page.locator('#home, #gameMenuToggle, #gameTools, #helpOpen')).toHaveCount(0);
+ for(const viewport of [{width:390,height:844},{width:844,height:390},{width:1200,height:1400}]){
+  await page.setViewportSize(viewport);
+  await expect(page.locator('.game-navigation button')).toHaveCount(2);
+  for(const id of ['sound','pause'])await expect(page.locator(`.game-navigation #${id}`)).toBeVisible();
+  for(const id of ['zoomIn','zoomOut','overview'])await expect(page.locator(`#game > .zoom-controls #${id}`)).toBeVisible();
+  await page.locator('#sound').tap();await expect(page.locator('#audioPanel')).toBeVisible();
+  await page.keyboard.press('Escape');await expect(page.locator('#audioPanel')).toBeHidden();await expect(page.locator('#pausePanel')).toBeHidden();
+  await expect.poll(()=>page.evaluate(()=>window.__golf.state().paused)).toBe(false);
+  await page.keyboard.press('Escape');await expect(page.locator('#pausePanel')).toBeVisible();
+  await page.keyboard.press('Escape');await expect(page.locator('#pausePanel')).toBeHidden();
+  for(const [control,panel,close] of [['sound','audioPanel','audioClose'],['pause','pausePanel','resume']]){
+   await page.locator('#'+control).tap();await expect(page.locator('#'+panel)).toBeVisible();await page.locator('#'+close).tap();
+  }
+  await expect(page.locator('#strokes')).toHaveText('0');
+  await expect.poll(()=>page.evaluate(()=>window.__golf.state().paused)).toBe(false);
  }
- await page.locator('#gameMenuToggle').tap();await page.locator('#scene').focus();await expect(page.locator('#gameTools')).toBeHidden();
- await page.locator('#gameMenuToggle').tap();await page.mouse.click(200,370);await expect(page.locator('#gameTools')).toBeHidden();await expect(page.locator('#strokes')).toHaveText('0');
- await page.locator('#gameMenuToggle').tap();await page.setViewportSize({width:1200,height:1400});await expect(page.locator('#gameMenuToggle')).toBeHidden();await expect(page.locator('#pause')).toBeVisible();await expect(page.locator('#gameMenuToggle')).toHaveAttribute('aria-expanded','false');
  await context.close();
 });
 test('visible preview readiness follows the latest rendered selection without ordinary notices',async({page})=>{

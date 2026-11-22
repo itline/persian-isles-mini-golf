@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { createEnvironment } from './environment.js';
 import { createHormuzCourse, COURSE } from './course.js';
+import { readJourneyProgress, writeJourneyProgress, clearJourneyProgress, recordCompletedJourney } from './journeyProgress.js';
+import { readInvitation, resultShare } from './resultShare.js';
 import { initialHormuzState, clampPower, scoreLabel } from './game.js';
 import { shotSpeed, captureCup, saveBest } from './shot.js';
 import { PhysicsWorld } from './vendor/physics/PhysicsWorld';
@@ -12,10 +14,12 @@ import {
   levelRecordKey,
   journeySummary,
   clampZoom,
+  levelsForIsland,
+  nextLevel,
 } from './journey.js';
 import { createCoastalAudio } from './audio.js';
 import { createShotStatusView } from './shotStatus.js';
-import { updateCameraFraming } from './cameraView.js';
+import { touchCourseView, updateCameraFraming } from './cameraView.js';
 import { projectedBounds, screenAnchorToPlane } from './projection.js';
 import { updateIslandMotion } from './sceneMotion.js';
 import { createDistantFleet } from './distantFleet.js';
@@ -26,6 +30,7 @@ import './mobile.css';
 import './collection.css';
 import './refresh.css';
 import './release.css';
+import './typography.css';
 
 const $ = (selector) => document.querySelector(selector);
 function courseSketch(level) {
@@ -41,27 +46,28 @@ $('#app').innerHTML = `
     <div class="island-nav"><button id="prevIsland" aria-label="Previous island">←</button><strong id="selectedIslandName">Hormuz</strong><button id="nextIsland" aria-label="Next island">→</button></div><div class="island-switcher" aria-label="Choose an island">${ISLANDS.map((island) => `<button class="island-tab ${island.id === 'hormuz' ? 'selected' : ''}" data-island="${island.id}"><span>${island.name}</span>${island.playable ? '' : '<b class="preview-dot" aria-hidden="true">○</b>'}</button>`).join('')}</div>
     <div class="island-availability hidden" id="islandAvailability" role="status"></div>
     <button id="play" class="primary" disabled>Preparing the island…</button>
-    <div id="journeyNote" class="journey-note"><b data-ui="Practice a hole">Practice a hole</b><span data-ui="More holes are in development.">More holes are in development.</span></div>
-    <div id="levelGrid" class="level-grid" aria-label="Hormuz holes">${LEVELS.map((level) => `<button class="level-button" data-level="${level.id}" ${level.available ? '' : 'disabled'}><span>${String(level.id).padStart(2, '0')}</span><small>${level.available ? level.name : '—'}</small>${level.available ? `${courseSketch(level)}<i class="level-complete"></i>` : '<i class="future-marker" aria-hidden="true">Soon</i>'}</button>`).join('')}</div>
+    <button id="continueJourney" class="secondary hidden" disabled>Continue Hormuz journey</button>
+    <p id="journeyCheckpointNote" class="journey-note hidden">Completed holes are saved. An interrupted hole restarts from its tee.</p>
+    <div id="invitation" class="invitation hidden"><p id="invitationLabel"></p><button id="invitationPlay" class="secondary">Play invited hole</button></div>
+    <div id="journeyNote" class="journey-note"><b data-ui="Practice a hole">Practice a hole</b></div>
+    <div id="levelGrid" class="level-grid" aria-label="Hormuz holes">${LEVELS.map((level) => `<button class="level-button" data-level="${level.id}"><span>${String(level.id).padStart(2, '0')}</span><small>${level.name}</small>${courseSketch(level)}<i class="level-complete"></i></button>`).join('')}</div>
     <div class="edition hidden" id="edition">HORMUZ <span>•</span> RAINBOW RUN <span>•</span> PAR 4</div></div>
     <aside class="postcard"><span class="eyebrow" id="postcardEyebrow">THE RAINBOW ISLAND</span><b id="postcardName">Hormuz Island</b><small id="postcardText">A miniature inspired by Iran’s rainbow island.<br>Playful geography, not a map.</small></aside>
     <button id="menuSound" class="circle-btn menu-sound" aria-label="Sound settings" title="Sound settings"></button>
-    <footer class="menu-footer"><span>FIVE ISLANDS. ONE COAST.</span><div><a class="text-btn" href="https://github.com/itline/persian-isles-mini-golf/issues" target="_blank" rel="noopener noreferrer" title="Report a bug or suggest an improvement on GitHub. A GitHub account is required; reports are public.">Feedback ↗</a><a class="text-btn" href="https://github.com/itline/persian-isles-mini-golf" target="_blank" rel="noopener noreferrer">GitHub ↗</a><button id="creditsOpen" class="text-btn">About</button></div></footer>
+    <footer class="menu-footer"><span>FIVE ISLANDS. ONE COAST.</span><div><a class="text-btn" href="https://github.com/itline/persian-isles-mini-golf/issues" target="_blank" rel="noopener noreferrer" title="Report a bug or suggest an improvement on GitHub. A GitHub account is required; reports are public.">Feedback ↗</a><a class="text-btn" href="https://github.com/itline/persian-isles-mini-golf" target="_blank" rel="noopener noreferrer">GitHub ↗</a><button id="helpFooter" class="text-btn">How to play</button><button id="creditsOpen" class="text-btn">About</button></div></footer>
   </section>
   <section id="game" class="hidden"><div id="cupCelebration" aria-hidden="true">Nice line.</div>
-    <header class="topbar"><div class="game-title"><span class="eyebrow">PERSIAN ISLES MINI GOLF</span><strong>Hormuz <i id="levelTitle">01 / RED SHORE</i></strong></div>
-    <div class="top-actions"><button id="sound" class="circle-btn" aria-label="Sound settings" title="Sound settings">♪</button><button id="helpOpen" class="circle-btn" aria-label="Help" title="Help">?</button><button id="pause" class="circle-btn" aria-label="Pause game" title="Pause game">Ⅱ</button></div><button id="gameMenuToggle" class="circle-btn" aria-label="Game tools" aria-controls="gameTools" aria-expanded="false">☰</button><div id="gameTools" class="game-tools" hidden></div></header>
-    <div class="hud"><div class="hole-stat"><small>HOLE</small><strong id="holeNumber">01</strong><span id="levelName">Red Shore</span></div><div><small>STROKES</small><strong id="strokes">0</strong></div></div>
-    <button id="manualToggle" class="manual-toggle" aria-expanded="false" aria-controls="manualControls">Manual controls</button><div id="manualControls" class="manual-controls" hidden><div class="shot-controls"><button id="manualClose" class="manual-close" aria-label="Close manual controls" title="Close manual controls">×</button><div class="shot-status"><span class="ready-dot"></span><b id="status" aria-live="polite">Loading</b><button id="restartQuick" class="text-btn" aria-label="Restart">Restart</button></div>
-    <div class="power-heading"><span>POWER</span><b id="powerValue">45%</b></div><input id="power" aria-label="Shot power" type="range" min="8" max="100" value="45">
-    <div class="direction-controls"><button id="aimLeft" aria-label="Aim left">↶</button><button id="putt" class="putt-btn">Putt <kbd>SPACE</kbd></button><button id="aimRight" aria-label="Aim right">↷</button></div></div></div>
+    <header class="topbar"><div class="game-title" role="group" aria-label="Round information"><div class="course-context"><span id="courseIsland">Hormuz</span> · Hole <span id="holeNumber">1</span></div><strong id="levelName">Red Shore</strong><div class="round-stats"><span>Strokes <b id="strokes">0</b></span><span class="stat-divider" aria-hidden="true">·</span><span>Par <b id="coursePar">2</b></span></div></div>
+    <div class="game-navigation"><button id="sound" class="circle-btn" aria-label="Sound settings" title="Sound settings">♪</button><button id="pause" class="circle-btn" aria-label="Pause game" title="Pause game"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg></button></div></header>
+    <span id="status" class="sr-only" aria-live="polite">Loading</span>
     <div class="zoom-controls" role="group" aria-label="Camera controls"><button id="zoomOut" aria-label="Zoom out" title="Zoom out">−</button><button id="zoomIn" aria-label="Zoom in" title="Zoom in">+</button><button id="overview" aria-label="Reset camera" title="Reset camera">⤢</button></div>
     <div id="hint" class="hint"><span class="gesture-demo" aria-hidden="true">○ ┄ ↙</span><b data-ui="Drag back, release to putt.">Drag back, release to putt.</b><span data-ui="Scroll or pinch to zoom.">Scroll or pinch to zoom.</span></div>
   </section>
   <section id="pausePanel" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="pauseTitle"><div class="panel"><p class="eyebrow">ON ISLAND TIME</p><h2 id="pauseTitle">Take a breath.</h2><p>The coast can wait. Your next line is right where you left it.</p><button id="resume" class="primary">Resume</button><button id="restart" class="secondary">Restart</button><button id="backHome" class="text-btn">Back to the coast</button></div></section>
-  <section id="resultPanel" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="resultTitle"><div class="panel result"><p class="eyebrow" id="resultEyebrow">HORMUZ / HOLE COMPLETE</p><h2 id="resultTitle">A line to remember.</h2><div class="score-number"><b id="resultStrokes">0</b><div><span id="resultScore">PAR</span><small id="resultSubscore">strokes · par 2</small></div></div><div class="result-metrics"><span>Par <b id="resultPar">2</b></span><span>Best <b id="resultBest">—</b></span><span>Previous <b id="resultPreviousBest">—</b></span></div><p id="recordNote"></p><div id="journeyResults" class="journey-results hidden"></div><button id="resultRetry" class="primary">Find a better line ↗</button><button id="resultNext" class="secondary">Next open hole</button><button id="resultHome" class="text-btn">Back to the coast</button></div></section>
+  <section id="resultPanel" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="resultTitle"><div class="panel result"><p class="eyebrow" id="resultEyebrow">HORMUZ / HOLE COMPLETE</p><h2 id="resultTitle">A line to remember.</h2><div class="score-number"><b id="resultStrokes">0</b><div><span id="resultScore">PAR</span><small id="resultSubscore">strokes · par 2</small></div></div><div class="result-metrics"><span>Par <b id="resultPar">2</b></span><span>Best <b id="resultBest">—</b></span><span>Previous <b id="resultPreviousBest">—</b></span></div><p id="recordNote"></p><div id="journeyResults" class="journey-results hidden"></div><button id="resultRetry" class="primary">Find a better line ↗</button><button id="resultNext" class="secondary">Next open hole</button><button id="resultShare" class="secondary">Share result</button><p id="shareNotice" role="status" aria-live="polite"></p><label id="shareFallback" class="hidden">Your result<textarea id="shareText" readonly rows="5"></textarea></label><button id="resultHome" class="text-btn">Back to the coast</button></div></section>
   <section id="credits" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="creditTitle"><div class="panel credits"><p class="eyebrow">ABOUT THE GAME</p><h2 id="creditTitle">A coast of our own.</h2><p class="about-intro">Persian Isles Mini Golf is a little escape to the Iranian islands. Find your line across red earth, pale cliffs and turquoise water, with thoughtful shots and a coast worth exploring.</p><p class="game-version">Version ${GAME_VERSION}</p><h3>Credits</h3><p>Created by <a href="https://github.com/itline" target="_blank" rel="noopener">itline</a>.</p><p>Procedural landscapes, course, interface and synthesized audio created for this project. No models or art were taken from the benchmark game.</p><p>Ball & fixed-step physics adapted from <a href="https://github.com/LCmaster/minigolf" target="_blank" rel="noopener">Mini Golf Mania</a> by Luiz Vicente (MIT). Three.js (MIT), Rapier (Apache-2.0). Required notices ship with the build.</p><p>Nature reference: <a href="https://science.nasa.gov/earth/earth-observatory/irans-rainbow-island-147428" target="_blank" rel="noopener">NASA Earth Observatory, Iran’s Rainbow Island</a>.</p><button id="creditsClose" class="primary">Back</button></div></section>
   <section id="audioPanel" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="audioTitle"><div class="panel"><p class="eyebrow">COASTAL SOUNDS</p><h2 id="audioTitle">A quieter rhythm.</h2><p>Original, softly synthesized island music. Music and game sounds are optional and saved separately on this device.</p><label class="audio-option"><span>Island music</span><input id="musicToggle" type="checkbox"></label><label class="audio-option"><span>Shot &amp; completion sounds</span><input id="effectsToggle" type="checkbox"></label><p id="audioNotice" aria-live="polite"></p><button id="audioClose" class="primary">Back</button></div></section>
+  <section id="leavePanel" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="leaveTitle"><div class="panel"><p class="eyebrow">BACK TO THE COAST</p><h2 id="leaveTitle">Back to the islands?</h2><p>Your progress in this round will be lost. Saved best scores will stay.</p><button id="leaveCancel" class="primary">Keep playing</button><button id="leaveConfirm" class="secondary">Back to islands</button></div></section>
   <div id="sceneFade" aria-hidden="true"></div>
   <section id="helpPanel" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle"><div class="panel"><h2 id="helpTitle" data-ui="How to play">How to play</h2><ol class="help-steps"><li data-ui="Drag back, release to putt.">Drag back, release to putt.</li><li data-ui="Longer drag, more power.">Longer drag, more power.</li><li data-ui="Scroll or pinch to zoom.">Scroll or pinch to zoom.</li><li data-ui="Arrows aim and set power. Space puts.">Arrows aim and set power. Space puts.</li></ol><button id="helpClose" class="primary" data-ui="Back">Back</button></div></section>
   <div id="loadError" class="load-error hidden" role="alert"></div>`;
@@ -80,7 +86,8 @@ function renderFailureNotices() {
     $('#loadError').classList.remove('hidden');
   }
 }
-let renderer, environment, physicalCourse, ball;
+const invitation = readInvitation(location.href);
+let renderer, environment, physicalCourse, courseLevel, ball;
 const sceneryClock = { value: 0 };
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('#b3dce0');
@@ -212,7 +219,6 @@ let drag = null,
   orbit = null,
   aimAngle = 0,
   power = 0.45,
-  currentPower = 0.45,
   zoom = 1,
   orbitAngle = 0.62;
 let selectedIsland = 'hormuz',
@@ -222,6 +228,7 @@ let selectedIsland = 'hormuz',
   previewVersion = 0;
 let mode = 'single',
   journeyScores = [],
+  journeyRecord = null,
   journeyFinished = false,
   audioWasPaused = false,
   helpWasPaused = false;
@@ -232,6 +239,7 @@ let tutorialSeen = false;
 try {
   tutorialSeen = localStorage.getItem('golf:tutorial-seen') === 'yes';
 } catch {}
+let touchOverview = false;
 let targetZoom = 1,
   cameraFrozen = false;
 const pointers = new Map();
@@ -257,76 +265,7 @@ try {
     localStorage.setItem(levelRecordKey(3), String(old));
 } catch {}
 const canvas = $('#scene');
-const compactTools = matchMedia(
-  '(max-width: 900px), (pointer: coarse) and (orientation: landscape)',
-);
-const topActions = $('.top-actions'),
-  zoomControls = $('.zoom-controls');
-function toolsOpen() {
-  return $('#gameMenuToggle').getAttribute('aria-expanded') === 'true';
-}
-function closeTools(focus = false) {
-  $('#gameMenuToggle').setAttribute('aria-expanded', 'false');
-  $('#gameTools').hidden = true;
-  if (focus) $('#gameMenuToggle').focus();
-}
-function layoutTools() {
-  closeTools();
-  if (compactTools.matches) {
-    $('#gameTools').append(topActions, zoomControls);
-  } else {
-    $('.topbar').insertBefore(topActions, $('#gameMenuToggle'));
-    $('#game').append(zoomControls);
-  }
-}
-layoutTools();
-compactTools.addEventListener('change', layoutTools);
-$('#gameMenuToggle').onclick = () => {
-  const open = !toolsOpen();
-  cancelDrag();
-  pointers.clear();
-  pinch = null;
-  if (open) {
-    $('#manualToggle').setAttribute('aria-expanded', 'false');
-    $('#manualControls').hidden = true;
-  }
-  $('#gameMenuToggle').setAttribute('aria-expanded', String(open));
-  $('#gameTools').hidden = !open;
-};
-$('#manualToggle').onclick = () => {
-  $('#manualToggle').setAttribute('aria-expanded', 'true');
-  $('#manualControls').hidden = false;
-  $('#manualClose').focus();
-};
-$('#manualClose').onclick = () => {
-  $('#manualToggle').setAttribute('aria-expanded', 'false');
-  $('#manualControls').hidden = true;
-  $('#manualToggle').focus();
-};
-document.addEventListener(
-  'pointerdown',
-  (e) => {
-    if (
-      toolsOpen() &&
-      !$('#gameTools').contains(e.target) &&
-      !$('#gameMenuToggle').contains(e.target)
-    ) {
-      closeTools();
-      cancelDrag();
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    }
-  },
-  { capture: true },
-);
-document.addEventListener('focusin', (e) => {
-  if (
-    toolsOpen() &&
-    !$('#gameTools').contains(e.target) &&
-    !$('#gameMenuToggle').contains(e.target)
-  )
-    closeTools();
-});
+const coarsePointer = matchMedia('(pointer: coarse)');
 const ballMarker = new THREE.Mesh(
   new THREE.RingGeometry(0.19, 0.235, 32),
   new THREE.MeshBasicMaterial({
@@ -401,13 +340,18 @@ finishFlag.position.set(COURSE.hole.x, 0.04, COURSE.hole.z);
 scene.add(finishFlag);
 
 function renderLevelCards() {
+  const islandLevels = levelsForIsland(selectedIsland);
+  $('#levelGrid').setAttribute('aria-label', `${currentIsland().name} holes`);
   document.querySelectorAll('.level-button').forEach((button) => {
     const level = LEVELS.find((l) => l.id === Number(button.dataset.level));
+    button.classList.toggle('hidden', level.available && !islandLevels.includes(level));
+    button.disabled = !islandLevels.includes(level);
     const record = readBest(level.id);
-    button.querySelector('span').textContent = num(level.id);
+    const number = level.number ?? level.id;
+    button.querySelector('span').textContent = num(number);
     button.querySelector('small').textContent = level.name;
     button.title = level.name;
-    button.setAttribute('aria-label', `Hole ${num(level.id)} · ${level.name}`);
+    button.setAttribute('aria-label', `Hole ${num(number)} · ${level.name}`);
     if (level.available) {
       button.querySelector('.level-complete').textContent = record == null ? '' : '✓';
       button.querySelector('.level-complete').title =
@@ -425,31 +369,27 @@ function styleResultActions() {
 function currentLevel() {
   return playableLevel(selectedLevel) || playableLevel(1);
 }
+function currentIsland() {
+  return ISLANDS.find(island => island.id === selectedIsland);
+}
 function setLevelUI() {
   const level = currentLevel();
-  $('#levelTitle').textContent = `${num(level.id)} / ${level.name}`;
-  $('#holeNumber').textContent = num(level.id);
+  $('#coursePar').textContent = num(level.par);
+  $('#holeNumber').textContent = num(level.number ?? level.id);
+  $('#courseIsland').textContent = currentIsland().name;
+  canvas.setAttribute('aria-label', `Three dimensional miniature golf course inspired by ${currentIsland().name} Island`);
   $('#levelName').textContent = level.name;
   $('#resultSubscore').textContent = `strokes · par ${num(level.par)}`;
   $('#edition').textContent = '';
 }
 const renderShotStatus = createShotStatusView({
   status: $('#status'),
-  controls: $('.shot-controls'),
-  putt: $('#putt'),
 });
-let statusText = 'Ready to putt';
-function syncShotStatus() {
-  renderShotStatus(statusText, !ready || state.completed || paused || ball?.state !== 'aiming');
-}
 function setStatus(text) {
-  statusText = text;
-  syncShotStatus();
+  renderShotStatus(text);
 }
 function updateHud() {
   $('#strokes').textContent = num(state.strokes);
-  $('#powerValue').textContent = `${num(Math.round(currentPower * 100))}%`;
-  $('#power').value = Math.round(power * 100);
 }
 function updateBest() {
   try {
@@ -468,11 +408,20 @@ function unlockPreferredAudio() {
 }
 function reset() {
   if (!ready) return;
-  $('#resultEyebrow').textContent = 'HORMUZ / HOLE COMPLETE';
+  $('#resultEyebrow').textContent = `${currentIsland().name.toUpperCase()} / HOLE COMPLETE`;
   $('#game').classList.remove('celebrating');
   const level = currentLevel();
+  if (mode === 'journey') {
+    journeyRecord = null;
+    journeyScores = journeyScores.slice(0, levelsForIsland(selectedIsland).indexOf(level));
+    if (journeyScores.length) writeJourneyProgress(undefined, journeyScores);
+    else clearJourneyProgress();
+  }
+  environment.root.visible = selectedIsland === 'hormuz';
+  if (preview) preview.root.visible = false;
   physicalCourse?.dispose();
   physicalCourse = createHormuzCourse(menuDiorama, physics, level);
+  courseLevel = level.id;
   origin.visible = true;
   clearTimeout(completionTimer);
   journeyFinished = false;
@@ -480,24 +429,27 @@ function reset() {
   pointers.clear();
   pinch = null;
   $('#journeyResults').classList.add('hidden');
+  resetShareFeedback();
   $('#resultNext').classList.remove('hidden');
   $('#resultRetry').textContent = 'Find a better line ↗';
   $('#resultTitle').textContent = 'A line to remember.';
   $('#resultNext').textContent =
-    mode === 'journey' && selectedLevel === 3 ? 'See journey results' : 'Next open hole';
+    mode === 'journey' && !nextLevel(selectedLevel) ? 'See journey results' : 'Next open hole';
   styleResultActions();
-  $('#resultNext').disabled = mode !== 'journey' && selectedLevel === 3;
+  $('#resultNext').disabled = mode !== 'journey' && !nextLevel(selectedLevel);
   drag = null;
   orbit = null;
-  state = { ...initialHormuzState, island: 'Hormuz', par: level.par };
+  state = { ...initialHormuzState, island: currentIsland().name, par: level.par };
   paused = false;
   coastalAudio.setPaused(false);
   aimAngle = 0;
   power = 0.45;
-  currentPower = power;
   zoom = 1;
   targetZoom = 1;
+  touchOverview = false;
   ball.createPhysicsBody(new THREE.Vector3(level.start.x, 0.16, level.start.z));
+  ball.setVisible(true);
+  finishFlag.visible = true;
   ball.setBallColor('#fff9ed');
   ball.mesh.scale.setScalar(1);
   ball.ghostSphereMesh.visible = false;
@@ -513,16 +465,18 @@ function reset() {
   setStatus('Ready to putt');
   resize();
 }
-async function start(journey = false) {
-  if (!ready || selectedIsland !== 'hormuz' || previewId !== 'hormuz') return;
+async function start(journey = false, checkpoint = null) {
+  if (!ready || !currentIsland().playable || previewId !== selectedIsland) return;
   restoreDiorama();
-  closeTools();
-  $('#manualToggle').setAttribute('aria-expanded', 'false');
-  $('#manualControls').hidden = true;
   mode = journey ? 'journey' : 'single';
-  journeyScores = [];
-  if (journey) selectedLevel = 1;
+  journeyScores = journey && checkpoint ? [...checkpoint] : [];
+  if (journey) {
+    if (!checkpoint) clearJourneyProgress();
+    selectedLevel = levelsForIsland(selectedIsland)[journeyScores.length].id;
+  }
   playing = true;
+  history.replaceState({ ...history.state, golfView: 'menu' }, '', location.href);
+  history.pushState({ ...history.state, golfView: 'game', golfReturnToMenu: true }, '', location.href);
   $('#menu').classList.add('hidden');
   $('#game').classList.remove('hidden');
   reset();
@@ -532,8 +486,74 @@ async function start(journey = false) {
   await unlockPreferredAudio();
   sound(660);
 }
+let leavingGame = false, restoreForLeave = false, leaveWasPaused = false, leaveFocus = null;
+// A synthetic game entry always has its real island menu immediately before it.
+// Traverse back to that entry after reload/Forward instead of creating menu → menu.
+function discardStaleGameEntry() {
+  if (history.state?.golfReturnToMenu) history.back();
+  else history.replaceState({ ...history.state, golfView: 'menu' }, '', location.href);
+}
+if (history.state?.golfView === 'game') discardStaleGameEntry();
+function leaveDialog(open) {
+  $('#leavePanel').classList.toggle('hidden', !open);
+  for (const id of ['game', 'pausePanel', 'resultPanel', 'helpPanel', 'audioPanel']) $('#' + id).inert = open;
+}
+function hasRoundProgress() {
+  return !journeyFinished && (state.strokes > 0 || journeyScores.length > 0);
+}
+function requestHome() {
+  if (!playing) return;
+  if (!hasRoundProgress()) return home();
+  if (!$('#leavePanel').classList.contains('hidden')) return;
+  leaveWasPaused = paused;
+  leaveFocus = document.activeElement;
+  cancelDrag();
+  paused = true;
+  coastalAudio.setPaused(true);
+  leaveDialog(true);
+  $('#leaveCancel').focus();
+}
+function cancelLeave() {
+  if (leavingGame) return;
+  leaveDialog(false);
+  paused = leaveWasPaused;
+  coastalAudio.setPaused(paused);
+  if (leaveFocus?.isConnected && leaveFocus.getClientRects().length && !leaveFocus.closest('[inert]')) leaveFocus.focus();
+  else canvas.focus();
+}
 function home() {
+  if (history.state?.golfView === 'game') {
+    if (leavingGame) return;
+    leavingGame = true;
+    $('#leaveCancel').disabled = true;
+    $('#leaveConfirm').disabled = true;
+    history.back();
+    return;
+  }
+  showHome();
+}
+addEventListener('popstate', () => {
+  if (!playing && history.state?.golfView === 'game') {
+    discardStaleGameEntry();
+  } else if (leavingGame) {
+    leavingGame = false;
+    showHome();
+  } else if (restoreForLeave && history.state?.golfView === 'game') {
+    restoreForLeave = false;
+    requestHome();
+  } else if (playing && history.state?.golfView !== 'game') {
+    if (hasRoundProgress()) {
+      restoreForLeave = true;
+      history.forward();
+    } else showHome();
+  }
+});
+function showHome() {
   clearTimeout(completionTimer);
+  leaveDialog(false);
+  $('#leaveCancel').disabled = false;
+  $('#leaveConfirm').disabled = false;
+  for (const id of ['leavePanel', 'helpPanel', 'audioPanel']) $('#' + id).classList.add('hidden');
   playing = false;
   paused = false;
   drag = null;
@@ -548,14 +568,13 @@ function home() {
   pointers.clear();
   pinch = null;
   mode = 'single';
-  selectIsland('hormuz');
+  selectIsland(selectedIsland);
   $('#play').focus();
 }
 function togglePause() {
   if (!playing || !ready || state.completed) return;
   paused = !paused;
-  drag = null;
-  orbit = null;
+  interruptGestures();
   coastalAudio.setPaused(paused);
   $('#pausePanel').classList.toggle('hidden', !paused);
   if (paused) $('#resume').focus();
@@ -570,7 +589,6 @@ function putt(p = power, dir = aimDir()) {
   const force = ball.rigidBody.mass() * shotSpeed(p);
   ball.shoot(new THREE.Vector3(dir.x * force, 0, dir.z * force));
   state.strokes = ball.strokes;
-  currentPower = power;
   updateHud();
   setStatus('Rolling');
   sound(300, 0.09);
@@ -585,10 +603,14 @@ function complete() {
   $('#game').classList.add('celebrating');
   const level = currentLevel();
   state.completed = true;
-  drag = null;
+  interruptGestures();
   ball.sinkAt(new THREE.Vector3(level.hole.x, -0.37, level.hole.z));
   arrowGroup.visible = false;
-  if (mode === 'journey') journeyScores[selectedLevel - 1] = state.strokes;
+  if (mode === 'journey') {
+    journeyScores[levelsForIsland(selectedIsland).indexOf(level)] = state.strokes;
+    if (nextLevel(selectedLevel)) writeJourneyProgress(undefined, journeyScores);
+    else journeyRecord = recordCompletedJourney(undefined, journeyScores);
+  }
   const old = best;
   best = saveBest(best, state.strokes);
   try {
@@ -606,7 +628,7 @@ function complete() {
     old == null || state.strokes < old ? 'New personal best on this coast.' : `Best ${num(best)}`;
   completionTimer = setTimeout(() => {
     $('#resultPanel').classList.remove('hidden');
-    $('#resultRetry').focus();
+    $(mode === 'journey' ? '#resultNext' : '#resultRetry').focus();
   }, 650);
 }
 const raycaster = new THREE.Raycaster(),
@@ -626,8 +648,15 @@ function cancelDrag() {
   drag = null;
   orbit = null;
   cameraFrozen = false;
-  currentPower = power;
   updateHud();
+}
+function interruptGestures() {
+  for (const id of pointers.keys()) {
+    if (canvas.hasPointerCapture(id)) canvas.releasePointerCapture(id);
+  }
+  pointers.clear();
+  pinch = null;
+  cancelDrag();
 }
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 // Shared touch navigation covers the scene and non-interactive folio areas.
@@ -697,16 +726,19 @@ canvas.addEventListener('pointerdown', (e) => {
     return;
   }
   if (e.button === 2) {
-    orbit = { x: e.clientX };
+    orbit = { id: e.pointerId, x: e.clientX };
     return;
   }
-  if (e.button !== 0 || ball.state !== 'aiming') return;
+  // Keep a held gesture across the rolling → ready transition. putt() still
+  // rejects release while moving; never queue an automatic second shot.
+  if (e.button !== 0 || !['aiming', 'moving'].includes(ball.state)) return;
   const point = groundPoint(e.clientX, e.clientY);
   if (!point) return;
   cameraFrozen = true;
-  drag = { start: point, x: e.clientX, y: e.clientY, dir: aimDir(), p: 0 };
+  drag = { id: e.pointerId, start: point, x: e.clientX, y: e.clientY, dir: aimDir(), p: 0 };
 });
 canvas.addEventListener('pointermove', (e) => {
+  if (!playing || paused || state.completed) return;
   if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (pinch) {
     const a = [...pointers.values()];
@@ -717,26 +749,30 @@ canvas.addEventListener('pointermove', (e) => {
     return;
   }
   if (orbit) {
+    if (orbit.id !== e.pointerId) return;
     orbitAngle = THREE.MathUtils.clamp(orbitAngle - (e.clientX - orbit.x) * 0.004, 0.1, 1.3);
     orbit.x = e.clientX;
     return;
   }
-  if (!drag) return;
+  updateDrag(e);
+});
+function updateDrag(e) {
+  if (!drag || drag.id !== e.pointerId) return;
   const p = groundPoint(e.clientX, e.clientY);
   if (!p) return;
   const d = drag.start.clone().sub(p);
   d.y = 0;
   const dist = d.length();
   drag.p = clampPower(dist / 3.6);
-  currentPower = drag.p;
   if (dist > 0.025) {
     d.normalize();
     drag.dir = { x: d.x, z: d.z };
     aimAngle = Math.atan2(d.x, -d.z);
   }
   updateHud();
-});
+}
 canvas.addEventListener('pointerup', (e) => {
+  if (!pointers.has(e.pointerId)) return;
   pointers.delete(e.pointerId);
   if (!playing) return;
   if (pinch) {
@@ -747,10 +783,12 @@ canvas.addEventListener('pointerup', (e) => {
     return;
   }
   if (orbit) {
+    if (orbit.id !== e.pointerId) return;
     orbit = null;
     return;
   }
-  if (!drag) return;
+  if (!drag || drag.id !== e.pointerId) return;
+  updateDrag(e);
   const { p, dir } = drag;
   drag = null;
   cameraFrozen = false;
@@ -761,8 +799,14 @@ canvas.addEventListener('pointercancel', () => {
   pinch = null;
   cancelDrag();
 });
-addEventListener('blur', () => {
+canvas.addEventListener('lostpointercapture', (e) => {
+  if (!pointers.has(e.pointerId)) return;
+  pointers.clear();
+  pinch = null;
   cancelDrag();
+});
+addEventListener('blur', () => {
+  interruptGestures();
   if (playing && !paused && !state.completed) togglePause();
 });
 canvas.addEventListener(
@@ -778,9 +822,20 @@ function changeAim(n) {
   if (!paused && ball?.state === 'aiming') aimAngle += n;
 }
 addEventListener('keydown', (e) => {
-  if (e.code === 'Escape' && toolsOpen()) {
+  const modal = ['leavePanel', 'audioPanel', 'helpPanel', 'credits', 'resultPanel', 'pausePanel']
+    .map(id => $('#' + id)).find(panel => !panel.classList.contains('hidden'));
+  if (modal && e.code === 'Tab') {
+    const controls = [...modal.querySelectorAll('button, input, textarea, a[href]')]
+      .filter(control => !control.disabled && !control.closest('[inert]') && control.getClientRects().length);
+    if (controls.length) {
+      const index = controls.indexOf(document.activeElement);
+      controls[(index + (e.shiftKey ? -1 : 1) + controls.length) % controls.length].focus();
+    }
     e.preventDefault();
-    closeTools(true);
+    return;
+  }
+  if (!$('#leavePanel').classList.contains('hidden')) {
+    if (e.code === 'Escape') { e.preventDefault(); cancelLeave(); }
     return;
   }
   if (!$('#audioPanel').classList.contains('hidden')) {
@@ -810,13 +865,14 @@ addEventListener('keydown', (e) => {
   if (e.code === 'ArrowRight') changeAim(0.055);
   if (e.code === 'ArrowUp') power = clampPower(power + 0.025);
   if (e.code === 'ArrowDown') power = Math.max(0.08, power - 0.025);
-  currentPower = power;
   updateHud();
 });
 async function selectIsland(id) {
   const island = ISLANDS.find((value) => value.id === id);
   if (!island || playing || !ready) return;
   selectedIsland = id;
+  const islandLevels = levelsForIsland(id);
+  if (!islandLevels.some(level => level.id === selectedLevel) && islandLevels.length) selectedLevel = islandLevels[0].id;
   const version = ++previewVersion;
   delete $('#menu').dataset.previewReady;
   previewId = null;
@@ -836,13 +892,23 @@ async function selectIsland(id) {
   $('#postcardEyebrow').textContent = island.subtitle;
   $('#postcardName').textContent = island.name;
   $('#postcardText').textContent = island.playable
-    ? 'Three holes open now. A playful interpretation, not a map.'
+    ? 'Nine holes, one journey. A playful interpretation, not a map.'
     : 'A visual preview. Golf on this island is still in development.';
   $('#islandAvailability').textContent = '';
   $('#islandAvailability').classList.add('hidden');
   $('#play').disabled = true;
+  const checkpoint = id === 'hormuz' ? readJourneyProgress() : null;
+  $('#continueJourney').classList.toggle('hidden', !checkpoint);
+  $('#continueJourney').disabled = true;
+  $('#journeyCheckpointNote').classList.toggle('hidden', !checkpoint);
+  if (checkpoint) $('#continueJourney').textContent = `Continue Hormuz · hole ${checkpoint.length + 1} of 9`;
+  $('#invitationPlay').disabled = true;
+  const invitedLevel = invitation?.island === id && invitation.hole
+    ? levelsForIsland(id).find(level => (level.number ?? level.id) === invitation.hole) : null;
+  $('#invitation').classList.toggle('hidden', !invitedLevel);
+  if (invitedLevel) $('#invitationLabel').textContent = `Invited to ${island.name} · Hole ${invitation.hole}: ${invitedLevel.name}`;
   $('#play').innerHTML = island.playable
-    ? 'Play Hormuz journey <svg class="play-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 3.5 16 10 6 16.5z" fill="currentColor"/></svg>'
+    ? `Play ${island.name} journey <svg class="play-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 3.5 16 10 6 16.5z" fill="currentColor"/></svg>`
     : 'Preview only';
   renderLevelCards();
   $('#levelGrid').classList.toggle('hidden', !island.playable);
@@ -850,6 +916,7 @@ async function selectIsland(id) {
   $('#edition').classList.add('hidden');
   preview?.dispose();
   preview = undefined;
+  if (id === 'hormuz' && courseLevel !== selectedLevel) reset();
   environment.root.visible = id === 'hormuz';
   physicalCourse.group.visible = id === 'hormuz';
   ball.setVisible(id === 'hormuz');
@@ -878,6 +945,8 @@ async function selectIsland(id) {
   previewId = id;
   $('#menu').dataset.previewReady = id;
   $('#play').disabled = !island.playable || !ready;
+  $('#continueJourney').disabled = !checkpoint || !island.playable || !ready;
+  $('#invitationPlay').disabled = !invitedLevel || !ready;
 }
 function cycleIsland(delta) {
   unlockPreferredAudio();
@@ -886,39 +955,36 @@ function cycleIsland(delta) {
 }
 function selectLevel(id) {
   const level = playableLevel(Number(id));
-  if (!level || selectedIsland !== 'hormuz' || !ready) return;
+  if (!level || !levelsForIsland(selectedIsland).includes(level) || !ready) return;
   selectedLevel = level.id;
   start(false);
 }
 function journeyResults() {
-  const summary = journeySummary(journeyScores);
+  const summary = journeySummary(journeyScores, selectedIsland);
   if (!summary) return;
   journeyFinished = true;
-  $('#resultTitle').textContent = 'Your Hormuz postcard.';
+  $('#resultTitle').textContent = `Your ${currentIsland().name} postcard.`;
   $('#resultStrokes').textContent = num(summary.strokes);
   $('#resultScore').textContent = scoreLabel(summary.strokes, summary.par);
   $('#resultSubscore').textContent = `total strokes · par ${num(summary.par)}`;
-  $('#recordNote').textContent = 'Three shores, one journey. Replay to find a better line.';
-  $('#resultEyebrow').textContent = 'HORMUZ / JOURNEY COMPLETE';
+  $('#recordNote').textContent = 'Nine holes, one journey. Replay to find a better line.';
+  $('#resultEyebrow').textContent = `${currentIsland().name.toUpperCase()} / JOURNEY COMPLETE`;
+  const levels = levelsForIsland(selectedIsland);
   $('#journeyResults').innerHTML =
-    `<table><thead><tr><th>Hole</th><th>Strokes</th><th>Par</th><th>Best</th></tr></thead><tbody>${summary.scores.map((score, i) => `<tr><td>${playableLevel(i + 1).name}</td><td>${num(score)}</td><td>${num(playableLevel(i + 1).par)}</td><td>${readBest(i + 1) == null ? '—' : num(readBest(i + 1))}</td></tr>`).join('')}</tbody><tfoot><tr><th>Total</th><th>${num(summary.strokes)}</th><th>${num(summary.par)}</th><th>—</th></tr></tfoot></table>`;
+    `<table><thead><tr><th>Hole</th><th>Strokes</th><th>Par</th><th>Best</th></tr></thead><tbody>${summary.scores.map((score, i) => {
+      const level = levels[i];
+      const record = readBest(level.id);
+      return `<tr><td>${level.name}</td><td>${num(score)}</td><td>${num(level.par)}</td><td>${record == null ? '—' : num(record)}</td></tr>`;
+    }).join('')}</tbody><tfoot><tr><th>Total</th><th>${num(summary.strokes)}</th><th>${num(summary.par)}</th><th>—</th></tr></tfoot></table>`;
   $('#resultPar').textContent = num(summary.par);
   $('#resultBest').textContent = num(summary.strokes);
   $('#resultPreviousBest').textContent = '—';
   $('#journeyResults').classList.remove('hidden');
+  resetShareFeedback();
   $('#resultNext').classList.add('hidden');
   $('#resultRetry').textContent = 'Play the journey again ↗';
   styleResultActions();
-  const key = 'persian-isles-golf:hormuz:journey-v2';
-  let old = null;
-  try {
-    const saved = Number(localStorage.getItem(key));
-    if (Number.isInteger(saved) && saved > 0) old = saved;
-  } catch {}
-  const record = saveBest(old, summary.strokes);
-  try {
-    localStorage.setItem(key, String(record));
-  } catch {}
+  const { previous: old, best: record } = journeyRecord ?? recordCompletedJourney(undefined, journeyScores);
   $('#resultBest').textContent = num(record);
   $('#resultPreviousBest').textContent = old == null ? '—' : num(old);
   $('#recordNote').textContent =
@@ -934,6 +1000,15 @@ function readBest(id) {
   }
 }
 $('#play').onclick = () => start(true);
+$('#continueJourney').onclick = () => {
+  const checkpoint = readJourneyProgress();
+  if (checkpoint && selectedIsland === 'hormuz') start(true, checkpoint);
+};
+$('#invitationPlay').onclick = () => {
+  const level = invitation?.island === selectedIsland && levelsForIsland(selectedIsland)
+    .find(value => (value.number ?? value.id) === invitation.hole);
+  if (level) selectLevel(level.id);
+};
 document.querySelectorAll('.island-tab').forEach(
   (button) =>
     (button.onclick = () => {
@@ -946,53 +1021,90 @@ document
   .forEach((button) => (button.onclick = () => selectLevel(button.dataset.level)));
 $('#prevIsland').onclick = () => cycleIsland(-1);
 $('#nextIsland').onclick = () => cycleIsland(1);
-$('#pause').onclick = () => {
-  closeTools();
-  togglePause();
-};
+$('#pause').onclick = togglePause;
 $('#resume').onclick = togglePause;
 $('#restart').onclick = reset;
 $('#resultNext').onclick = () => {
-  if (mode === 'journey' && selectedLevel === 3) {
+  if (mode === 'journey' && !nextLevel(selectedLevel)) {
     journeyResults();
     return;
   }
-  if (selectedLevel < 3) {
-    selectedLevel++;
+  const next = nextLevel(selectedLevel);
+  if (next) {
+    selectedLevel = next.id;
     reset();
     canvas.focus();
   }
 };
-$('#restartQuick').onclick = () => {
-  reset();
-  canvas.focus();
-};
 $('#resultRetry').onclick = () => {
   if (journeyFinished) {
+    clearJourneyProgress();
     journeyScores = [];
-    selectedLevel = 1;
+    selectedLevel = levelsForIsland(selectedIsland)[0].id;
   }
   reset();
   canvas.focus();
 };
-$('#backHome').onclick = home;
-$('#resultHome').onclick = home;
-$('#putt').onclick = () => {
-  putt();
-  canvas.focus();
-};
-$('#aimLeft').onclick = () => {
-  changeAim(-0.1);
-  canvas.focus();
-};
-$('#aimRight').onclick = () => {
-  changeAim(0.1);
-  canvas.focus();
-};
-$('#power').oninput = (e) => {
-  power = Number(e.target.value) / 100;
-  currentPower = power;
-  updateHud();
+$('#leaveCancel').onclick = cancelLeave;
+$('#leaveConfirm').onclick = home;
+$('#backHome').onclick = requestHome;
+$('#resultHome').onclick = requestHome;
+
+let shareEpoch = 0;
+function resetShareFeedback() {
+  shareEpoch++;
+  $('#shareNotice').textContent = '';
+  $('#shareFallback').classList.add('hidden');
+  $('#shareText').value = '';
+  $('#resultShare').disabled = false;
+}
+$('#resultShare').onclick = async () => {
+  const level = currentLevel();
+  const summary = journeyFinished ? journeySummary(journeyScores, selectedIsland) : null;
+  const payload = resultShare({
+    island: selectedIsland,
+    ...(summary ? { journey: true } : { hole: level.number ?? level.id, holeName: level.name }),
+    strokes: summary?.strokes ?? state.strokes,
+    par: summary?.par ?? level.par,
+    baseUrl: location.href,
+  });
+  if (!state.completed || !payload) return;
+  const epoch = shareEpoch;
+  const stillCurrent = () => epoch === shareEpoch && playing && state.completed;
+  $('#resultShare').disabled = true;
+  $('#shareNotice').textContent = '';
+  $('#shareFallback').classList.add('hidden');
+  try {
+    if (typeof navigator.share === 'function') {
+      try {
+        await navigator.share(payload);
+        if (stillCurrent()) $('#shareNotice').textContent = 'Result shared.';
+        return;
+      } catch (error) {
+        if (!stillCurrent()) return;
+        if (error.name === 'AbortError') {
+          $('#shareNotice').textContent = 'Sharing cancelled.';
+          return;
+        }
+        // Unsupported/denied native sharing still permits an explicit copy fallback.
+      }
+    }
+    if (!stillCurrent()) return;
+    const text = `${payload.text}\n${payload.url}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      if (stillCurrent()) $('#shareNotice').textContent = 'Result and course link copied.';
+    } catch {
+      if (!stillCurrent()) return;
+      $('#shareNotice').textContent = 'Copy unavailable. Select and copy your result below.';
+      $('#shareText').value = text;
+      $('#shareFallback').classList.remove('hidden');
+      $('#shareText').focus();
+      $('#shareText').select();
+    }
+  } finally {
+    if (stillCurrent()) $('#resultShare').disabled = false;
+  }
 };
 
 $('#zoomOut').onclick = () => {
@@ -1003,6 +1115,7 @@ $('#zoomIn').onclick = () => {
 };
 $('#overview').onclick = () => {
   if (!drag && !paused) {
+    if (currentTouchView()) touchOverview = !touchOverview;
     targetZoom = 1;
     orbitAngle = 0.62;
   }
@@ -1027,7 +1140,7 @@ function syncAudioControls() {
   $('#menuSound').title = $('#sound').title;
 }
 function openAudio() {
-  closeTools();
+  if (['pausePanel', 'resultPanel', 'leavePanel', 'helpPanel'].some(id => !$('#' + id).classList.contains('hidden'))) return;
   audioWasPaused = paused;
   if (playing && !paused && !state.completed) {
     paused = true;
@@ -1065,8 +1178,7 @@ $('#creditsOpen').onclick = () => {
   $('#creditsClose').focus();
 };
 $('#creditsClose').onclick = () => $('#credits').classList.add('hidden');
-$('#helpOpen').onclick = () => {
-  closeTools();
+$('#helpFooter').onclick = () => {
   helpWasPaused = paused;
   if (playing && !state.completed) {
     paused = true;
@@ -1080,7 +1192,8 @@ $('#helpClose').onclick = () => {
   $('#helpPanel').classList.add('hidden');
   paused = helpWasPaused;
   coastalAudio.setPaused(paused);
-  canvas.focus();
+  if (playing) canvas.focus();
+  else $('#helpFooter').focus();
 };
 canvas.tabIndex = 0;
 function resize() {
@@ -1089,7 +1202,6 @@ function resize() {
   resizeCamera();
 }
 addEventListener('resize', () => {
-  closeTools();
   resize();
 });
 function updateCamera(dt) {
@@ -1098,8 +1210,12 @@ function updateCamera(dt) {
   zoom = Math.abs(next - (playing ? targetZoom : 1)) < 0.001 ? (playing ? targetZoom : 1) : next;
   resizeCamera();
   const menuShift = !playing ? (innerWidth > 1000 ? -5.8 : innerWidth > innerHeight ? -13 : 0) : 0;
+  const touchView = currentTouchView();
   const target = cameraAimTarget;
-  if (playing && zoom > 1)
+  if (touchView) {
+    if (touchOverview) target.set(touchView.x, 0, touchView.z);
+    else target.copy(ball.getPosition());
+  } else if (playing && zoom > 1)
     target.copy(ball.getPosition()).multiplyScalar(Math.min(0.8, ((zoom - 1) / 0.85) * 0.8));
   else target.set(menuShift, 0, -0.2);
   target.y = 0;
@@ -1114,9 +1230,35 @@ function updateCamera(dt) {
   cameraPosition.copy(cameraTarget).add(offset);
   camera.position.lerp(cameraPosition, 1 - Math.exp(-dt * 4));
   camera.lookAt(cameraTarget);
+  const overviewLabel = touchView ? (touchOverview ? 'Return to ball' : 'Show whole course') : 'Reset camera';
+  if ($('#overview').getAttribute('aria-label') !== overviewLabel) {
+    $('#overview').setAttribute('aria-label', overviewLabel);
+    $('#overview').title = overviewLabel;
+    $('#overview').setAttribute('aria-pressed', String(!!touchView && touchOverview));
+  }
+}
+let touchViewKey = '', touchViewCache = null;
+function currentTouchView() {
+  if (!playing) return null;
+  const key = `${innerWidth}:${innerHeight}:${coarsePointer.matches}:${selectedLevel}:${orbitAngle}`;
+  if (key !== touchViewKey) {
+    touchViewKey = key;
+    touchViewCache = touchCourseView({
+      width: innerWidth, height: innerHeight, coarsePointer: coarsePointer.matches,
+      outline: currentLevel().outline, angle: orbitAngle,
+    });
+  }
+  return touchViewCache;
 }
 function resizeCamera() {
-  updateCameraFraming(camera, { width: innerWidth, height: innerHeight, playing, zoom });
+  updateCameraFraming(camera, {
+    width: innerWidth,
+    height: innerHeight,
+    playing,
+    zoom,
+    touchView: currentTouchView(),
+    overview: touchOverview,
+  });
 }
 function updatePreview() {
   origin.visible = playing && !paused && !state.completed && ball.state === 'aiming';
@@ -1159,7 +1301,6 @@ function animate(now) {
     } else if (ball.state === 'aiming') setStatus('Ready to putt');
     else setStatus('Rolling');
   }
-  syncShotStatus();
   ball.ghostSphereMesh.visible = false;
   ball.windTrail.group.visible = playing && !paused;
   targetRing.visible = playing && !paused && !state.completed;
@@ -1231,7 +1372,7 @@ async function init() {
     cameraTarget.set(innerWidth > 800 ? -5.2 : 0, 0, -0.2);
     camera.position.set(22, 30, 34);
     syncAudioControls();
-    selectIsland('hormuz');
+    selectIsland(invitation?.island ?? 'hormuz');
     requestAnimationFrame(animate);
     if (import.meta.env.DEV && new URLSearchParams(location.search).has('qa'))
       window.__golf = {
@@ -1244,6 +1385,8 @@ async function init() {
           power,
           zoom,
           targetZoom,
+          cameraFrozen,
+          cameraMode: currentTouchView() ? (touchOverview ? 'overview' : 'follow') : 'desktop',
           preview: previewId,
           level: selectedLevel,
           mode,
@@ -1260,6 +1403,28 @@ async function init() {
           return { x: ((v.x + 1) / 2) * innerWidth, y: ((1 - v.y) / 2) * innerHeight };
         },
         goal: () => ({ ...currentLevel().hole }),
+        courseBounds: () => {
+          const level = currentLevel();
+          const points = level.outline.map(([x, z]) => {
+            const v = new THREE.Vector3(x, 0.11, z).project(camera);
+            return { x: ((v.x + 1) / 2) * innerWidth, y: ((1 - v.y) / 2) * innerHeight };
+          });
+          const xs = points.map((point) => point.x),
+            ys = points.map((point) => point.y),
+            left = Math.min(...xs),
+            right = Math.max(...xs),
+            top = Math.min(...ys),
+            bottom = Math.max(...ys);
+          return {
+            left,
+            right,
+            top,
+            bottom,
+            width: right - left,
+            height: bottom - top,
+            center: { x: (left + right) / 2, y: (top + bottom) / 2 },
+          };
+        },
         islandCorners,
         fleet: fleetBounds,
       };

@@ -27,9 +27,11 @@ export function createHormuzCourse(scene, physics, level = COURSE) {
   for(const [x,z,w,d] of walls){box(x,.16,z,w,.42,d,red);box(x,.39,z,w+.04,.05,d+.04,salt,false);}
   // Twin mineral outcrops split the rear fairway; precision and bank shots remain possible.
   for(const [i,obstacle] of (level.obstacles??[[-1.8,.17,-5.5,.65,.38,.95],[1.2,.17,-2.95,.65,.38,1.05]]).entries())box(...obstacle,i%2?red:gold);
-  // Sparse colour inlays: physical material stays consistent and predictable in this slice.
-  for(let i=0;i<12;i++){const z=6.3-i*.95;if(z>(level.id===1?-2.3:-6)){box(-6,.006,z,3.5,.008,.025,salt,false);if(!level.id||level.id===3)box(6,.006,z,3.5,.008,.025,salt,false);}}
-  if(level.id!==1)for(let i=0;i<(level.id===2?8:9);i++)box(-3.8+i,.006,-4.2,.025,.008,3.5,salt,false);
+  // Preserve the original three lanes' inlays; never draw them across a new outline.
+  if(!level.id || level.id<=3) {
+    for(let i=0;i<12;i++){const z=6.3-i*.95;if(z>(level.id===1?-2.3:-6)){box(-6,.006,z,3.5,.008,.025,salt,false);if(!level.id||level.id===3)box(6,.006,z,3.5,.008,.025,salt,false);}}
+    if(level.id!==1)for(let i=0;i<(level.id===2?8:9);i++)box(-3.8+i,.006,-4.2,.025,.008,3.5,salt,false);
+  }
   // Below-surface cup with a genuine opening and catcher.
   const cupMaterial=new THREE.MeshStandardMaterial({color:'#173f47',roughness:1});
   const inside=new THREE.Mesh(new THREE.CylinderGeometry(.286,.286,.5,32,1,true),cupMaterial);inside.position.set(level.hole.x,-.25,level.hole.z);group.add(inside);

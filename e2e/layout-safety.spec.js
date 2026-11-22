@@ -4,22 +4,25 @@ test('landscape menu scroll exposes every hole and footer stays accessible',asyn
  const context=await browser.newContext({viewport:{width:844,height:390},isMobile:true,hasTouch:true});const page=await context.newPage();
  await page.goto('http://127.0.0.1:4181/?qa');await page.waitForFunction(()=>window.__golf);
  await page.locator('.hero-copy').evaluate(el=>el.scrollTop=el.scrollHeight);
- await expect(page.locator('[data-level="10"]')).toBeInViewport();
+ await expect(page.locator('[data-level="9"]')).toBeInViewport();
+ await expect(page.locator('[data-level]')).toHaveCount(9);
+ await expect(page.locator('[data-level="10"]')).toHaveCount(0);
  await page.locator('[data-level="3"]').tap();await expect(page.locator('#levelName')).toHaveText('Rainbow Run');
- await page.locator('#gameMenuToggle').tap();await page.locator('#pause').tap();await page.locator('#backHome').tap();
+ await page.locator('#pause').tap();await page.locator('#backHome').tap();
  await expect(page.locator('.menu-footer a')).toHaveCount(2);
+ await expect(page.locator('.menu-footer a, .menu-footer button')).toHaveCount(4);
  await page.locator('#creditsOpen').tap();await expect(page.locator('#credits')).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await context.close();
 });
 
-test('zoom keeps the real ball clear of HUD and freezes camera during a shot drag',async({browser})=>{
+test('zoom keeps the real ball clear of round information and freezes camera during a shot drag',async({browser})=>{
  const context=await browser.newContext({viewport:{width:844,height:390},isMobile:true,hasTouch:true});const page=await context.newPage();
  await page.goto('http://127.0.0.1:4181/?qa');await page.locator('[data-level="3"]').tap();
  await page.mouse.move(430,150);for(let i=0;i<12;i++)await page.mouse.wheel(0,-160);await page.waitForTimeout(1400);
  let position=await page.evaluate(()=>{const s=window.__golf.state();return window.__golf.project(s.ball.x,s.ball.z);});
  expect(position.x).toBeGreaterThan(20);expect(position.x).toBeLessThan(824);expect(position.y).toBeGreaterThan(20);expect(position.y).toBeLessThan(370);
- for(const selector of ['.hud','.shot-controls','.zoom-controls','.topbar .game-title']){
-  const box=await page.locator(selector).boundingBox();if(box)expect(position.x>box.x&&position.x<box.x+box.width&&position.y>box.y&&position.y<box.y+box.height,`ball not under ${selector}`).toBe(false);
+ for(const selector of ['.zoom-controls','.topbar .game-title','.game-navigation']){
+  const box=await page.locator(selector).boundingBox();expect(box,`${selector} is visible`).not.toBeNull();expect(position.x>box.x&&position.x<box.x+box.width&&position.y>box.y&&position.y<box.y+box.height,`ball not under ${selector}`).toBe(false);
  }
  await page.mouse.move(position.x,position.y);await page.mouse.down();await page.waitForTimeout(800);
  const still=await page.evaluate(()=>{const s=window.__golf.state();return window.__golf.project(s.ball.x,s.ball.z);});

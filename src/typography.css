@@ -1,0 +1,213 @@
+/* Local Latin variable font, SIL OFL 1.1; provenance lives beside the asset. */
+@font-face {
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('/fonts/source-sans-3/source-sans-3-latin-variable.woff2') format('woff2');
+}
+
+/* Deliberately exclude #credits. Never move these tokens to :root or body. */
+:is(#menu, #game, #pausePanel, #resultPanel, #audioPanel, #leavePanel, #helpPanel) {
+  --type-ui: 'Source Sans 3', 'Avenir Next', Avenir, sans-serif;
+  --type-display: Georgia, 'Times New Roman', serif;
+  --type-label: 12px;
+  --type-body: 14px;
+  --type-button: 14px;
+  --type-heading: 36px;
+  font-family: var(--type-ui);
+  font-size: var(--type-body);
+  line-height: 1.45;
+}
+
+:is(#menu, #game, #pausePanel, #resultPanel, #audioPanel, #leavePanel, #helpPanel)
+:is(button, input, .eyebrow, .menu-footer, .hint, .hint span, .audio-option, .help-steps) {
+  font-family: var(--type-ui);
+}
+
+:is(#menu, #pausePanel, #resultPanel, #audioPanel, #leavePanel, #helpPanel)
+:is(.primary, .secondary, .text-btn) {
+  font-size: var(--type-button);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+#menu :is(.eyebrow, .brand-slogan, .island-availability, .edition, .future-marker, .level-complete, .level-button small, .island-tab span, .journey-note span, .postcard small),
+:is(#pausePanel, #resultPanel, #audioPanel, #leavePanel, #helpPanel) :is(.eyebrow, small),
+#game .course-context {
+  font-family: var(--type-ui);
+  font-size: var(--type-label);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+}
+
+#menu .brand-name,
+#menu .hero-copy h1,
+#menu .island-nav strong,
+#menu .postcard b,
+:is(#pausePanel, #resultPanel, #audioPanel, #leavePanel, #helpPanel) h2 {
+  font-family: var(--type-display);
+  font-weight: 400;
+}
+
+/* Preserve the brand and island-picker heading sizes from release.css. */
+:is(#pausePanel, #resultPanel, #audioPanel, #leavePanel, #helpPanel) h2 {
+  font-size: var(--type-heading);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+#menu .lede,
+#menu .journey-note,
+#menu .journey-note b,
+:is(#pausePanel, #resultPanel, #audioPanel, #leavePanel, #helpPanel) .panel p:not(.eyebrow),
+#helpPanel .help-steps,
+#audioPanel .audio-option {
+  font-size: var(--type-body);
+  line-height: 1.45;
+}
+
+#menu .island-tab span,
+#menu .journey-note b {
+  font-weight: 600;
+}
+
+#menu .brand-slogan {
+  letter-spacing: 0;
+}
+
+#menu .menu-footer {
+  font-size: var(--type-label);
+  letter-spacing: 0;
+}
+
+#menu .menu-footer > div {
+  gap: clamp(6px, 2vw, 22px);
+}
+
+#menu .menu-footer :is(a, button) {
+  font-family: var(--type-ui);
+  font-size: var(--type-button);
+  font-weight: 400;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+#menu .level-button > span,
+#game .round-stats,
+#resultPanel :is(.score-number > b, .result-metrics b, .journey-results) {
+  font-family: var(--type-ui);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+#menu .level-button > span {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+#menu .level-button:disabled > span {
+  font-size: 16px;
+}
+
+#game .game-title .course-context {
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+
+#game .game-title > strong {
+  display: block;
+  font-family: var(--type-ui);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+#game .round-stats {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 5px;
+  font-size: var(--type-body);
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+#game .round-stats b {
+  font-weight: 600;
+}
+
+#game #hint,
+#game #hint b {
+  font-family: var(--type-ui);
+  font-size: var(--type-body);
+  line-height: 1.4;
+}
+
+#game #hint span:not(.gesture-demo) {
+  font-family: var(--type-ui);
+  font-size: var(--type-label);
+  line-height: 1.4;
+}
+
+#resultPanel .score-number > b {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+#resultPanel .score-number span,
+#resultPanel .result-metrics,
+#resultPanel .journey-results > div {
+  font-family: var(--type-ui);
+  font-size: var(--type-body);
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+#resultPanel .score-number small,
+#resultPanel .journey-results small {
+  font-size: var(--type-label);
+}
+
+@media (max-width: 600px) {
+  #menu .menu-footer {
+    left: 14px;
+    right: 14px;
+  }
+
+  #menu .hero-copy {
+    padding-inline: 16px;
+  }
+
+  #menu .level-button:not(:disabled) small {
+    white-space: normal;
+    overflow-wrap: normal;
+  }
+
+  #game .game-title > strong {
+    font-size: 17px;
+  }
+}
+
+@media (max-height: 560px) and (min-width: 601px) {
+  :is(#pausePanel, #resultPanel, #audioPanel, #leavePanel, #helpPanel) {
+    --type-heading: 32px;
+  }
+
+  #game .game-title > strong {
+    font-size: 17px;
+  }
+
+  #helpPanel .panel {
+    padding-block: 18px;
+  }
+
+  #helpPanel .help-steps {
+    margin-block: 12px;
+  }
+}
