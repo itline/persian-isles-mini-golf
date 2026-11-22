@@ -25,6 +25,7 @@ All notable changes to Persian Isles Mini Golf are documented here.
 
 - Stale game history after reload/Forward no longer creates a duplicate menu entry or restores a lost round.
 - Finalize drag power and direction from the owning pointer's release position; unrelated pointers and lost capture cannot fire a stale putt.
+- Preserve a held drag started before the ball becomes ready when released after readiness; releasing while rolling never queues a second shot. Holing during a held gesture releases pointer capture and camera freeze.
 - Keep keyboard navigation inside open dialogs and focus the next hole after a journey result; practice retains replay as its primary action.
 - Returning to the coast keeps the selected island; Qeshm, Kish, Khark and Hengam remain preview-only scenes, with no playable Qeshm module.
 - Legacy three-hole journey records do not count as completed nine-hole journeys; existing Hormuz per-hole records remain separate.

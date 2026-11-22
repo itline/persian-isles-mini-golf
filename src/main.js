@@ -603,7 +603,7 @@ function complete() {
   $('#game').classList.add('celebrating');
   const level = currentLevel();
   state.completed = true;
-  drag = null;
+  interruptGestures();
   ball.sinkAt(new THREE.Vector3(level.hole.x, -0.37, level.hole.z));
   arrowGroup.visible = false;
   if (mode === 'journey') {
@@ -729,7 +729,9 @@ canvas.addEventListener('pointerdown', (e) => {
     orbit = { id: e.pointerId, x: e.clientX };
     return;
   }
-  if (e.button !== 0 || ball.state !== 'aiming') return;
+  // Keep a held gesture across the rolling → ready transition. putt() still
+  // rejects release while moving; never queue an automatic second shot.
+  if (e.button !== 0 || !['aiming', 'moving'].includes(ball.state)) return;
   const point = groundPoint(e.clientX, e.clientY);
   if (!point) return;
   cameraFrozen = true;
@@ -1383,6 +1385,7 @@ async function init() {
           power,
           zoom,
           targetZoom,
+          cameraFrozen,
           cameraMode: currentTouchView() ? (touchOverview ? 'overview' : 'follow') : 'desktop',
           preview: previewId,
           level: selectedLevel,
