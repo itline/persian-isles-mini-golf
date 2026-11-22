@@ -7,7 +7,7 @@ async function shot(x,z,power){
  const s=await page.evaluate(()=>window.__golf.state());const desired=Math.atan2(x-s.ball.x,-(z-s.ball.z));
  await page.locator('#scene').focus();let delta=desired-s.angle;while(delta>Math.PI)delta-=Math.PI*2;while(delta< -Math.PI)delta+=Math.PI*2;
  for(let i=0;i<Math.round(Math.abs(delta)/.055);i++)await page.keyboard.press(delta>0?'ArrowRight':'ArrowLeft');
- await page.locator('#power').evaluate((el,p)=>{el.value=String(p);el.dispatchEvent(new Event('input',{bubbles:true}));},power);
+ for(let i=0;i<Math.round(Math.abs(power/100-s.power)/.025);i++)await page.keyboard.press(power/100>s.power?'ArrowUp':'ArrowDown');
  await page.locator('#scene').focus();await page.keyboard.press('Space');await page.waitForTimeout(700);
  await page.waitForFunction(()=>['aiming','in_hole'].includes(window.__golf.state().phase),null,{timeout:25000});
  console.log(JSON.stringify(await page.evaluate(()=>window.__golf.state())));

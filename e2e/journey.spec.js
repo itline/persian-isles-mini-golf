@@ -1,13 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { shot } from './helpers/shot.js';
-test('all three holes complete by actual inputs; journey postcard totals and records persist', async ({
+const url = new URL('/?qa', process.env.GOLF_URL || 'http://127.0.0.1:4181').href;
+test('original three holes complete by actual inputs; the nine-hole journey continues into hole four', async ({
   page,
 }) => {
   test.setTimeout(140000);
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.addInitScript(() => localStorage.setItem('persian-isles-golf:hormuz:level-1:v2', '5'));
-  await page.goto('http://127.0.0.1:4181/?qa');
+  await page.goto(url);
   await page.locator('#play').click();
   await page.waitForTimeout(700);
   await shot(page, -6.1, -0.8, 74);
@@ -17,7 +18,11 @@ test('all three holes complete by actual inputs; journey postcard totals and rec
   await expect(page.locator('#resultPreviousBest')).toHaveText('5');
   await expect(page.locator('#recordNote')).toContainText('New personal best');
   await expect(page.locator('#game')).toHaveClass(/celebrating/);
-  await expect(page.locator('.shot-controls')).toHaveAttribute('data-phase', 'holed');
+  await expect(page.locator('#status')).toHaveAttribute('data-phase', 'holed');
+  await page.locator('#resultHome').click();
+  await expect(page.locator('#leavePanel')).toBeVisible();
+  await page.locator('#leaveCancel').click();
+  await expect(page.locator('#resultHome')).toBeFocused();
   await page.locator('#resultNext').click();
   await expect(page.locator('#levelName')).toHaveText('Salt Valley');
   await shot(page, -6.1, -4.2, 83);
@@ -35,27 +40,32 @@ test('all three holes complete by actual inputs; journey postcard totals and rec
   await expect(page.locator('#resultStrokes')).toHaveText('4');
   await expect(page.locator('#resultPar')).toHaveText('4');
   await expect(page.locator('#resultBest')).toHaveText('4');
-  await page.getByRole('button', { name: 'See journey results' }).click();
-  await expect(page.getByRole('heading', { name: 'Your Hormuz postcard.' })).toBeVisible();
-  await expect(page.locator('#resultStrokes')).toHaveText('7');
-  await expect(page.locator('#resultPar')).toHaveText('9');
-  await expect(page.locator('#resultBest')).toHaveText('7');
-  await expect(page.locator('#journeyResults tbody tr')).toHaveCount(3);
-  await expect(page.locator('#journeyResults thead')).toHaveText(/Hole.*Strokes.*Par.*Best/);
-  await expect(page.locator('#journeyResults tbody tr').nth(0)).toHaveText(/Red Shore.*1.*2.*1/);
-  await expect(page.locator('#journeyResults tbody tr').nth(1)).toHaveText(/Salt Valley.*2.*3.*2/);
-  await expect(page.locator('#journeyResults tbody tr').nth(2)).toHaveText(/Rainbow Run.*4.*4.*4/);
-  await expect(page.locator('#journeyResults tfoot th').last()).toHaveText('—');
-  await expect(page.locator('#resultPanel .eyebrow')).toHaveText('HORMUZ / JOURNEY COMPLETE');
-  await expect(page.locator('#journeyResults tfoot')).toContainText('Total');
-  await expect(page.locator('#recordNote')).toContainText('Journey best: 7');
+  await expect(page.locator('#resultPanel .eyebrow')).not.toContainText('JOURNEY COMPLETE');
+  await expect(page.getByRole('button', { name: 'See journey results' })).toHaveCount(0);
+  await expect(page.locator('#journeyResults')).toBeHidden();
+  await expect(page.locator('#resultNext')).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem('persian-isles-golf:hormuz:journey-9:v1'))).toBeNull();
   expect(await page.evaluate(() => window.__golf.state().journey)).toEqual([1, 2, 4]);
-  await page.getByRole('button', { name: 'Play the journey again' }).click();
+  await page.locator('#resultNext').click();
+  await expect(page.locator('#levelName')).toHaveText('Salt Gate');
+  await expect(page.locator('.game-title .course-context')).toHaveText('Hormuz · Hole 4');
   await expect(page.locator('#strokes')).toHaveText('0');
+  const continued = await page.evaluate(() => window.__golf.state());
+  expect(continued).toMatchObject({ level: 4, mode: 'journey', completed: false, journey: [1, 2, 4] });
+  expect(continued.ball.x).toBeCloseTo(-6.1, 3);
+  expect(continued.ball.z).toBeCloseTo(6.1, 3);
   expect(
     await page.evaluate(() => localStorage.getItem('persian-isles-golf:hormuz:level-1:v2')),
   ).toBe('1');
   await page.reload();
+  await expect(page.locator('#continueJourney')).toHaveText('Continue Hormuz · hole 4 of 9');
+  await page.locator('#continueJourney').click();
+  await expect(page.locator('#levelName')).toHaveText('Salt Gate');
+  await expect(page.locator('#strokes')).toHaveText('0');
+  expect(await page.evaluate(() => window.__golf.state().journey)).toEqual([1, 2, 4]);
+  await page.locator('#pause').click();
+  await page.locator('#backHome').click();
+  await page.locator('#leaveConfirm').click();
   await page.locator('[data-level="2"]').click();
   expect(
     await page.evaluate(() => localStorage.getItem('persian-isles-golf:hormuz:level-2:v2')),
@@ -64,7 +74,7 @@ test('all three holes complete by actual inputs; journey postcard totals and rec
 });
 
 test('music and effects default on, remain independent and persistent', async ({ page }) => {
-  await page.goto('http://127.0.0.1:4181/?qa');
+  await page.goto(url);
   await page.waitForFunction(() => window.__golf);
   let audio = await page.evaluate(() => window.__golf.state().audio);
   expect(audio.music).toBe(true);
@@ -103,7 +113,7 @@ test('silent browsing and playing never create an audio context; music unlocks o
       JSON.stringify({ music: false, effects: false }),
     ),
   );
-  await page.goto('http://127.0.0.1:4181/?qa');
+  await page.goto(url);
   await page.waitForFunction(() => window.__golf);
   // The audio API reports an absent (not-yet-created) context as 'locked'.
   const expectLocked = async () =>
@@ -158,7 +168,7 @@ for (const channel of ['music', 'effects'])
         ),
       channel,
     );
-    await page.goto('http://127.0.0.1:4181/?qa');
+    await page.goto(url);
     await page.waitForFunction(() => window.__golf);
     expect(await page.evaluate(() => window.__golf.state().audio)).toMatchObject({
       unlocked: false,
@@ -214,7 +224,7 @@ test('startup effect waits for audio resume from the play gesture', async ({ pag
       }
     };
   });
-  await page.goto('http://127.0.0.1:4181/?qa');
+  await page.goto(url);
   await page.locator('#play').click();
   await expect
     .poll(() => page.evaluate(() => window.__startupAudio))
@@ -231,7 +241,7 @@ test('mobile pinch zoom never fires a shot; single-touch dragging still does', a
     isMobile: true,
   });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:4181/?qa');
+  await page.goto(url);
   await page.locator('[data-level="1"]').tap();
   const cdp = await context.newCDPSession(page);
   const points = (a, b) => [
@@ -244,11 +254,9 @@ test('mobile pinch zoom never fires a shot; single-touch dragging still does', a
   await page.waitForTimeout(900);
   expect((await page.evaluate(() => window.__golf.state())).zoom).toBeGreaterThan(1.2);
   await expect(page.locator('#strokes')).toHaveText('0');
-  await page.locator('#gameMenuToggle').tap();
   await page.locator('#overview').tap();
   await page.waitForTimeout(800);
   expect((await page.evaluate(() => window.__golf.state())).zoom).toBeCloseTo(1, 1);
-  await page.locator('#gameMenuToggle').tap();
   const pointsAfterPinch = await page.evaluate(() => {
     const s = window.__golf.state();
     return {

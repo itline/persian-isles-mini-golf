@@ -12,7 +12,9 @@ for(const viewport of [{width:1024,height:600},{width:1024,height:768}]){
    const controls=await page.locator('.hero-copy, #menuSound, .brand, .menu-footer a, .menu-footer button').evaluateAll(elements=>elements.map(element=>{
     const {x,y,width,height}=element.getBoundingClientRect();return{name:element.id||element.className||element.textContent.trim(),x,y,width,height};
    }));
-   expect(controls).toHaveLength(6);
+   // Brand, folio, sound, and all four approved footer destinations.
+   expect(controls).toHaveLength(7);
+   expect(controls.some(control=>control.name==='helpFooter')).toBe(true);
    measurements.push({island:id,...state,controls});
    for(const [index,box] of [...state.boats,...state.details].entries()){
     const label=`${id} ${box.kind||`rock ${index-state.boats.length+1}`} at ${viewport.width}x${viewport.height}`;

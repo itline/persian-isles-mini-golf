@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeStaticMeshes } from './staticMeshes.js';
 
 // Entirely procedural Hormuz-inspired scenery. The playable U is intentionally empty.
 // This module does not own the camera, lights, course, renderer or scene background.
@@ -349,6 +350,26 @@ export function createEnvironment(scene) {
   [[-20, -11, 1.8, 0.8], [19, -15, 2.5, 1], [-23, 8, 1.4, 0.6]].forEach(([x, z, radius, height], i) => {
     stack(`Distant low island ${i}`, x, z, radius, radius * 0.65, height, i % 2 ? OCHRE : ROSE, 419 + i, -3.78);
   });
+
+  // Explicit immutable props only: keep the boat, foam, sea and named mineral
+  // landmarks intact. Batch within each parent so bounds stay local and no
+  // animated hierarchy or independently positioned building gets flattened.
+  const batchableNames = new Set([
+    'Bridge handrail', 'Bridge post', 'Lime plaster walls', 'Turquoise plinth',
+    'Flat roof cornice', 'Roof terrace', 'Low roof parapet', 'Turquoise door',
+    'Arched door lintel', 'Recessed window', 'Window sill', 'Small turquoise roof dome',
+    'Date palm trunk', 'Date palm frond', 'Jetty pile', 'Canopy upright',
+    'Canopy turquoise stripe', 'Cliff landing step',
+  ]);
+  const staticPropsByParent = new Map();
+  root.traverse((object) => {
+    if (!object.isMesh || !batchableNames.has(object.name)) return;
+    if (!staticPropsByParent.has(object.parent)) staticPropsByParent.set(object.parent, []);
+    staticPropsByParent.get(object.parent).push(object);
+  });
+  for (const [parent, props] of staticPropsByParent) {
+    for (const batch of mergeStaticMeshes(parent, props)) geometries.add(batch.geometry);
+  }
 
   scene.add(root);
   return {

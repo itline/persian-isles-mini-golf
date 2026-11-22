@@ -28,12 +28,12 @@ test('game brand is prominent while selection heading is secondary and action us
   const title=await page.locator('.brand').boundingBox();expect(title.x+title.width).toBeLessThanOrEqual(viewport.width);
  }
 });
-test('manual controls close using just a small cross and restart labels are short',async({page})=>{
- await page.goto(url);await page.locator('#play').click();await page.locator('#manualToggle').click();
- await expect(page.locator('#manualToggle')).toBeHidden();await expect(page.getByRole('button',{name:'Close manual controls',exact:true})).toBeVisible();
- await expect(page.locator('#restartQuick')).toHaveAccessibleName('Restart');await expect(page.locator('#restart')).toHaveText('Restart');
- await page.getByRole('button',{name:'Close manual controls',exact:true}).click();await expect(page.locator('#manualControls')).toBeHidden();
- await expect(page.locator('#manualToggle')).toBeVisible();await expect(page.locator('#manualToggle')).toBeFocused();
+test('restart remains in pause without any manual shot controls',async({page})=>{
+ await page.goto(url);await page.locator('#play').click();
+ await expect(page.locator('#manualToggle, #manualControls, #manualClose, #restartQuick, .shot-controls')).toHaveCount(0);
+ await page.locator('#scene').focus();await page.keyboard.press('Space');await expect(page.locator('#strokes')).toHaveText('1');
+ await page.locator('#pause').click();await expect(page.locator('#pausePanel #restart')).toHaveText('Restart');
+ await page.locator('#restart').click();await expect(page.locator('#pausePanel')).toBeHidden();
  await expect(page.locator('#strokes')).toHaveText('0');
 });
 for(const viewport of [{width:390,height:844},{width:768,height:1024},{width:1280,height:800}])test(`real touch swipe cycles on scene and selector without hijacking vertical scrolling ${viewport.width}`,async({browser})=>{

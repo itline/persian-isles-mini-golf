@@ -20,6 +20,23 @@ function snapshot(object) {
 }
 
 describe('Hormuz procedural environment', () => {
+  it('batches only opt-in static props without removing runtime/test landmarks or triangles', () => {
+    const environment = createEnvironment(new THREE.Scene());
+    const meshes = [];
+    environment.root.traverse((object) => { if (object.isMesh) meshes.push(object); });
+    expect(meshes.length).toBeLessThanOrEqual(145);
+    expect(meshes.reduce((sum, object) => sum + (object.geometry.index?.count ?? object.geometry.attributes.position.count) / 3, 0)).toBe(5678);
+    for (const name of ['Boat pennant', 'Small turquoise fishing boat', 'Seawater',
+      'Coastal cliff stratum 1', 'Coastal cliff stratum 7', 'Mineral ridge 1', 'Bridge plank', 'Jetty deck board']) {
+      expect(named(environment.root, name), name).toBeDefined();
+    }
+    const boat = named(environment.root, 'Small turquoise fishing boat');
+    expect(boat.children.some((object) => object.name === 'Static scenery batch')).toBe(false);
+    expect(meshes.filter((object) => object.material.transparent).map((object) => object.name))
+      .toEqual(Array.from({ length: 4 }, (_, i) => `Soft shore foam ${i}`));
+    environment.dispose();
+  });
+
   it('animates the named boat pennant as a local component', () => {
     const scene = new THREE.Scene();
     const environment = createEnvironment(scene);
@@ -112,7 +129,28 @@ describe('Hormuz procedural environment', () => {
     environment.root.updateMatrixWorld(true);
     const scenery = [];
     environment.root.traverse((object) => { if (object.isMesh) scenery.push(object); });
-    for (const level of LEVELS.filter((entry) => entry.available)) {
+    const sceneryBounds = scenery.map(object => ({name:object.name,box:new THREE.Box3().setFromObject(object)}));
+    // The environment is unchanged between holes. Identical coordinates have
+    // identical intersections, even when several outlines share a fairway.
+    const heights = new Map();
+    const ray = new THREE.Raycaster(new THREE.Vector3(),new THREE.Vector3(0,-1,0));
+    const sceneryHeight = (x,z) => {
+      const key=`${x},${z}`;
+      if (!heights.has(key)) {
+        ray.ray.origin.set(x,8,z);
+        heights.set(key,ray.intersectObjects(scenery)[0]?.point.y??-Infinity);
+      }
+      return heights.get(key);
+    };
+    const levels = LEVELS.filter((entry) => entry.available && (entry.island ?? 'hormuz') === 'hormuz');
+    expect(levels.map(level=>level.id)).toEqual([1,2,3,4,5,6,7,8,9]);
+    for (const level of levels) {
+      for (const point of [level.start, level.hole]) {
+        // Ball and flag must not share their vertical column with decoration.
+        for (const [dx,dz] of [[0,0],[.35,0],[-.35,0],[0,.35],[0,-.35]]) {
+          expect(sceneryHeight(point.x+dx,point.z+dz),`hole ${level.id} tee/cup clearance`).toBeLessThan(0);
+        }
+      }
       const polygon = new THREE.Shape(level.outline.map(([x, z]) => new THREE.Vector2(x, z)));
       const points = polygon.getPoints().slice(0, -1);
       const triangles = THREE.ShapeUtils.triangulateShape(points, []);
@@ -130,17 +168,15 @@ describe('Hormuz procedural environment', () => {
         }
       }
       for (const [x, z] of samples) {
-        const ray = new THREE.Raycaster(new THREE.Vector3(x, 8, z), new THREE.Vector3(0, -1, 0));
-        const hit = ray.intersectObjects(scenery)[0];
-        expect(hit?.point.y ?? -Infinity, `level ${level.id}: scenery at ${x},${z}`).toBeLessThan(0);
+        expect(sceneryHeight(x,z), `level ${level.id}: scenery at ${x},${z}`).toBeLessThan(0);
       }
       for (const [x, z, width, depth] of level.walls) {
         const clearance = new THREE.Box3(
           new THREE.Vector3(x - width / 2 - 0.05, 0, z - depth / 2 - 0.05),
           new THREE.Vector3(x + width / 2 + 0.05, 8, z + depth / 2 + 0.05),
         );
-        for (const object of scenery) {
-          expect(clearance.intersectsBox(new THREE.Box3().setFromObject(object)), `level ${level.id}: ${object.name} wall clearance`).toBe(false);
+        for (const {name,box} of sceneryBounds) {
+          expect(clearance.intersectsBox(box), `level ${level.id}: ${name} wall clearance`).toBe(false);
         }
       }
     }

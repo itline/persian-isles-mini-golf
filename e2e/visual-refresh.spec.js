@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-const url='http://127.0.0.1:4181/?qa';
+const url=new URL('/?qa',process.env.GOLF_URL||'http://127.0.0.1:4181').href;
 test('the coast stays English even with an older saved Persian preference',async({page})=>{
  await page.addInitScript(()=>localStorage.setItem('persian-isles-golf:language:v1','fa'));
  await page.goto(url);await expect(page.locator('#play')).toBeEnabled();
@@ -15,13 +15,16 @@ test('the coast stays English even with an older saved Persian preference',async
 
 test('compact course sketches omit scores; explicit camera controls clamp and never putt',async({page})=>{
  await page.goto(url);await page.waitForFunction(()=>window.__golf);
- await expect(page.locator('.level-button')).toHaveCount(10);await expect(page.locator('.level-button:not(:disabled)')).toHaveCount(3);
- await expect(page.locator('.course-sketch')).toHaveCount(3);
- await expect(page.locator('#levelGrid')).not.toContainText(/Par|Best/);
+ await expect(page.locator('.level-button')).toHaveCount(9);await expect(page.locator('.level-button:visible:not(:disabled)')).toHaveCount(9);
+ await expect(page.locator('.course-sketch')).toHaveCount(9);
+ await expect(page.locator('#levelGrid')).not.toContainText(/Par|Best|Soon/i);
+ for(const card of await page.locator('.level-button').all())await expect(card.locator('.course-sketch')).toHaveCount(1);
  const heights=await page.locator('.level-button').evaluateAll(cards=>cards.map(card=>card.getBoundingClientRect().height));
- expect(heights[0]).toBeLessThan(130);expect(heights[3]).toBeLessThan(55);
+ for(const height of heights){expect(height).toBeGreaterThan(55);expect(height).toBeLessThan(130);}
  await page.locator('[data-level="1"]').click();
- await expect(page.locator('.hud')).not.toContainText(/PAR|BEST/);
+ await expect(page.locator('.game-title .course-context')).toHaveText('Hormuz · Hole 1');
+ await expect(page.locator('.game-title .round-stats')).toHaveText('Strokes 0·Par 2');
+ await expect(page.locator('.game-title')).not.toContainText(/Best/i);
  for(let i=0;i<12;i++)await page.locator('#zoomIn').click();
  await expect.poll(()=>page.evaluate(()=>window.__golf.state().targetZoom)).toBe(1.85);
  await expect.poll(()=>page.evaluate(()=>window.__golf.state().zoom)).toBe(1.85);

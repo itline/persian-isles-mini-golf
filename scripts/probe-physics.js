@@ -1,9 +1,9 @@
 import {chromium} from '@playwright/test';
 const browser=await chromium.launch({channel:'chrome',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:900}});
-await page.goto('http://127.0.0.1:4181/?qa');await page.getByRole('button',{name:'Play Hormuz'}).click();await page.waitForTimeout(1200);
+await page.goto('http://127.0.0.1:4181/?qa');await page.locator('#play').click();await page.waitForTimeout(1200);
 const before=await page.evaluate(()=>window.__golf.state());
-await page.locator('#power').evaluate(el=>{el.value='100';el.dispatchEvent(new Event('input',{bubbles:true}));});
+await page.locator('#scene').focus();for(let i=0;i<40;i++)await page.keyboard.press('ArrowUp');
 await page.locator('#scene').focus();await page.keyboard.press('Space');
 await page.waitForFunction(()=>window.__golf.state().phase==='aiming',{},{timeout:20000});
 console.log(JSON.stringify({before,after:await page.evaluate(()=>window.__golf.state())},null,2));

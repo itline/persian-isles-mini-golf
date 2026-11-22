@@ -2,6 +2,16 @@
 
 Published release artifacts are listed on the [GitHub Releases page](https://github.com/itline/persian-isles-mini-golf/releases).
 
+## v0.2.0
+
+The nine-hole Hormuz contest demo: six new layouts, a resumable journey, practice, local records and self-reported result sharing. Qeshm, Kish, Khark and Hengam remain visual previews only.
+
+Close mobile ball-follow framing, direct Sound/Pause controls, a compact HUD, persistent camera controls and corrected drag ownership simplify play. Credits, soundtrack, original per-hole save keys and physics parameters are preserved.
+
+A guarded production build externalizes the byte-identical Rapier 0.11.2 WASM; all emitted JS/WASM measured about 23% smaller with gzip and 22% smaller with Brotli against the same-source embedded build. Correct MIME and compression of WASM must be configured on the eventual host. The gameplay output excludes audition material; the full archive retains it. No Edge deployment is included.
+
+Unit/build, a genuine nine-hole keyboard journey, bounded independent review and Chrome/WebKit production-package smoke were verified locally. Physical phones, thermal/battery behavior and exact cross-refresh-rate equivalence are not certified. GitHub CI and downloadable checksums are recorded in the release notes.
+
 ## v0.1.2
 
 A corrective maintenance release with bounded physics-event retention, synchronized paused controls, fewer redundant status updates and reusable scene resources. Physical parameters, credits, soundtrack, saved-score keys and playable content remain unchanged.

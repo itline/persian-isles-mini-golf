@@ -1,4 +1,52 @@
 /* Explore: an ivory folio and one generous, tactile miniature. */
+.invitation {
+  margin-top: 12px;
+  text-align: left;
+}
+@media (pointer: coarse) and (orientation: portrait) {
+  #game .hint {
+    bottom: max(24px, env(safe-area-inset-bottom));
+    left: 14px;
+    right: 170px;
+    max-width: none;
+    transform: none;
+    padding: 8px;
+    text-align: left;
+  }
+}
+.invitation p {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+#shareNotice:empty {
+  display: none;
+}
+#shareNotice {
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 10px 0;
+}
+#shareFallback {
+  display: block;
+  text-align: left;
+  margin-top: 12px;
+  font-size: 14px;
+}
+#shareText {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  resize: vertical;
+  color: var(--ink);
+  background: var(--cream);
+  border: 1px solid var(--muted);
+  border-radius: 8px;
+  font: inherit;
+  line-height: 1.4;
+}
 :root {
   --cream: #f9f3e6;
   --coral: #b34c3c;
@@ -165,8 +213,24 @@
   letter-spacing: -0.02em;
   min-height: 17px;
 }
+.level-button:not(:disabled) {
+  display: grid;
+  grid-template-rows: 23px 31px 1fr;
+  align-content: stretch;
+}
+.level-button:not(:disabled) > span {
+  margin: 0;
+}
+.level-button:not(:disabled) small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: normal;
+  line-height: 1.15;
+  min-height: 0;
+}
 .course-sketch {
-  height: 58px;
+  height: 40px;
   margin: 3px 0 -1px;
   filter: drop-shadow(0 2px 1px #365d4a22);
 }
@@ -238,47 +302,19 @@
   display: block;
 }
 .zoom-controls {
+  top: auto;
+  right: max(29px, env(safe-area-inset-right));
+  bottom: max(30px, env(safe-area-inset-bottom));
+  padding: 4px;
   border-radius: 9px;
   background: #f9f3e6;
   box-shadow: 0 3px 0 #d5cfb9;
 }
 .zoom-controls button {
+  width: 44px;
+  height: 44px;
   font-size: 24px;
   font-weight: 400;
-}
-.hud {
-  border-radius: 10px;
-  background: #f9f3e6;
-  box-shadow: 0 3px 0 #d5cfb9;
-}
-.hud .hole-stat span {
-  font-size: 14px;
-}
-.hud strong {
-  font-size: 34px;
-}
-.hud small {
-  font-size: 11px;
-  letter-spacing: 0.04em;
-}
-.shot-controls {
-  border-radius: 12px;
-  background: #f9f3e6;
-  box-shadow: 0 4px 0 #d5cfb9;
-}
-.shot-status {
-  font-size: 13px;
-}
-.shot-controls[data-phase='rolling'] .ready-dot {
-  background: #dc9865;
-  box-shadow: none;
-}
-.shot-controls[data-phase='holed'] .ready-dot {
-  background: #d85e49;
-}
-.putt-btn {
-  background: var(--coral);
-  border-radius: 6px;
 }
 #cupCelebration {
   position: fixed;
@@ -377,18 +413,6 @@
   .menu-footer a {
     font-size: 11px;
   }
-  .zoom-controls {
-    top: 98px;
-  }
-  .hud .hole-stat span {
-    font-size: 11px;
-  }
-  .hud strong {
-    font-size: 27px;
-  }
-  .shot-status {
-    font-size: 12px;
-  }
 }
 @media (max-height: 560px) and (min-width: 601px) {
   .menu .brand {
@@ -426,12 +450,6 @@
   .menu-footer a {
     font-size: 11px;
   }
-  .zoom-controls {
-    top: 80px;
-  }
-  .hud strong {
-    font-size: 26px;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   #game.celebrating #cupCelebration {
@@ -439,66 +457,71 @@
     opacity: 1;
   }
 }
-/* Optional precision controls leave the default drag-to-putt view clear. */
+/* Camera tools stay directly accessible without covering the playable lane. */
 [hidden] {
   display: none !important;
 }
-.manual-toggle {
-  position: fixed;
-  right: 29px;
-  bottom: 30px;
-  min-height: 44px;
-  padding: 10px 16px;
-  border: 1px solid #fffdf3;
-  border-radius: 9px;
-  background: var(--cream);
-  color: var(--ink);
-  box-shadow: 0 3px 0 #d5cfb9;
-}
-.manual-toggle[aria-expanded='true'] {
-  display: none;
-}
-.manual-controls {
-  position: fixed;
-  right: 29px;
-  bottom: 30px;
-}
-.manual-controls > .shot-controls {
-  position: relative;
-  right: auto;
-  bottom: auto;
-}
-.manual-close {
+.sr-only {
   position: absolute;
-  right: 3px;
-  top: 3px;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.game-navigation {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+}
+#pause {
   width: 44px;
   height: 44px;
-  background: transparent;
-  color: var(--ink);
-  font: 24px/1 sans-serif;
-  border-radius: 8px;
+  flex-shrink: 0;
 }
-.manual-controls .shot-status {
-  padding-right: 30px;
-  flex-wrap: wrap;
+#pause svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
-.manual-controls .shot-status b {
-  font-size: 12px;
+#leavePanel { z-index: 12; }
+/* One glanceable round card replaces the repeated identity and lower HUD. */
+.topbar { gap: 12px; }
+.game-title {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--cream);
+  box-shadow: 0 3px 0 #d5cfb9;
+  min-width: 0;
+  max-width: calc(100% - 104px);
 }
-.manual-controls #restartQuick {
-  margin-left: 12px;
+.course-context { font-size: 12px; line-height: 1.3; color: var(--muted); }
+.game-title > strong {
+  display: block;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 2px 0 4px;
 }
-#game:has(#manualControls:not([hidden])) #hint {
-  visibility: hidden;
+.round-stats { display: flex; align-items: baseline; gap: 8px; font-size: 13px; line-height: 1.3; white-space: nowrap; }
+.round-stats b { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stat-divider { color: var(--muted); }
+.game-navigation { flex-shrink: 0; }
+#sound { width: 44px; height: 44px; flex-shrink: 0; }
+.menu-footer > div { align-items: center; }
+@media (max-width: 600px) {
+  .game-title { padding: 8px 10px; }
+  .game-title > strong { font-size: 17px; }
+  .menu-footer > div { gap: 12px; flex-wrap: wrap; }
 }
-#gameMenuToggle {
-  display: none;
-  pointer-events: auto;
-}
-.game-tools {
-  pointer-events: auto;
-}
+
 #sound svg {
   display: block;
   width: 25px;
@@ -522,54 +545,10 @@
   display: block;
 }
 @media (max-width: 900px), (pointer: coarse) and (orientation: landscape) {
-  #gameMenuToggle {
-    display: block;
-    width: 44px;
-    height: 44px;
-  }
-  .game-tools {
-    position: absolute;
-    right: 0;
-    top: 54px;
-    padding: 10px;
-    background: var(--cream);
-    border: 1px solid #fffdf3;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px #164b4a25;
-    z-index: 9;
-  }
-  .game-tools .top-actions {
-    display: flex;
-    gap: 8px;
-  }
-  .game-tools .circle-btn {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-  }
-  .game-tools .zoom-controls {
-    position: static;
-    display: flex;
-    margin-top: 8px;
-    box-shadow: none;
-    border-top: 1px solid #d5cfb9;
-    border-radius: 0;
-    padding-top: 8px;
-    transform: none;
-  }
-  .game-tools .zoom-controls button {
-    width: 44px;
-    height: 44px;
-    min-height: 44px;
-  }
-  .manual-toggle {
-    right: 14px;
-    bottom: 17px;
-    font-size: 12px;
-  }
-  .manual-controls {
-    right: 14px;
-    bottom: 17px;
+  .zoom-controls {
+    top: auto;
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(17px, env(safe-area-inset-bottom));
   }
 }
 @media (max-width: 600px) {

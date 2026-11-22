@@ -1,0 +1,46 @@
+import { test, expect } from '@playwright/test';
+const url = new URL('/?qa', process.env.GOLF_URL || 'http://127.0.0.1:4181').href;
+
+test('Hormuz hole two survives returning home, previewing Qeshm, and selecting Hormuz again', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(url);
+  await expect(page.locator('#menu')).toHaveAttribute('data-preview-ready', 'hormuz');
+  await page.locator('[data-level="2"]').click();
+  await expect(page.locator('#levelName')).toHaveText('Salt Valley');
+  await expect(page.locator('.game-title .course-context')).toHaveText('Hormuz · Hole 2');
+  const assertSaltValley = async () => {
+    const { state, goal } = await page.evaluate(() => ({ state: window.__golf.state(), goal: window.__golf.goal() }));
+    expect(state.level).toBe(2);
+    expect(state.ball.x).toBeCloseTo(-6.1, 3);
+    expect(state.ball.z).toBeCloseTo(5.2, 3);
+    expect(goal.x).toBeCloseTo(2.9, 3);
+    expect(goal.z).toBeCloseTo(-4.2, 3);
+    await expect(page.locator('#levelName')).toHaveText('Salt Valley');
+  };
+  await assertSaltValley();
+  await page.locator('#pause').click();
+  await page.locator('#backHome').click();
+  await expect(page.locator('#menu')).toHaveAttribute('data-preview-ready', 'hormuz');
+  await assertSaltValley();
+  await page.locator('[data-island="qeshm"]').click();
+  await expect(page.locator('#menu')).toHaveAttribute('data-preview-ready', 'qeshm');
+  await expect(page.locator('#selectedIslandName')).toHaveText('Qeshm');
+  await expect(page.locator('#play')).toHaveText('Preview only');
+  await expect(page.locator('#play')).toBeDisabled();
+  await expect(page.locator('#levelGrid')).toBeHidden();
+  expect((await page.evaluate(() => window.__golf.state())).preview).toBe('qeshm');
+  await page.locator('[data-island="hormuz"]').click();
+  await expect(page.locator('#menu')).toHaveAttribute('data-preview-ready', 'hormuz');
+  await expect(page.locator('#selectedIslandName')).toHaveText('Hormuz');
+  await expect(page.locator('[data-island="hormuz"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#levelGrid')).toHaveAttribute('aria-label', 'Hormuz holes');
+  await expect(page.locator('[data-level="2"]')).toHaveAttribute('title', 'Salt Valley');
+  await expect(page.locator('#play')).toBeEnabled();
+  await expect(page.locator('.level-button:visible:not(:disabled)')).toHaveCount(9);
+  await assertSaltValley();
+  await page.locator('[data-level="2"]').click();
+  await assertSaltValley();
+  await expect(page.locator('#strokes')).toHaveText('0');
+  expect(errors).toEqual([]);
+});

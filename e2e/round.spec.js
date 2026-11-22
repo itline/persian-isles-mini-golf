@@ -36,6 +36,8 @@ test('a whole Hormuz round can be completed with real keyboard input; best persi
 });
 
 test('real pointer drag fires a shot and pointercancel does not', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
   await page.goto('http://127.0.0.1:4181/?qa');
   await page.getByRole('button', { name: 'Play Hormuz' }).click();
   await page.waitForTimeout(1200);
@@ -51,16 +53,22 @@ test('real pointer drag fires a shot and pointercancel does not', async ({ page 
   await page.mouse.move(points.end.x, points.end.y, { steps: 12 });
   await page.mouse.up();
   await expect(page.locator('#strokes')).toHaveText('1');
-  await page.locator('#manualToggle').click();
-  await page.getByRole('button', { name: 'Restart' }).click();
-  await page
-    .locator('#scene')
-    .dispatchEvent('pointerdown', { pointerId: 7, button: 0, clientX: 400, clientY: 400 });
-  await page
-    .locator('#scene')
-    .dispatchEvent('pointermove', { pointerId: 7, button: 0, clientX: 480, clientY: 480 });
-  await page.locator('#scene').dispatchEvent('pointercancel', { pointerId: 7 });
+  await page.locator('#pause').click();
+  await page.locator('#pausePanel #restart').click();
+  const cdp = await page.context().newCDPSession(page);
+  const next = await page.evaluate(() => {
+    const ball = window.__golf.state().ball;
+    return { start: window.__golf.project(ball.x, ball.z), end: window.__golf.project(ball.x, ball.z + 1) };
+  });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [next.start] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [next.end] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchCancel', touchPoints: [] });
   await expect(page.locator('#strokes')).toHaveText('0');
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [next.start] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [next.end] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await expect(page.locator('#strokes')).toHaveText('1');
+  expect(errors).toEqual([]);
 });
 
 test('landscape touch drag works without horizontal overflow or auth requests', async ({

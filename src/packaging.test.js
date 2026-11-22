@@ -47,19 +47,29 @@ async function pack(options) {
 }
 
 describe('web release packaging', () => {
-  it('provides an explicit CLI that rejects omitted, duplicate, and unknown options', async () => {
+  it.each(['omitted', 'missing-output', 'unknown', 'duplicate'])('rejects invalid CLI options (%s)', async kind => {
     const { root, dist, out } = await fixture();
-    const script = resolve('scripts/package-web.mjs');
-    for (const args of [[], ['--dist', dist], ['--dist', dist, '--out', out, '--force'], ['--dist', dist, '--out', out, '--out', out]]) {
-      const invalid = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' });
-      expect(invalid.status).toBe(1);
-      expect(invalid.stderr).toMatch(/usage|option|required/i);
-    }
+    const args = {
+      omitted: [],
+      'missing-output': ['--dist', dist],
+      unknown: ['--dist', dist, '--out', out, '--force'],
+      duplicate: ['--dist', dist, '--out', out, '--out', out],
+    }[kind];
+    const result = spawnSync(process.execPath, [resolve('scripts/package-web.mjs'), ...args], { encoding: 'utf8' });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toMatch(/usage|option|required/i);
     expect(await readdir(root)).not.toContain('release');
-    const help = spawnSync(process.execPath, [script, '--help'], { encoding: 'utf8' });
-    expect(help.status).toBe(0);
-    expect(help.stdout).toContain('--dist');
-    const result = spawnSync(process.execPath, [script, '--dist', dist, '--out', out], { encoding: 'utf8' });
+  });
+
+  it('prints CLI help without packaging', () => {
+    const result = spawnSync(process.execPath, [resolve('scripts/package-web.mjs'), '--help'], { encoding: 'utf8' });
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('--dist');
+  });
+
+  it('packages explicit CLI paths and prints the written manifest', async () => {
+    const { dist, out } = await fixture();
+    const result = spawnSync(process.execPath, [resolve('scripts/package-web.mjs'), '--dist', dist, '--out', out], { encoding: 'utf8' });
     expect(result.status, result.stderr).toBe(0);
     expect(JSON.parse(result.stdout)).toEqual(JSON.parse(await readFile(join(out, 'manifest.json'), 'utf8')));
   });

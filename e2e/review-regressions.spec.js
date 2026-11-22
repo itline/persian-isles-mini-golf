@@ -16,12 +16,17 @@ test('tablet portrait keeps every diorama above the selector',async({page})=>{
   expect(Math.min(...points.map(p=>p.y))).toBeGreaterThan(35);
  }
 });
-test('landscape tools stay tappable when precision controls were open',async({browser})=>{
+test('landscape camera controls remain separate from direct sound and pause without firing a shot',async({browser})=>{
  const context=await browser.newContext({viewport:{width:844,height:390},isMobile:true,hasTouch:true});const page=await context.newPage();
- await page.goto(url);await page.locator('#play').tap();await page.locator('#manualToggle').tap();await expect(page.locator('#manualControls')).toBeVisible();
- await page.locator('#gameMenuToggle').tap();await expect(page.locator('#gameTools')).toBeVisible();await expect(page.locator('#manualControls')).toBeHidden();
+ await page.goto(url);await page.locator('#play').tap();
+ await expect(page.locator('#manualToggle, #manualControls, #manualClose, .shot-controls')).toHaveCount(0);
+ await expect(page.locator('#gameMenuToggle, #gameTools')).toHaveCount(0);
  await page.locator('#zoomIn').tap();await expect.poll(()=>page.evaluate(()=>window.__golf.state().targetZoom)).toBeGreaterThan(1);
  await page.locator('#overview').tap();await expect.poll(()=>page.evaluate(()=>window.__golf.state().targetZoom)).toBe(1);await expect(page.locator('#strokes')).toHaveText('0');
- await page.keyboard.press('Escape');await page.locator('#manualToggle').tap();await expect(page.locator('#manualControls')).toBeVisible();await expect(page.locator('#gameTools')).toBeHidden();
+ for(const id of ['sound','pause'])await expect(page.locator(`.game-navigation #${id}`)).toBeVisible();
+ await page.locator('#sound').tap();await expect(page.locator('#audioPanel')).toBeVisible();await page.keyboard.press('Escape');await expect(page.locator('#audioPanel')).toBeHidden();
+ for(const id of ['zoomOut','zoomIn','overview'])await expect(page.locator(`#game > .zoom-controls #${id}`)).toBeVisible();
+ await page.locator('#pause').tap();await expect(page.locator('#pausePanel')).toBeVisible();await page.keyboard.press('Escape');await expect(page.locator('#pausePanel')).toBeHidden();
+ await expect(page.locator('#strokes')).toHaveText('0');
  await context.close();
 });
