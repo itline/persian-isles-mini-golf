@@ -15,14 +15,15 @@ for (const viewport of [
     await expect(camera.locator('button')).toHaveCount(3);
     await expect(page.locator('#gameMenuToggle, #gameTools')).toHaveCount(0);
     await expect(page.locator('#manualToggle, #manualControls, #manualClose, #power, #powerValue, #aimLeft, #aimRight, #putt, #restartQuick, .shot-controls')).toHaveCount(0);
-    for (const [id, name] of [['zoomOut', 'Zoom out'], ['zoomIn', 'Zoom in'], ['overview', mobile ? 'Show whole course' : 'Reset camera']]) {
+    for (const [id, name] of [['zoomOut', 'Zoom out'], ['zoomIn', 'Zoom in'], ['overview', mobile ? 'Return to ball' : 'Reset camera']]) {
       const control = camera.locator(`#${id}`);
       await expect(control).toBeVisible();
-      await expect(control).toBeEnabled();
+      if (id === 'zoomOut' && !mobile) await expect(control).toBeDisabled();
+      else await expect(control).toBeEnabled();
       await expect(control).toBeInViewport();
       await expect(control).toHaveAccessibleName(name);
       // Trial clicks verify that visible controls are not covered by another UI.
-      await control.click({ trial: true });
+      if (await control.isEnabled()) await control.click({ trial: true });
     }
     const bar = await camera.boundingBox();
     // The full bar may cross the midpoint on a 320px phone; its center

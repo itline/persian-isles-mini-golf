@@ -13,13 +13,13 @@ import {
   playableLevel,
   levelRecordKey,
   journeySummary,
-  clampZoom,
+  clampZoom as clampStandardZoom,
   levelsForIsland,
   nextLevel,
 } from './journey.js';
 import { createCoastalAudio } from './audio.js';
 import { createShotStatusView } from './shotStatus.js';
-import { touchCourseView, updateCameraFraming } from './cameraView.js';
+import { touchCourseView, touchZoomOutProgress, updateCameraFraming } from './cameraView.js';
 import { projectedBounds, screenAnchorToPlane } from './projection.js';
 import { updateIslandMotion } from './sceneMotion.js';
 import { createDistantFleet } from './distantFleet.js';
@@ -43,7 +43,7 @@ $('#app').innerHTML = `
     <div class="brand" aria-label="Persian Isles Mini Golf"><img class="brand-icon" src="/icon.svg" alt="" width="44" height="44"><div class="brand-copy"><span class="brand-name">Persian Isles Mini Golf</span><small class="brand-slogan">A little golf. A world away.</small></div></div>
     <div class="hero-copy"><h1>Choose your island</h1>
     <p class="lede" id="islandDescription">Find your line through a little world of red earth, salt-white cliffs and turquoise water.</p>
-    <div class="island-nav"><button id="prevIsland" aria-label="Previous island">←</button><strong id="selectedIslandName">Hormuz</strong><button id="nextIsland" aria-label="Next island">→</button></div><div class="island-switcher" aria-label="Choose an island">${ISLANDS.map((island) => `<button class="island-tab ${island.id === 'hormuz' ? 'selected' : ''}" data-island="${island.id}"><span>${island.name}</span>${island.playable ? '' : '<b class="preview-dot" aria-hidden="true">○</b>'}</button>`).join('')}</div>
+    <div class="island-nav"><button id="prevIsland" aria-label="Previous island"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button><strong id="selectedIslandName">Hormuz</strong><button id="nextIsland" aria-label="Next island"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button></div><div class="island-switcher" aria-label="Choose an island">${ISLANDS.map((island) => `<button class="island-tab ${island.id === 'hormuz' ? 'selected' : ''}" data-island="${island.id}"><span>${island.name}</span>${island.playable ? '' : '<b class="preview-dot" aria-hidden="true">○</b>'}</button>`).join('')}</div>
     <div class="island-availability hidden" id="islandAvailability" role="status"></div>
     <button id="play" class="primary" disabled>Preparing the island…</button>
     <button id="continueJourney" class="secondary hidden" disabled>Continue Hormuz journey</button>
@@ -239,7 +239,6 @@ let tutorialSeen = false;
 try {
   tutorialSeen = localStorage.getItem('golf:tutorial-seen') === 'yes';
 } catch {}
-let touchOverview = false;
 let targetZoom = 1,
   cameraFrozen = false;
 const pointers = new Map();
@@ -446,7 +445,8 @@ function reset() {
   power = 0.45;
   zoom = 1;
   targetZoom = 1;
-  touchOverview = false;
+  touchViewKey = '';
+  touchViewCache = null;
   ball.createPhysicsBody(new THREE.Vector3(level.start.x, 0.16, level.start.z));
   ball.setVisible(true);
   finishFlag.visible = true;
@@ -1115,7 +1115,6 @@ $('#zoomIn').onclick = () => {
 };
 $('#overview').onclick = () => {
   if (!drag && !paused) {
-    if (currentTouchView()) touchOverview = !touchOverview;
     targetZoom = 1;
     orbitAngle = 0.62;
   }
@@ -1198,23 +1197,53 @@ $('#helpClose').onclick = () => {
 canvas.tabIndex = 0;
 function resize() {
   if (!renderer) return;
+  const previousView = touchViewCache;
+  const wasFullCourse = previousView && targetZoom <= Math.min(1, previousView.playScale / previousView.scale) + 1e-10;
   renderer.setSize(innerWidth, innerHeight, false);
+  const nextView = currentTouchView();
+  if (wasFullCourse && nextView) targetZoom = Math.min(1, nextView.playScale / nextView.scale);
   resizeCamera();
 }
 addEventListener('resize', () => {
   resize();
 });
+function clampZoom(value) {
+  const view = currentTouchView();
+  const minimum = view ? Math.min(1, view.playScale / view.scale) : 1;
+  return clampStandardZoom(value, minimum);
+}
+function syncCameraControls(touchView = currentTouchView()) {
+  const minimum = touchView ? Math.min(1, touchView.playScale / touchView.scale) : 1;
+  const cameraBlocked = !!drag || !!pinch || paused || state.completed;
+  for (const [id, disabled] of [
+    ['zoomOut', cameraBlocked || targetZoom <= minimum + 1e-10],
+    ['zoomIn', cameraBlocked || targetZoom >= 1.85 - 1e-10],
+    ['overview', cameraBlocked],
+  ]) {
+    const control = $('#' + id);
+    if (control.disabled !== disabled) {
+      // Disabling the focused zoom button can drop focus onto body, where
+      // Space is a putt shortcut. Keep keyboard control inside the camera bar.
+      if (disabled && document.activeElement === control && !cameraBlocked) $('#overview').focus();
+      control.disabled = disabled;
+    }
+  }
+}
 function updateCamera(dt) {
+  const touchView = currentTouchView();
+  syncCameraControls(touchView);
   if (cameraFrozen) return;
+  targetZoom = clampZoom(targetZoom);
   const next = THREE.MathUtils.lerp(zoom, playing ? targetZoom : 1, 1 - Math.exp(-dt * 10));
   zoom = Math.abs(next - (playing ? targetZoom : 1)) < 0.001 ? (playing ? targetZoom : 1) : next;
   resizeCamera();
   const menuShift = !playing ? (innerWidth > 1000 ? -5.8 : innerWidth > innerHeight ? -13 : 0) : 0;
-  const touchView = currentTouchView();
   const target = cameraAimTarget;
   if (touchView) {
-    if (touchOverview) target.set(touchView.x, 0, touchView.z);
-    else target.copy(ball.getPosition());
+    const blend = touchZoomOutProgress(touchView, zoom);
+    target.copy(ball.getPosition());
+    target.x += (touchView.x - target.x) * blend;
+    target.z += (touchView.z - target.z) * blend;
   } else if (playing && zoom > 1)
     target.copy(ball.getPosition()).multiplyScalar(Math.min(0.8, ((zoom - 1) / 0.85) * 0.8));
   else target.set(menuShift, 0, -0.2);
@@ -1230,11 +1259,14 @@ function updateCamera(dt) {
   cameraPosition.copy(cameraTarget).add(offset);
   camera.position.lerp(cameraPosition, 1 - Math.exp(-dt * 4));
   camera.lookAt(cameraTarget);
-  const overviewLabel = touchView ? (touchOverview ? 'Return to ball' : 'Show whole course') : 'Reset camera';
+  const overviewLabel = touchView ? 'Return to ball' : 'Reset camera';
   if ($('#overview').getAttribute('aria-label') !== overviewLabel) {
     $('#overview').setAttribute('aria-label', overviewLabel);
     $('#overview').title = overviewLabel;
-    $('#overview').setAttribute('aria-pressed', String(!!touchView && touchOverview));
+    $('#overview').removeAttribute('aria-pressed');
+    $('#overview').innerHTML = touchView
+      ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="1.5"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>'
+      : '⤢';
   }
 }
 let touchViewKey = '', touchViewCache = null;
@@ -1257,7 +1289,7 @@ function resizeCamera() {
     playing,
     zoom,
     touchView: currentTouchView(),
-    overview: touchOverview,
+    overview: false,
   });
 }
 function updatePreview() {
@@ -1386,7 +1418,7 @@ async function init() {
           zoom,
           targetZoom,
           cameraFrozen,
-          cameraMode: currentTouchView() ? (touchOverview ? 'overview' : 'follow') : 'desktop',
+          cameraMode: currentTouchView() ? 'follow' : 'desktop',
           preview: previewId,
           level: selectedLevel,
           mode,

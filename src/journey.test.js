@@ -28,4 +28,7 @@ it('summarizes only complete nine-hole journeys against Hormuz par', () => {
   expect(clampZoom(.2)).toBe(1);
   expect(clampZoom(9)).toBe(1.85);
   expect(clampZoom(NaN)).toBe(1);
+  expect(clampZoom(1.15 - .15, .4)).toBe(1);
+  expect(clampZoom(.2, .4)).toBe(.4);
+  expect(clampZoom(.7, .4)).toBe(.7);
 });

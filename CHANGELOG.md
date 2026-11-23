@@ -2,6 +2,27 @@
 
 All notable changes to Persian Isles Mini Golf are documented here.
 
+## [0.2.1] — 2026-11-23
+
+### Fixed
+
+- Use one continuous mobile camera zoom range: zoom out toward a centered full-course view, zoom in toward the ball, and return to the standard ball view with a dedicated action instead of an Overview toggle.
+- Apply the same zoom limits to pinch gestures and visibly disable controls at either endpoint.
+- Align mobile footer links in four equal touch targets and center vector arrows inside the island-navigation circles.
+- Keep full-course framing reachable on wide portrait phones, preserve it through rotation, and reset cached framing when changing rounds.
+- Disable camera controls during held shots without moving the frozen camera, and retain keyboard focus when a zoom endpoint becomes disabled.
+
+### Added
+
+- Self-contained Edge packaging with content-type, cache, encoding negotiation, conditional requests and bounded nine-hole link-preview metadata.
+- A compact packaging profile that stores WASM gzip once with an identity fallback, omits legacy bundles and preserves the original game assets.
+- Indexed binary decoding to avoid the allocation-heavy iterable conversion; the corrected v0.2.0 delivery path was verified on Arvan before this release.
+
+### Unchanged
+
+- Exactly nine playable Hormuz holes, four preview-only islands, physics parameters, soundtrack, Credits markup and all existing save keys. Saves remain origin-bound.
+- Physical-phone compatibility is not certified. Publishing this release does not itself replace the hosted deployment.
+
 ## [0.2.0] — 2026-11-22
 
 ### Added
@@ -115,6 +136,7 @@ All notable changes to Persian Isles Mini Golf are documented here.
 - Audio output is verified with seeded Chrome `OfflineAudioContext` renders for finite samples, headroom and crossfade behavior.
 
 [0.1.2]: https://github.com/itline/persian-isles-mini-golf/releases/tag/v0.1.2
+[0.2.1]: https://github.com/itline/persian-isles-mini-golf/releases/tag/v0.2.1
 [0.2.0]: https://github.com/itline/persian-isles-mini-golf/releases/tag/v0.2.0
 [0.1.1]: https://github.com/itline/persian-isles-mini-golf/releases/tag/v0.1.1
 [0.1.0]: https://github.com/itline/persian-isles-mini-golf/releases/tag/v0.1.0

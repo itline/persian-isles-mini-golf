@@ -87,6 +87,47 @@
   gap: clamp(6px, 2vw, 22px);
 }
 
+#menu .island-nav button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  flex: 0 0 44px;
+}
+#menu .island-nav button svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (max-width: 600px), (max-height: 560px) and (pointer: coarse) {
+  #menu .menu-footer {
+    bottom: max(8px, env(safe-area-inset-bottom));
+  }
+  #menu .menu-footer > div {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+    gap: 0;
+  }
+  #menu .menu-footer :is(a, button) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    line-height: 1.2;
+    font-size: 13px;
+  }
+}
+@media (min-width: 601px) and (max-height: 560px) and (pointer: coarse) {
+  #menu .menu-footer { left: 18px; right: auto; width: 326px; }
+}
+
 #menu .menu-footer :is(a, button) {
   font-family: var(--type-ui);
   font-size: var(--type-button);

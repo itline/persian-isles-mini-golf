@@ -2,6 +2,14 @@
 
 Published release artifacts are listed on the [GitHub Releases page](https://github.com/itline/persian-isles-mini-golf/releases).
 
+## v0.2.1
+
+A corrective mobile-controls and delivery release. Minus and plus share one continuous zoom range, pinch uses the same limits, and the third camera action always returns to the ball. Mobile footer links have equal touch targets and island arrows are centered vector icons.
+
+The self-contained Edge packager supplies cache/encoding headers and bounded invitation-link metadata. Its compact profile stores WASM gzip once, provides identity fallback and uses the configured deployment origin for canonical and preview URLs. Old open tabs may need a refresh because legacy hashed bundles are not retained.
+
+Credits, music, physics, playable layouts and saved-score keys are unchanged. Local browser emulation is not physical-phone certification; the hosted version is verified separately after upload.
+
 ## v0.2.0
 
 The nine-hole Hormuz contest demo: six new layouts, a resumable journey, practice, local records and self-reported result sharing. Qeshm, Kish, Khark and Hengam remain visual previews only.

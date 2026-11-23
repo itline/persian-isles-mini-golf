@@ -12,11 +12,19 @@ export function touchCourseView({ width, height, coarsePointer, outline, angle }
   const halfWidth = (Math.max(...horizontal) - Math.min(...horizontal)) / 2;
   const halfHeight = (Math.max(...depth) - Math.min(...depth)) * elevation / 2;
   const top = portrait ? 110 : 90, bottom = portrait ? 130 : 85;
-  const scale = Math.max(
+  const playScale = height / 80;
+  // Keep a full-course endpoint at least one zoom step from the ball view,
+  // even when the outline alone would fit inside the starting frustum.
+  const scale = Math.max(playScale / .85, Math.max(
     halfWidth * height / Math.max(1, width - 48),
     halfHeight * height / Math.max(1, height - top - bottom),
-  ) * 1.06;
-  return { x, z, scale, playScale: height / 80, shift: scale * (top - bottom) / height };
+  ) * 1.06);
+  return { x, z, scale, playScale, shift: scale * (top - bottom) / height };
+}
+
+export function touchZoomOutProgress(view, zoom) {
+  const minimum = Math.min(1, view.playScale / view.scale);
+  return minimum < 1 ? Math.max(0, Math.min(1, (1 - zoom) / (1 - minimum))) : 0;
 }
 
 // World-space camera motion is independent from projection updates.
@@ -26,7 +34,7 @@ export function updateCameraFraming(camera, { width, height, playing, zoom, touc
     (playing ? (touchView ? (overview ? touchView.scale : touchView.playScale) : (portrait ? 27 : 12)) : portrait ? Math.max(35, (16 * height) / width) : 14.4) / zoom;
   const shift = playing
     ? touchView
-      ? overview ? touchView.shift : 0
+      ? overview ? touchView.shift : touchView.shift * touchZoomOutProgress(touchView, zoom)
       : height < 560 && width > height
         ? -2.5
         : 0

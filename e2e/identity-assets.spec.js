@@ -7,7 +7,7 @@ test('identity is one-line with a small slogan and settings has no audition link
  expect(brand.y+brand.height).toBeLessThanOrEqual(slogan.y);
  await page.locator('#menuSound').click();await expect(page.locator('#musicAuditions')).toHaveCount(0);
  await page.locator('#audioClose').click();await page.locator('#creditsOpen').click();
- await expect(page.locator('#credits')).toContainText('Version 0.2.0');
+ await expect(page.locator('#credits')).toContainText('Version 0.2.1');
  await expect(page.locator('#credits')).toContainText('Persian Isles Mini Golf');
  await expect(page.locator('#credits')).toContainText('Created by');
 });

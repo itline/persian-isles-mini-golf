@@ -25,13 +25,14 @@ test('compact course sketches omit scores; explicit camera controls clamp and ne
  await expect(page.locator('.game-title .course-context')).toHaveText('Hormuz · Hole 1');
  await expect(page.locator('.game-title .round-stats')).toHaveText('Strokes 0·Par 2');
  await expect(page.locator('.game-title')).not.toContainText(/Best/i);
- for(let i=0;i<12;i++)await page.locator('#zoomIn').click();
+ for(let i=0;i<6;i++)await page.locator('#zoomIn').click();
+ await expect(page.locator('#zoomIn')).toBeDisabled();
  await expect.poll(()=>page.evaluate(()=>window.__golf.state().targetZoom)).toBe(1.85);
  await expect.poll(()=>page.evaluate(()=>window.__golf.state().zoom)).toBe(1.85);
  await page.keyboard.press('Space');await expect(page.locator('#strokes')).toHaveText('0');
  await page.locator('#overview').click();
  await expect.poll(()=>page.evaluate(()=>window.__golf.state().zoom)).toBe(1);
- for(let i=0;i<12;i++)await page.locator('#zoomOut').click();
+ await expect(page.locator('#zoomOut')).toBeDisabled();
  expect(await page.evaluate(()=>window.__golf.state().targetZoom)).toBe(1);
  await expect(page.locator('#strokes')).toHaveText('0');
  await page.locator('#scene').focus();await page.keyboard.press('Space');await expect(page.locator('#strokes')).toHaveText('1');

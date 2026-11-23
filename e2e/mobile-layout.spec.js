@@ -18,23 +18,32 @@ async function fittedCourse(page, viewport) {
   return course;
 }
 
+async function zoomOutToCourse(page) {
+  await expect(page.locator('#overview')).toHaveAccessibleName('Return to ball');
+  for (let i = 0; i < 16 && await page.locator('#zoomOut').isEnabled(); i++) {
+    await page.locator('#zoomOut').tap();
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  }
+  await expect(page.locator('#zoomOut')).toBeDisabled();
+}
+
 for (const viewport of [
   { width: 320, height: 568 }, { width: 390, height: 844 },
   { width: 667, height: 375 }, { width: 844, height: 390 },
 ]) for (const level of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
-  test(`hole ${level} phone overview fits and returns to follow at ${viewport.width}x${viewport.height}`, async ({ browser }) => {
+  test(`hole ${level} phone zoom-out fits and returns to ball at ${viewport.width}x${viewport.height}`, async ({ browser }) => {
     const context = await browser.newContext({ viewport, isMobile: true, hasTouch: true });
     const page = await context.newPage();
     await page.goto(url);
       await page.locator(`[data-level="${level}"]`).tap();
       await page.locator('#zoomIn').tap();
       await expect.poll(() => page.evaluate(() => window.__golf.state().zoom)).toBeGreaterThan(1.1);
-      await page.locator('#overview').tap();
-      await expect.poll(() => page.evaluate(() => window.__golf.state().zoom)).toBe(1);
+      await zoomOutToCourse(page);
       await fittedCourse(page, viewport);
       await expect(page.locator('#overview')).toHaveAttribute('aria-label', 'Return to ball');
       await page.locator('#overview').tap();
       await expect.poll(() => page.evaluate(() => window.__golf.state().cameraMode)).toBe('follow');
+      await expect.poll(() => page.evaluate(() => window.__golf.state().zoom)).toBe(1);
       await expect(page.locator('#strokes')).toHaveText('0');
       await page.locator('#pause').tap();
       await page.locator('#backHome').tap();
@@ -42,12 +51,12 @@ for (const viewport of [
   });
 }
 
-test('rotating a phone preserves the overview and the round', async ({ browser }) => {
+test('rotating a phone preserves the full-course zoom and the round', async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const page = await context.newPage();
   await page.goto(url);
   await page.locator('[data-level="3"]').tap();
-  await page.locator('#overview').tap();
+  await zoomOutToCourse(page);
   await fittedCourse(page, { width: 390, height: 844 });
   await page.setViewportSize({ width: 844, height: 390 });
   await fittedCourse(page, { width: 844, height: 390 });
