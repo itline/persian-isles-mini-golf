@@ -4,7 +4,7 @@
 
 A low-poly mini golf browser game inspired by Iran’s Persian Gulf islands. Line up a bank shot between salt-white cliffs, red earth and turquoise water, with WebGL rendering powered by Three.js and ball physics powered by Rapier.
 
-**v0.2.0 contest demo:** nine playable Hormuz holes, with Qeshm, Kish, Khark and Hengam as visual previews only. Acceptance prioritizes loading, controls and completing the journey; physical-phone and first-time-player checks remain unperformed follow-ups, not certification claims. See [validation scope](docs/release-readiness.md).
+**v0.2.1 contest demo:** nine playable Hormuz holes, with Qeshm, Kish, Khark and Hengam as visual previews only. Acceptance prioritizes loading, controls and completing the journey; physical-phone and first-time-player checks remain unperformed follow-ups, not certification claims. See [validation scope](docs/release-v021.md).
 
 ![Persian Isles Mini Golf — a stylized Hormuz island surrounded by turquoise water](docs/images/hormuz-cover.png)
 
@@ -115,7 +115,7 @@ Screenshots below show the v0.2.0 production build. The phone image is browser e
 | Pause / resume | Escape or the top-right pause button | Top-right pause button, then Resume |
 | Zoom | Mouse wheel or **+ / −** in the bottom-right camera bar | Pinch or **+ / −** in the bottom-right camera bar |
 | Orbit | Right-drag within the bounded camera angle | — |
-| Overview / return | Reset camera framing with **⤢** | Toggle the whole-course overview and close ball-follow view with **⤢** on phones |
+| Camera reset | Reset camera framing with **⤢** | Return to the standard ball view with the target button; **−** reveals the whole course and **+** approaches the ball |
 | Retry the hole | **Restart** in the pause menu | **Restart** in the pause menu |
 | Back to islands | Pause → Back to the coast, or browser Back | Pause → Back to the coast, or browser Back |
 
@@ -220,4 +220,4 @@ Bug reports, reproducible device issues, accessibility improvements and focused 
 - Touch controls and responsive layouts have automated coverage, but real-device mobile compatibility, GPU performance and audio quality are not certified. Browser emulation is not a substitute for testing on physical phones.
 - The production build externalizes the identical Rapier WASM and omits unused audition files; a large-JavaScript-chunk warning still remains. The version-specific transform is guarded and requires re-audit on a Rapier upgrade. See [loading measurements and hosting requirements](docs/loading-optimization.md). Real-host startup and low-end-device performance are not certified.
 - Automated checks cover selected paths and inputs, not complete accessibility or physics correctness.
-- This is a contest demo, not a production service. Exact cross-refresh-rate physics equivalence and exhaustive device certification are outside this release's acceptance scope. GitHub releases are separate from the hosted Edge game; no Edge deployment is included in v0.2.0.
+- This is a contest demo, not a production service. Exact cross-refresh-rate physics equivalence and exhaustive device certification are outside this release's acceptance scope. GitHub releases are separate from the hosted Edge game; v0.2.1 includes an uploadable compact Edge script, not an automatic deployment. See [Edge packaging](docs/edge-packaging.md).

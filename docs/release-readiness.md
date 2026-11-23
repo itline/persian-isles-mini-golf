@@ -1,4 +1,6 @@
-# Local candidate — acceptance gates
+# v0.2.0 historical acceptance record
+
+For the corrective release, see [v0.2.1 validation](release-v021.md). The evidence and publication boundaries below describe v0.2.0, not the newer authorized release.
 
 This document records the bounded validation of **v0.2.0**, a nine-hole contest demo. It is not a physical-device or production-service certification. GitHub release preparation/publication was authorized on 2026-11-22; Edge output and deployment remain separately gated.
 

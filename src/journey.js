@@ -37,4 +37,7 @@ export function journeySummary(scores, island = 'hormuz') {
      || !Array.from(scores).every(score => Number.isSafeInteger(score) && score > 0)) return null;
  return { scores: [...scores], strokes: scores.reduce((a,b) => a+b, 0), par: levels.reduce((n,level) => n+level.par, 0) };
 }
-export function clampZoom(value){return Math.min(1.85,Math.max(1,Number.isFinite(value)?value:1));}
+export function clampZoom(value, minimum = 1) {
+  const bounded = Math.min(1.85, Math.max(minimum, Number.isFinite(value) ? value : 1));
+  return Math.abs(bounded - 1) < 1e-10 ? 1 : bounded;
+}
